@@ -1973,6 +1973,34 @@ async function startServer() {
   });
 
   // ----------------------------------------------------
+  // NOTIFICATION BROADCAST API MODULE
+  // ----------------------------------------------------
+  app.post("/api/notifications/broadcast", checkPermission("system.settings"), (req: any, res) => {
+    const db = loadDatabase();
+    const { title, msg } = req.body;
+    
+    if (!title || !msg) {
+      return res.status(400).json({ error: "Title and message are required" });
+    }
+
+    const newNotification = {
+      id: "nt-broadcast-" + crypto.randomUUID(),
+      userId: "all",
+      title,
+      msg,
+      category: "broadcast",
+      read: false,
+      createdAt: new Date().toISOString()
+    };
+
+    db.notifications.push(newNotification);
+    saveDatabase(db);
+    
+    logAudit(db, req.user.id, req.user.username, req.ip || "127.0.0.1", "NOTIFICATION_BROADCAST", "notifications", "success", `Broadcast notification sent: ${title}`);
+    res.json({ success: true, notification: newNotification });
+  });
+
+  // ----------------------------------------------------
   // FEEDBACK API MODULE
   // ----------------------------------------------------
   app.post("/api/feedback", (req: any, res) => {

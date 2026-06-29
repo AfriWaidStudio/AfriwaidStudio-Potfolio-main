@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Folder, DollarSign, MessageSquare, FileText, Calendar, Shield, Settings, LogOut, Users, CheckSquare, Clock, Receipt } from "lucide-react";
+import { Folder, MessageSquare, FileText, Calendar, Shield, Settings, LogOut, Users, CheckSquare, Clock, Receipt } from "lucide-react";
 
 const CLIENT_NAVIGATION = [
   { icon: Users, label: "Overview", path: "/portal" },
@@ -16,18 +16,9 @@ const CLIENT_NAVIGATION = [
 
 interface ClientWorkspaceLayoutProps {
   children: React.ReactNode;
-  activeTab?: string;
-  setActiveTab?: (tab: string) => void;
 }
 
-export function ClientWorkspaceLayout({ children, activeTab = "Overview", setActiveTab }: ClientWorkspaceLayoutProps) {
-  const handleNavigationClick = (path: string, tabName: string) => {
-    if (setActiveTab) {
-      setActiveTab(tabName);
-    }
-    window.history.pushState({}, "", path);
-  };
-
+export function ClientWorkspaceLayout({ children }: ClientWorkspaceLayoutProps) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex">
       <aside className="w-64 bg-white dark:bg-zinc-950 border-r border-slate-200 dark:border-neutral-800 flex flex-col">
@@ -42,21 +33,16 @@ export function ClientWorkspaceLayout({ children, activeTab = "Overview", setAct
         
         <nav className="flex-1 p-4 space-y-1">
           {CLIENT_NAVIGATION.map((item) => {
-            const isActive = activeTab === item.label;
             const Icon = item.icon;
             return (
-              <button
+              <Link
                 key={item.path}
-                onClick={() => handleNavigationClick(item.path, item.label)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  isActive 
-                    ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
-                    : "text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900"
-                }`}
+                to={item.path}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900"
               >
                 <Icon className="w-5 h-5" />
                 <span>{item.label}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>
@@ -66,6 +52,9 @@ export function ClientWorkspaceLayout({ children, activeTab = "Overview", setAct
             onClick={() => {
               localStorage.removeItem('auth_token');
               localStorage.removeItem('token');
+              localStorage.removeItem('afriwaid_admin_role');
+              localStorage.removeItem('afriwaid_auth_token');
+              localStorage.removeItem('afriwaid_fallback_user');
               window.location.href = '/';
             }}
             className="w-full flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-zinc-400 hover:text-red-600 rounded-lg transition-colors"

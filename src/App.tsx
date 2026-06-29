@@ -28,14 +28,13 @@ import ServicesPage from "./components/ServicesPage";
 import WritingHub from "./components/WritingHub";
 import BuildJournal from "./components/BuildJournal";
 import ContactForm from "./components/ContactForm";
-import ClientPortal from "./components/ClientPortal";
 import AdminDashboard from "./components/AdminDashboard";
 import { AuthProvider, useAuth } from "./components/AuthContext";
 import UnifiedAuthGate from "./components/UnifiedAuthGate";
 import SecuritySettings from "./components/SecuritySettings";
-import { ClientWorkspaceLayout } from "./workspaces/client/ClientWorkspaceLayout";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import DashboardPage from "./pages/client/DashboardPage";
+import TimelinePage from "./pages/client/TimelinePage";
 import ClientProjectsPage from "./pages/client/ProjectsPage";
 import DeliverablesPage from "./pages/client/DeliverablesPage";
 import ApprovalsPage from "./pages/client/ApprovalsPage";
@@ -718,9 +717,25 @@ function AppContent() {
   // Full-portal takeover if user is logged in as a Client role
   if (user && user.role === "Client") {
     return (
-      <ClientWorkspaceLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-        <ClientPortal clientProfiles={clients} onFeedbackAdd={handleFeedbackAdd} wsSocket={wsSocket} />
-      </ClientWorkspaceLayout>
+      <DashboardLayout>
+        {location.pathname === "/portal" && <DashboardPage />}
+        {location.pathname === "/portal/dashboard" && <DashboardPage />}
+        {location.pathname === "/portal/projects" && <ClientProjectsPage />}
+        {location.pathname === "/portal/projects/active" && <ClientProjectsPage />}
+        {location.pathname === "/portal/projects/kanban" && <ClientProjectsPage />}
+        {location.pathname === "/portal/timeline" && <TimelinePage />}
+        {location.pathname === "/portal/deliverables" && <DeliverablesPage />}
+        {location.pathname === "/portal/approvals" && <ApprovalsPage />}
+        {location.pathname === "/portal/invoices" && <InvoicesPage />}
+        {location.pathname === "/portal/invoices/ledger" && <InvoicesPage />}
+        {location.pathname === "/portal/meetings" && <MeetingsPage />}
+        {location.pathname === "/portal/messages" && <MessagesPage />}
+        {location.pathname === "/portal/files" && <FilesPage />}
+        {location.pathname === "/portal/team" && <TeamPage />}
+        {location.pathname === "/portal/reports" && <ReportsPage />}
+        {location.pathname === "/portal/settings" && <SettingsPage />}
+        {location.pathname === "/portal/settings/security" && <SettingsPage />}
+      </DashboardLayout>
     );
   }
 
@@ -1346,6 +1361,7 @@ function AppContent() {
               {location.pathname === "/portal/reports" && <ReportsPage />}
               {location.pathname === "/portal/settings" && <SettingsPage />}
               {location.pathname === "/portal/settings/security" && <SettingsPage />}
+              {location.pathname === "/portal/timeline" && <TimelinePage />}
             </DashboardLayout>
           ) : (
             <UnifiedAuthGate

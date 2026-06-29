@@ -11,7 +11,6 @@ import ServicesPage from "../../components/ServicesPage";
 import WritingHub from "../../components/WritingHub";
 import BuildJournal from "../../components/BuildJournal";
 import ContactForm from "../../components/ContactForm";
-import ClientPortal from "../../components/ClientPortal";
 import AdminDashboard from "../../components/AdminDashboard";
 import SecuritySettings from "../../components/SecuritySettings";
 import { Project, Article, JournalEntry, CV, ClientProfile, Inquiry, TrackedAnalytics, ServiceOffer, MediaItem, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings } from "../../types";
@@ -20,6 +19,9 @@ import { ClientWorkspaceLayout } from "../../workspaces/client/ClientWorkspaceLa
 import { ModeratorWorkspaceLayout } from "../../workspaces/moderator/ModeratorWorkspaceLayout";
 import { AuditorWorkspaceLayout } from "../../workspaces/auditor/AuditorWorkspaceLayout";
 import ModeratorDashboard from "../../components/ModeratorDashboard";
+import AuditorDashboard from "../../components/AuditorDashboard";
+import DeveloperDashboard from "../../components/DeveloperDashboard";
+import OperatorDashboard from "../../components/OperatorDashboard";
 
 interface AppRouterProps {
   projects: Project[];
@@ -174,14 +176,6 @@ export function AppRouter({
         </ProtectedRoute>
       } />
       
-      <Route path="/client" element={
-        <ProtectedRoute requiredRole="client">
-          <ClientWorkspaceLayout>
-            <ClientPortal clientProfiles={clients} onFeedbackAdd={onFeedbackAdd} wsSocket={wsSocket} />
-          </ClientWorkspaceLayout>
-        </ProtectedRoute>
-      } />
-      
       <Route path="/moderator" element={
         <ProtectedRoute requiredRole="moderator">
           <ModeratorWorkspaceLayout>
@@ -192,19 +186,25 @@ export function AppRouter({
       
       <Route path="/auditor" element={
         <ProtectedRoute requiredRole="auditor">
-          <AuditorWorkspaceLayout><div>Auditor Workspace</div></AuditorWorkspaceLayout>
+          <AuditorWorkspaceLayout>
+            <AuditorDashboard clientProfiles={clients} />
+          </AuditorWorkspaceLayout>
         </ProtectedRoute>
       } />
       
       <Route path="/developer" element={
         <ProtectedRoute requiredRole="developer">
-          <div>Developer Workspace</div>
+          <div className="p-6">
+            <DeveloperDashboard clientProfiles={clients} />
+          </div>
         </ProtectedRoute>
       } />
       
       <Route path="/operator" element={
         <ProtectedRoute requiredRole="operator">
-          <div>Operator Workspace</div>
+          <div className="p-6">
+            <OperatorDashboard clientProfiles={clients} />
+          </div>
         </ProtectedRoute>
       } />
       

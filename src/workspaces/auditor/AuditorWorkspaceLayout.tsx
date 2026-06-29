@@ -45,6 +45,7 @@ export function AuditorWorkspaceLayout({ children }: AuditorWorkspaceLayoutProps
             onClick={() => {
               localStorage.removeItem('auth_token');
               localStorage.removeItem('token');
+              localStorage.removeItem('afriwaid_admin_role');
               window.location.href = '/';
             }}
             className="w-full flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-zinc-400 hover:text-red-600 rounded-lg transition-colors"

@@ -230,6 +230,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(null);
     localStorage.removeItem("afriwaid_auth_token");
     localStorage.removeItem("afriwaid_fallback_user");
+    localStorage.removeItem("afriwaid_admin_role");
     sessionStorage.removeItem("afriwaid_auth_token");
   };
 

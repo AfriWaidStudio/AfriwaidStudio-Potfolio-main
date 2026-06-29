@@ -286,11 +286,34 @@
       "description": "Alter core site metadata and modules configuration"
     }
   ],
-  "sessions": [],
+  "sessions": [
+    {
+      "id": "s-974a01a7-dbe9-4c49-b2cc-e80eec3f8828",
+      "userId": "u-2",
+      "token": "token_2d96bc02456f9350de202f6d47b4e4b5d69cf43d9a1050426b9a767e8828a35a1396f8ea36dc2c67",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "isActive": true,
+      "createdAt": "2026-06-29T16:37:01.542Z",
+      "expiresAt": "2026-06-29T18:37:01.542Z"
+    }
+  ],
   "password_resets": [],
   "email_verifications": [],
   "login_attempts": [],
-  "audit_logs": [],
+  "audit_logs": [
+    {
+      "id": "l-bee822ee-7ee1-46f3-be60-b0c03c445b63",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-06-29T16:37:01.542Z"
+    }
+  ],
   "clients": [
     {
       "id": "cl-1",
