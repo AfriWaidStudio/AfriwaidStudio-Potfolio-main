@@ -1,0 +1,69 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { FileText, ShieldCheck, Clock, BarChart3, Settings, LogOut, Eye } from "lucide-react";
+
+const AUDITOR_NAVIGATION = [
+  { icon: BarChart3, label: "Overview", path: "/workspace/auditor" },
+  { icon: ShieldCheck, label: "Audit Logs", path: "/workspace/auditor/logs" },
+  { icon: Clock, label: "Activity Logs", path: "/workspace/auditor/activity" },
+  { icon: Eye, label: "Security Events", path: "/workspace/auditor/security" },
+  { icon: FileText, label: "Reports", path: "/workspace/auditor/reports" },
+];
+
+interface AuditorWorkspaceLayoutProps {
+  children: React.ReactNode;
+}
+
+export function AuditorWorkspaceLayout({ children }: AuditorWorkspaceLayoutProps) {
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex">
+      <aside className="w-64 bg-white dark:bg-zinc-950 border-r border-slate-200 dark:border-neutral-800 flex flex-col">
+        <div className="p-6 border-b border-slate-200 dark:border-neutral-800">
+          <Link to="/workspace/auditor" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded bg-gradient-to-br from-purple-500 to-indigo-500 text-white flex items-center justify-center font-bold">
+              A
+            </div>
+            <span className="font-bold text-lg">Auditor Workspace</span>
+          </Link>
+        </div>
+        
+        <nav className="flex-1 p-4 space-y-1">
+          {AUDITOR_NAVIGATION.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors"
+            >
+              <item.icon className="w-5 h-5" />
+              <span>{item.label}</span>
+            </Link>
+          ))}
+        </nav>
+        
+        <div className="p-4 border-t border-slate-200 dark:border-neutral-800">
+          <button 
+            onClick={() => {
+              localStorage.removeItem('auth_token');
+              localStorage.removeItem('token');
+              window.location.href = '/';
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-zinc-400 hover:text-red-600 rounded-lg transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+      
+      <div className="flex-1 flex flex-col">
+        <header className="h-14 border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between px-6">
+          <h1 className="font-semibold">Auditor Dashboard (Read-Only)</h1>
+        </header>
+        
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}

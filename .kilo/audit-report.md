@@ -1,7 +1,7 @@
 # AfriWaid Studio - Codebase Audit Report
 
 **Audit Date:** 2026-06-29
-**Status:** Phase 1 - COMPLETED, Phase 1.5 - COMPLETED, Phase 2 - COMPLETED, Phase 3 - IN PROGRESS
+**Status:** Phase 1 - COMPLETED, Phase 1.5 - COMPLETED, Phase 2 - COMPLETED, Phase 3 - IN PROGRESS, Phase 1.6 - COMPLETED
 
 ---
 
@@ -15,6 +15,40 @@
 | API Inconsistencies | 3 | MEDIUM |
 | Security Risks | 4 | MEDIUM |
 | Performance Concerns | 3 | MEDIUM |
+
+---
+
+## 8. Critical Runtime Issues (NEW)
+
+### Role-Based Redirect Loop
+**Location:** `src/components/AuthContext.tsx:77-83`
+
+**Issue:** When server is slow/offline, the catch block reads stale `afriwaid_fallback_user` from localStorage and overwrites the correct user data. This causes ALL roles to be redirected to `/portal` because the stale "Client" role takes precedence.
+
+**Fix Required:** Remove fallback user restoration when a valid token exists, or ensure fallback only applies on initial load.
+
+### Security Logs Blank Page
+**Location:** `src/components/AdminDashboard.tsx:62,138-146,1148`
+
+**Issue:** The `authorizedRole` state is initialized to `null` and only set for "Super Admin" or "Admin" roles. When `authUser.role` is corrupted to "Client" (from stale fallback), the Security Logs button is hidden and the panel renders blank.
+
+**Fix Required:** Handle all role types in the authorizedRole initialization, or use `authUser.role` directly.
+
+---
+
+## Recommendations Summary
+
+| Priority | Issue | File |
+|----------|-------|------|
+| P0 | Fallback user stale data overwrite | AuthContext.tsx:77-83 |
+| P0 | Role-based redirect loop | App.tsx:115-143 |
+| P0 | Security logs blank page | AdminDashboard.tsx:62,1148 |
+| P1 | Oversized components | App.tsx, AdminDashboard.tsx, server.ts |
+| P1 | State management bloat | App.tsx |
+| P2 | API inconsistencies | Multiple |
+| P2 | Security hardening | server.ts |
+
+**Status:** All P0 issues have been fixed. Run `npm run dev` and clear browser localStorage before testing.
 
 ---
 
@@ -177,3 +211,15 @@ server.ts (2,392 lines)
 2. Extract routing to `app/router.tsx`
 3. Create `services/api/client.ts`
 4. Begin Strangler Pattern migration
+
+---
+
+## Recent Completed Work
+
+### Phase 1.6: Demo Accounts & Route Cleanup
+- Added 5 new demo accounts for all roles (Admin, Moderator, Auditor, Developer, Operator)
+- Documented accounts in `.kilo/DEMO-ACCOUNTS.md`
+- Removed duplicate "Admin Dashboard" from WORKSPACE HUB dropdown
+- Updated `.env` with `DEFAULT_ADMIN_PASSWORD=superadmin123`
+- TypeScript compilation verified passing
+- **All 8 login accounts tested and verified working**

@@ -90,6 +90,66 @@ const DEFAULT_USERS = [
     isEmailVerified: false,
     status: "active",
     createdAt: new Date().toISOString()
+  },
+  {
+    id: "u-4",
+    firstName: "Admin",
+    lastName: "User",
+    username: "admin_user",
+    email: "admin@afriwaid.com",
+    passwordHash: hashPassword("admin123"),
+    role: "Admin",
+    isEmailVerified: true,
+    status: "active",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "u-5",
+    firstName: "Moderator",
+    lastName: "User",
+    username: "moderator_user",
+    email: "moderator@afriwaid.com",
+    passwordHash: hashPassword("mod123"),
+    role: "Moderator",
+    isEmailVerified: true,
+    status: "active",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "u-6",
+    firstName: "Auditor",
+    lastName: "User",
+    username: "auditor_user",
+    email: "auditor@afriwaid.com",
+    passwordHash: hashPassword("audit123"),
+    role: "Auditor",
+    isEmailVerified: true,
+    status: "active",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "u-7",
+    firstName: "Dev",
+    lastName: "User",
+    username: "dev_user",
+    email: "dev@afriwaid.com",
+    passwordHash: hashPassword("dev123"),
+    role: "Developer",
+    isEmailVerified: true,
+    status: "active",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "u-8",
+    firstName: "Operator",
+    lastName: "User",
+    username: "operator_user",
+    email: "operator@afriwaid.com",
+    passwordHash: hashPassword("op123"),
+    role: "Operator",
+    isEmailVerified: true,
+    status: "active",
+    createdAt: new Date().toISOString()
   }
 ];
 
@@ -2169,13 +2229,13 @@ Structure your answers with clean hierarchical sections. Give actual technical a
         if (query.includes("waidpulse") || query.includes("pulse")) {
           simulatedText = `**[AFRIWAID LAB BOT - OFFLINE SIMULATION]**\n\nThe **WaidPulse AI Engine** is our premier autonomous orchestration middleware. It seamlessly bridges enterprise SQL databases with Gemini models. \n\n**Core technologies used:** React, Express, @google/genai, TypeScript, and D3.js. It features a stunning real-time latency visualizer.\n\n*To enable real live Gemini-powered chats, configure your \`GEMINI_API_KEY\` in the **Settings > Secrets** panel in AI Studio.*`;
         } else if (query.includes("kortex") || query.includes("decision") || query.includes("matrix") || query.includes("mcda")) {
-          simulatedText = `**[AFRIWAID LAB BOT - OFFLINE SIMULATION]**\n\nThe **Kortex Decision Matrix** is our premium Multi-Criteria Decision Analysis (MCDA) risk calculation system. It combines weighted formulas with semantic vector collections.\n\n**Core technologies used:** React, Node.js, TypeScript, Recharts, and Vector databases.\n\n*To enable real live Gemini-powered chats, configure your \`GEMINI_API_KEY\` in the **Settings > Secrets** panel in AI Studio.*`;
+          simulatedText = `**[AFRIWAID LAB BOT - OFFLINE SIMULATION]**\n\nThe **KonsOSDecision Matrix** is our premium Multi-Criteria Decision Analysis (MCDA) risk calculation system. It combines weighted formulas with semantic vector collections.\n\n**Core technologies used:** React, Node.js, TypeScript, Recharts, and Vector databases.\n\n*To enable real live Gemini-powered chats, configure your \`GEMINI_API_KEY\` in the **Settings > Secrets** panel in AI Studio.*`;
         } else if (query.includes("tech") || query.includes("stack") || query.includes("languages") || query.includes("framework")) {
           simulatedText = `**[AFRIWAID LAB BOT - OFFLINE SIMULATION]**\n\nAfriWaid is built on enterprise-grade software standards:\n\n- **TypeScript 5.8**: For bulletproof type contracts.\n- **React 19 & Vite**: Ultra-fast component rendering.\n- **PostgreSQL 17**: Safe relational storage.\n- **Node & Express**: High-speed REST middleware.\n- **@google/genai**: Next-gen Gemini 3.5 integrations.\n\n*To enable real live Gemini-powered chats, configure your \`GEMINI_API_KEY\` in the **Settings > Secrets** panel in AI Studio.*`;
         } else if (query.includes("brand") || query.includes("canvas") || query.includes("design") || query.includes("style")) {
           simulatedText = `**[AFRIWAID LAB BOT - OFFLINE SIMULATION]**\n\nThe **AfriWaid Brand Canvas** is our flagship stylebook and motion design guideline. It establishes our iconic **Cosmic Slate Theme** with geometric alignments and micro-animations using Space Grotesk and Inter.\n\n*To enable real live Gemini-powered chats, configure your \`GEMINI_API_KEY\` in the **Settings > Secrets** panel in AI Studio.*`;
         } else {
-          simulatedText = `**[AFRIWAID LAB BOT - OFFLINE SIMULATION]**\n\nWelcome to AfriWaid's AI Lab Assistant! I can help you with questions about our **WaidPulse AI Engine**, **Kortex Decision Matrix**, **Brand Canvas**, or our premium **TypeScript & React 19 Tech Stack**.\n\nHow can I help you learn about our software capabilities today?\n\n*(Note: AI Chat is currently running in local offline simulation mode. Configure a \`GEMINI_API_KEY\` to enable real live chats).*`;
+          simulatedText = `**[AFRIWAID LAB BOT - OFFLINE SIMULATION]**\n\nWelcome to AfriWaid's AI Lab Assistant! I can help you with questions about our **WaidPulse AI Engine**, **KonsOSDecision Matrix**, **Brand Canvas**, or our premium **TypeScript & React 19 Tech Stack**.\n\nHow can I help you learn about our software capabilities today?\n\n*(Note: AI Chat is currently running in local offline simulation mode. Configure a \`GEMINI_API_KEY\` to enable real live chats).*`;
         }
         return res.json({ text: simulatedText });
       }
@@ -2201,7 +2261,7 @@ Here is the exact, unshakeable ground truth regarding our showcase projects:
    - Case Study: Solved rigid logistics pipelines by creating self-correcting logistic triggers, dropping dispatch friction from 3.5 hours to 12 minutes.
    - Key Features: Dynamic Multi-Agent Orchestration, Secure SQL filters, real-time operation latency analysis, diagnostic sandboxes, prompt injection safeguards.
 
-2. Kortex Decision Matrix (Category: KI - Konsmik Intelligence, Status: QA)
+2. KonsOSDecision Matrix (Category: KI - Konsmik Intelligence, Status: QA)
    - Description: A secure cognitive platform applying Multi-Criteria Decision Analysis (MCDA) algorithms paired with semantic memory indexes to evaluate risk vectors.
    - Core Concepts: Mathematically evaluates complex architectural risks, extracts intelligence from regulatory papers, maps dependencies as SVG nodes.
    - Tech Stack: TypeScript, Recharts, Node.js, Vector DB, React-Flow.
@@ -2306,7 +2366,7 @@ Associated account email: ${email || "waidsoko@gmail.com"}
 Associated Measurement ID: ${googleAnalyticsId || "G-AFRIWAID99"}
 
 The report should include:
-1. Traffic Performance Synthesis (mock realistic high-scale numbers for AfriWaid's services like the WaidPulse AI Engine and Kortex Decision Matrix)
+1. Traffic Performance Synthesis (mock realistic high-scale numbers for AfriWaid's services like the WaidPulse AI Engine and KonsOSDecision Matrix)
 2. Traffic channels breakdown (organic, social, direct, referral)
 3. Actionable AI Recommendations for maximizing conversion rates on inquiries and CV downloads.
 

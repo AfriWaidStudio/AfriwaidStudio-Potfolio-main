@@ -220,43 +220,21 @@ src/features/projects/
 ## Route Protection Plan
 
 ### Current State
-- Basic role checks in components
+- ✅ Client Portal: `/portal` - Protected, Client role
+- ✅ Admin Dashboard: `/workspace/admin` - Protected, Admin/Super Admin roles
+- ⚠️ Duplicate: `/admin` - Same as `/workspace/admin`
+- ✅ Moderator: `/workspace/moderator` - Implemented (ModeratorWorkspaceLayout)
+- ✅ Auditor: `/workspace/auditor` - Implemented (AuditorWorkspaceLayout)
 
-### Target State
-```tsx
-<Route element={<ProtectedRoute />}>
-  <Route path="/portal" element={<ClientWorkspaceLayout />} />
-  <Route path="/admin" element={<AdminWorkspaceLayout />} />
-</Route>
+### Issues Found
+1. **Duplicate Dashboard Access:**
+   - "Admin Central" tab
+   - "Admin Dashboard" in WORKSPACE HUB dropdown
+   - Both navigate to same tab
 
-<Route element={<RoleRoute roles={["Super Admin", "Admin"]} />}>
-  <Route path="/admin/users" element={<UsersTab />} />
-</Route>
-```
-
----
-
-## Typography Migration
-
-### Current State
-- Mixed font sizes throughout codebase
-- `text-xs`, `text-sm`, `text-[10px]`, etc.
-
-### Migration Steps
-1. Replace all `text-xs` with `text-[11px] font-mono` (timestamps, metadata)
-2. Replace all `text-sm` with `text-xs` (helper text, captions)
-3. Replace all `text-base` with `text-base lg:text-lg` (body)
-4. Use typography tokens from `src/theme/typography.ts`
-
----
-
-## Success Criteria
-
-- [x] Home page components created
-- [ ] All routes work without breaking changes
-- [ ] TypeScript compiles without errors
-- [ ] All components use UI primitives
-- [ ] All API calls use service layer
-- [ ] State management is consistent
-- [ ] Route protection is implemented
-- [ ] Typography is consistent
+### Fix Plan
+1. Remove "Admin Dashboard" from WORKSPACE HUB dropdown
+2. Keep single entry: "Admin Central"
+3. ✅ Implement ModeratorWorkspaceLayout
+4. ✅ Implement AuditorWorkspaceLayout
+5. Add proper role-based navigation

@@ -1,0 +1,11 @@
+export { default as DashboardPage } from "./DashboardPage";
+export { default as ProjectsPage } from "./ProjectsPage";
+export { default as DeliverablesPage } from "./DeliverablesPage";
+export { default as ApprovalsPage } from "./ApprovalsPage";
+export { default as InvoicesPage } from "./InvoicesPage";
+export { default as MeetingsPage } from "./MeetingsPage";
+export { default as MessagesPage } from "./MessagesPage";
+export { default as FilesPage } from "./FilesPage";
+export { default as TeamPage } from "./TeamPage";
+export { default as ReportsPage } from "./ReportsPage";
+export { default as SettingsPage } from "./SettingsPage";

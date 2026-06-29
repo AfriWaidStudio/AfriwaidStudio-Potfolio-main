@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } catch (e) {
           console.warn("Offline server detection mode enabled. Reading fallback standard session storage.", e);
           const fallbackUser = localStorage.getItem("afriwaid_fallback_user");
-          if (fallbackUser) {
+          if (fallbackUser && !user) {
             setUser(JSON.parse(fallbackUser));
             setToken(storedToken);
           }

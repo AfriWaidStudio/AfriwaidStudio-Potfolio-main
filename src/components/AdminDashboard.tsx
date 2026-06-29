@@ -50,18 +50,31 @@ interface AdminDashboardProps {
   onDeleteService?: (id: string) => void;
   onUpdateInquiryStatus: (id: string, status: "new" | "reviewed" | "archived") => void;
   onUpdateHomepageStats: (stats: HomepageStats) => void;
+  initialSubTab?: "analytics" | "projects" | "articles" | "journal" | "inquiries" | "cvs" | "media" | "tech" | "stats" | "testimonials" | "team" | "services" | "users" | "roles" | "audit_logs" | "workspaces" | "clients_billing" | "support_chat" | "alert_broadcasts" | "site_customization";
 }
 
 export default function AdminDashboard({
   projects, articles, journal, cvs, clients, inquiries, analytics, services, media, homepageStats, techStack, testimonials, teamMembers, customization, onUpdateCustomization,
-  onAddProject, onUpdateProject, onDeleteProject, onAddArticle, onDeleteArticle, onUpdateArticle, onAddJournal, onUpdateJournal, onDeleteJournal, onToggleCV, onUpdateCV, onAddCV, onDeleteCV, onAddMedia, onDeleteMedia, onUpdateTechStack, onAddTestimonial, onDeleteTestimonial, onUpdateTestimonial, onAddTeamMember, onDeleteTeamMember, onUpdateTeamMember, onAddService, onUpdateService, onDeleteService, onUpdateInquiryStatus, onUpdateHomepageStats
+  onAddProject, onUpdateProject, onDeleteProject, onAddArticle, onDeleteArticle, onUpdateArticle, onAddJournal, onUpdateJournal, onDeleteJournal, onToggleCV, onUpdateCV, onAddCV, onDeleteCV, onAddMedia, onDeleteMedia, onUpdateTechStack, onAddTestimonial, onDeleteTestimonial, onUpdateTestimonial, onAddTeamMember, onDeleteTeamMember, onUpdateTeamMember, onAddService, onUpdateService, onDeleteService, onUpdateInquiryStatus, onUpdateHomepageStats,
+  initialSubTab
 }: AdminDashboardProps) {
   const { user: authUser, checkPermission } = useAuth();
-  const [authorizedRole, setAuthorizedRole] = useState<"Super Admin" | "Admin" | "Editor" | null>(null);
+  const [authorizedRole, setAuthorizedRole] = useState<"Super Admin" | "Admin" | "Editor" | null>(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("afriwaid_admin_role")) {
+      return localStorage.getItem("afriwaid_admin_role") as "Super Admin" | "Admin" | "Editor";
+    }
+    return null;
+  });
   const [passcode, setPasscode] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const [activeSubTab, setActiveSubTab] = useState<"analytics" | "projects" | "articles" | "journal" | "inquiries" | "cvs" | "media" | "tech" | "stats" | "testimonials" | "team" | "services" | "users" | "roles" | "audit_logs" | "workspaces" | "clients_billing" | "support_chat" | "alert_broadcasts" | "site_customization">("analytics");
+  const [activeSubTab, setActiveSubTab] = useState<"analytics" | "projects" | "articles" | "journal" | "inquiries" | "cvs" | "media" | "tech" | "stats" | "testimonials" | "team" | "services" | "users" | "roles" | "audit_logs" | "workspaces" | "clients_billing" | "support_chat" | "alert_broadcasts" | "site_customization">(initialSubTab || "analytics");
+
+  useEffect(() => {
+    if (initialSubTab) {
+      setActiveSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
 
   // Google Analytics integration local state & handlers
   const [isSyncingGA, setIsSyncingGA] = useState(false);
@@ -131,8 +144,13 @@ export default function AdminDashboard({
     if (authUser) {
       if (authUser.role === "Super Admin") {
         setAuthorizedRole("Super Admin");
+        localStorage.setItem("afriwaid_admin_role", "Super Admin");
       } else if (authUser.role === "Admin") {
-        setAuthorizedRole("Admin" as any);
+        setAuthorizedRole("Admin");
+        localStorage.setItem("afriwaid_admin_role", "Admin");
+      } else if (authUser.role === "Moderator" || authUser.role === "Auditor" || authUser.role === "Developer" || authUser.role === "Operator") {
+        setAuthorizedRole("Editor");
+        localStorage.setItem("afriwaid_admin_role", "Editor");
       }
     }
   }, [authUser]);
@@ -1196,7 +1214,10 @@ export default function AdminDashboard({
             </button>
 
             <button
-              onClick={() => setAuthorizedRole(null)}
+              onClick={() => {
+                setAuthorizedRole(null);
+                localStorage.removeItem("afriwaid_admin_role");
+              }}
               className="w-full text-left px-4 py-2.5 rounded-xl text-xs font-mono text-red-400 hover:bg-red-500/10 transition duration-150 flex items-center gap-2 border-t border-neutral-800 lg:mt-4"
               id="admin-logout-trigger"
             >

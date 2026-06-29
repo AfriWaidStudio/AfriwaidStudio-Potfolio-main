@@ -34,7 +34,7 @@ export default function AboutUs({ testimonials = [], teamMembers = [], customiza
 
   const milestones = [
     { date: "2024", title: "Establishment of AfriWaid", desc: "Founded with the vision to bridge spatial motion graphics with full-stack cognitive systems." },
-    { date: "2025", title: "Kortex MCDA Formulation", desc: "Released research paper and compliance modeling tool for aerospace audit pipelines." },
+    { date: "2025", title: "KonsOSMCDA Formulation", desc: "Released research paper and compliance modeling tool for aerospace audit pipelines." },
     { date: "2026", title: "Active AI Middleware Launch", desc: "Released WaidPulse AI connecting server-side SQL targets securely to LLM agents." }
   ];
 

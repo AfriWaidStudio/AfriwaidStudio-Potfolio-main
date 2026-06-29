@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { 
   Lock, AlertCircle, LogOut, Cpu, Wifi, Key, ChevronRight, Loader2,
-  Layers, Folder, BadgeDollarSign, MessageSquare, FolderGit, Sparkles, ArrowLeft
+  Layers, Folder, BadgeDollarSign, MessageSquare, FolderGit, Sparkles, ArrowLeft,
+  BarChart3, FileText, Check, Calendar, Settings, ShieldCheck
 } from "lucide-react";
 import { ClientProfile, Deliverable, Invoice } from "../types";
 import { useAuth } from "./AuthContext";
@@ -25,8 +26,17 @@ export default function ClientPortal({ clientProfiles, onFeedbackAdd, wsSocket, 
   const { user: authUser, logout } = useAuth();
   const [loggedInClient, setLoggedInClient] = useState<ClientProfile | null>(null);
 
-  // Layout selection
-  const [activeTab, setActiveTab] = useState<"workspace" | "drive" | "billing" | "support" | "advisory" | "credentials" | "profile_settings">("workspace");
+  // Main workspace navigation
+  const [activeWorkspace, setActiveWorkspace] = useState<"overview" | "projects" | "deliverables" | "approvals" | "invoices" | "messages" | "security" | "settings">("overview");
+  
+  // Sub-navigation within Projects workspace
+  const [activeProjectsSubTab, setActiveProjectsSubTab] = useState<"kanban" | "drive" | "advisory">("kanban");
+  
+  // Sub-navigation within Invoices workspace
+  const [activeInvoicesSubTab, setActiveInvoicesSubTab] = useState<"ledger" | "receipts" | "payments">("ledger");
+  
+  // Sub-navigation within Messages workspace
+  const [activeMessagesSubTab, setActiveMessagesSubTab] = useState<"chat" | "meetings">("chat");
 
   // State values
   const [tasks, setTasks] = useState<KanbanTask[]>([]);
@@ -433,46 +443,92 @@ export default function ClientPortal({ clientProfiles, onFeedbackAdd, wsSocket, 
         <aside className="w-full lg:w-72 bg-slate-50/50 dark:bg-zinc-955/80 p-6 flex flex-col justify-between shrink-0 font-sans text-left">
           <div className="space-y-6">
             <div className="space-y-1">
-              <span className="text-[8px] text-slate-400 uppercase font-mono tracking-widest font-black">Secure Nav Desk</span>
-              <p className="text-[10.5px] text-slate-500 font-medium">Bespoke workstation channels.</p>
+              <span className="text-[8px] text-slate-400 uppercase font-mono tracking-widest font-black">Client Workspace Nav</span>
+              <p className="text-[10.5px] text-slate-500 font-medium">Navigate workspace sections and tools.</p>
             </div>
 
-            {/* Navigation tabs list */}
-            <nav className="space-y-1.5">
+            {/* Main Workspace Navigation */}
+            <nav className="space-y-2">
               {[
-                { id: "workspace" as const, label: "Agile Kanban Sprint", icon: Layers, count: tasks.filter(t => t.column !== "completed").length },
-                { id: "drive" as const, label: "Assets Vault Drive", icon: Folder, count: deliverables.length },
-                { id: "billing" as const, label: "Financial ledger Desk", icon: BadgeDollarSign, count: invoicesList.filter(i => i.status === "Unpaid").length },
-                { id: "support" as const, label: "Live DM chat logs", icon: MessageSquare, count: 0 },
-                { id: "advisory" as const, label: "Product Advisory Node", icon: FolderGit, count: roadmapTickets.length },
-                { id: "credentials" as const, label: "Credential keys & SSH", icon: Key, count: 0 }
+                { id: "overview", label: "Overview", icon: BarChart3 },
+                { id: "projects", label: "Projects", icon: Folder },
+                { id: "deliverables", label: "Deliverables", icon: FileText },
+                { id: "approvals", label: "Approvals", icon: Check },
+                { id: "invoices", label: "Invoices", icon: BadgeDollarSign },
+                { id: "messages", label: "Messages", icon: MessageSquare },
+                { id: "security", label: "Security", icon: ShieldCheck },
+                { id: "settings", label: "Settings", icon: Settings }
               ].map((tab) => {
-                const active = activeTab === tab.id;
+                const active = activeWorkspace === tab.id;
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl transition duration-150 font-bold ${
+                    onClick={() => setActiveWorkspace(tab.id as any)}
+                    className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl transition duration-150 font-bold ${
                       active 
                         ? "bg-slate-900 text-white dark:bg-zinc-900 dark:text-white shadow-md"
                         : "text-slate-650 dark:text-zinc-400 hover:bg-slate-200/50 dark:hover:bg-zinc-900/50 hover:text-slate-900 dark:hover:text-white"
                     }`}
-                    id={`client-tray-nav-tab-${tab.id}`}
+                    id={`client-workspace-nav-${tab.id}`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${active ? "text-cyan-400" : "text-slate-400"}`} />
-                      <span className="font-sans text-xs">{tab.label}</span>
-                    </div>
-                    {tab.count > 0 && (
-                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full ${active ? "bg-cyan-500 text-black" : "bg-slate-205 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300"}`}>
-                        {tab.count}
-                      </span>
-                    )}
+                    <Icon className={`w-4 h-4 ${active ? "text-cyan-400" : "text-slate-400"}`} />
+                    <span className="font-sans text-xs">{tab.label}</span>
                   </button>
                 );
               })}
             </nav>
+
+            {/* Sub-navigation for Projects */}
+            {activeWorkspace === "projects" && (
+              <div className="ml-4 pl-2 border-l border-slate-200 dark:border-zinc-800">
+                <span className="text-[8px] text-slate-400 uppercase font-mono tracking-wider">Projects Tools</span>
+                <div className="mt-2 space-y-1">
+                  {[
+                    { id: "kanban", label: "Agile Kanban Sprint" },
+                    { id: "drive", label: "Assets Vault Drive" },
+                    { id: "advisory", label: "Product Advisory Node" }
+                  ].map((subTab) => (
+                    <button
+                      key={subTab.id}
+                      onClick={() => setActiveProjectsSubTab(subTab.id as any)}
+                      className={`w-full text-left text-[11px] px-2 py-1.5 rounded transition ${
+                        activeProjectsSubTab === subTab.id
+                          ? "bg-cyan-500/20 text-cyan-500 font-medium"
+                          : "text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+                      }`}
+                    >
+                      {subTab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Sub-navigation for Messages */}
+            {activeWorkspace === "messages" && (
+              <div className="ml-4 pl-2 border-l border-slate-200 dark:border-zinc-800">
+                <span className="text-[8px] text-slate-400 uppercase font-mono tracking-wider">Messages Tools</span>
+                <div className="mt-2 space-y-1">
+                  {[
+                    { id: "chat", label: "Live DM Chat" },
+                    { id: "meetings", label: "Meetings" }
+                  ].map((subTab) => (
+                    <button
+                      key={subTab.id}
+                      onClick={() => setActiveMessagesSubTab(subTab.id as any)}
+                      className={`w-full text-left text-[11px] px-2 py-1.5 rounded transition ${
+                        activeMessagesSubTab === subTab.id
+                          ? "bg-cyan-500/20 text-cyan-500 font-medium"
+                          : "text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+                      }`}
+                    >
+                      {subTab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Bottom logout column */}
@@ -505,15 +561,30 @@ export default function ClientPortal({ clientProfiles, onFeedbackAdd, wsSocket, 
               <div className="space-y-1 text-left">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[9px] bg-cyan-100 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 px-2 py-0.5 font-mono font-black border border-cyan-200 dark:border-cyan-500/20 rounded">
-                    PROJECT ACTIVE WORKSPACE
+                    CLIENT WORKSPACE
                   </span>
-                  <span className="text-[9px] text-slate-400 font-mono">ESTIMATED ESTIMATION PIPELINE</span>
+                  <span className="text-[9px] text-slate-400 font-mono">Enterprise Project Portal</span>
                 </div>
                 <h1 className="text-xl md:text-2xl font-display font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                  {loggedInClient.company} Console
+                  {activeWorkspace === "projects" && "Projects"}
+                  {activeWorkspace === "deliverables" && "Deliverables"}
+                  {activeWorkspace === "approvals" && "Approvals"}
+                  {activeWorkspace === "invoices" && "Invoices"}
+                  {activeWorkspace === "messages" && "Messages"}
+                  {activeWorkspace === "security" && "Security"}
+                  {activeWorkspace === "settings" && "Settings"}
+                  {!["projects", "deliverables", "approvals", "invoices", "messages", "security", "settings"].includes(activeWorkspace) && "Overview"}
                 </h1>
                 <p className="text-[10px] text-slate-500 dark:text-zinc-455 font-sans leading-relaxed max-w-xl">
-                  Bespoke interactive portal. Coordinate milestones, clear balance ledgers, stream files, log roadmap priorities, and converse instantly with lead architects.
+                  {activeWorkspace === "projects" && "Manage project tasks, assets, and advisory roadmap."}
+                  {activeWorkspace === "deliverables" && "Track and manage project deliverables."}
+                  {activeWorkspace === "approvals" && "Review and approve project milestones."}
+                  {activeWorkspace === "invoices" && "View and manage billing information."}
+                  {activeWorkspace === "messages" && "Communicate with team members."}
+                  {activeWorkspace === "security" && "Manage credentials and security settings."}
+                  {activeWorkspace === "settings" && "Configure your profile and preferences."}
+                  {!["projects", "deliverables", "approvals", "invoices", "messages", "security", "settings"].includes(activeWorkspace) && 
+                    "Monitor project progress and access key metrics."}
                 </p>
               </div>
 
@@ -540,25 +611,110 @@ export default function ClientPortal({ clientProfiles, onFeedbackAdd, wsSocket, 
               </div>
             </div>
 
-            {/* TAB OUTLET DISPATCH */}
-            {activeTab === "workspace" && (
-              <KanbanSprint
-                tasks={tasks}
-                cycleTaskColumn={cycleTaskColumn}
-                customTaskInput={customTaskInput}
-                setCustomTaskInput={setCustomTaskInput}
-                handleAddCustomTask={handleAddCustomTask}
-                uploadedFileIndicator={uploadedFileIndicator}
-                uploading={uploading}
-                uploadFileName={uploadFileName}
-                uploadProgress={uploadProgress}
-                fileInputRef={fileInputRef}
-                handleFileUploadInput={handleFileUploadInput}
-                loggedInClient={loggedInClient}
-              />
+            {/* WORKSPACE CONTENT OUTLET */}
+            
+            {/* Overview Workspace */}
+            {activeWorkspace === "overview" && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+                    <span className="text-[9px] text-slate-400 font-mono uppercase">Progress</span>
+                    <span className="text-2xl font-display font-black text-cyan-500 block">{progressTotal}%</span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+                    <span className="text-[9px] text-slate-400 font-mono uppercase">Tasks</span>
+                    <span className="text-2xl font-display font-black text-purple-500 block">{tasks.filter(t => t.column !== "completed").length}</span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+                    <span className="text-[9px] text-slate-400 font-mono uppercase">Deliverables</span>
+                    <span className="text-2xl font-display font-black text-slate-500 block">{deliverables.length}</span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+                    <span className="text-[9px] text-slate-400 font-mono uppercase">Invoices</span>
+                    <span className="text-2xl font-display font-black text-emerald-500 block">{invoicesList.length}</span>
+                  </div>
+                </div>
+                <KanbanSprint
+                  tasks={tasks}
+                  cycleTaskColumn={cycleTaskColumn}
+                  customTaskInput={customTaskInput}
+                  setCustomTaskInput={setCustomTaskInput}
+                  handleAddCustomTask={handleAddCustomTask}
+                  uploadedFileIndicator={uploadedFileIndicator}
+                  uploading={uploading}
+                  uploadFileName={uploadFileName}
+                  uploadProgress={uploadProgress}
+                  fileInputRef={fileInputRef}
+                  handleFileUploadInput={handleFileUploadInput}
+                  loggedInClient={loggedInClient}
+                />
+              </div>
             )}
 
-            {activeTab === "drive" && (
+            {/* Projects Workspace */}
+            {activeWorkspace === "projects" && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 text-[10px] font-mono">
+                  <button 
+                    onClick={() => setActiveProjectsSubTab("kanban")}
+                    className={`px-3 py-1.5 rounded ${activeProjectsSubTab === "kanban" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Kanban Board
+                  </button>
+                  <button 
+                    onClick={() => setActiveProjectsSubTab("drive")}
+                    className={`px-3 py-1.5 rounded ${activeProjectsSubTab === "drive" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Asset Vault
+                  </button>
+                  <button 
+                    onClick={() => setActiveProjectsSubTab("advisory")}
+                    className={`px-3 py-1.5 rounded ${activeProjectsSubTab === "advisory" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Advisory Node
+                  </button>
+                </div>
+                {activeProjectsSubTab === "kanban" && (
+                  <KanbanSprint
+                    tasks={tasks}
+                    cycleTaskColumn={cycleTaskColumn}
+                    customTaskInput={customTaskInput}
+                    setCustomTaskInput={setCustomTaskInput}
+                    handleAddCustomTask={handleAddCustomTask}
+                    uploadedFileIndicator={uploadedFileIndicator}
+                    uploading={uploading}
+                    uploadFileName={uploadFileName}
+                    uploadProgress={uploadProgress}
+                    fileInputRef={fileInputRef}
+                    handleFileUploadInput={handleFileUploadInput}
+                    loggedInClient={loggedInClient}
+                  />
+                )}
+                {activeProjectsSubTab === "drive" && (
+                  <AssetVaultDrive
+                    deliverables={deliverables}
+                    setDeliverables={setDeliverables}
+                    setPaymentSuccessToast={setPaymentSuccessToast}
+                  />
+                )}
+                {activeProjectsSubTab === "advisory" && (
+                  <AdvisoryRoadmap
+                    roadmapTickets={roadmapTickets}
+                    adviceText={adviceText}
+                    setAdviceText={setAdviceText}
+                    adviceCategory={adviceCategory}
+                    setAdviceCategory={setAdviceCategory}
+                    advicePriority={advicePriority}
+                    setAdvicePriority={setAdvicePriority}
+                    handlePublishAdvice={handlePublishAdvice}
+                    adviceSuccess={adviceSuccess}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Deliverables Workspace */}
+            {activeWorkspace === "deliverables" && (
               <AssetVaultDrive
                 deliverables={deliverables}
                 setDeliverables={setDeliverables}
@@ -566,45 +722,102 @@ export default function ClientPortal({ clientProfiles, onFeedbackAdd, wsSocket, 
               />
             )}
 
-            {activeTab === "billing" && (
-              <FinancialLedger
-                invoicesList={invoicesList}
-                setInvoicesList={setInvoicesList}
-                loggedInClient={loggedInClient}
-                paymentSuccessToast={paymentSuccessToast}
-                setPaymentSuccessToast={setPaymentSuccessToast}
-              />
+            {/* Approvals Workspace */}
+            {activeWorkspace === "approvals" && (
+              <div className="text-center py-12 text-slate-500">
+                <Check className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                <p className="font-mono text-xs">Approvals workspace - Coming soon</p>
+              </div>
             )}
 
-            {activeTab === "support" && (
-              <SupportChat
-                chatMessages={chatMessages}
-                activeChannel={activeChannel}
-                setActiveChannel={setActiveChannel}
-                newMessageText={newMessageText}
-                setNewMessageText={setNewMessageText}
-                handleSendChatText={handleSendChatText}
-                typingIndicator={typingIndicator}
-                chatScrollRef={chatScrollRef}
-                authUser={authUser}
-              />
+            {/* Invoices Workspace */}
+            {activeWorkspace === "invoices" && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 text-[10px] font-mono">
+                  <button 
+                    onClick={() => setActiveInvoicesSubTab("ledger")}
+                    className={`px-3 py-1.5 rounded ${activeInvoicesSubTab === "ledger" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Ledger Desk
+                  </button>
+                  <button 
+                    onClick={() => setActiveInvoicesSubTab("receipts")}
+                    className={`px-3 py-1.5 rounded ${activeInvoicesSubTab === "receipts" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Receipts
+                  </button>
+                  <button 
+                    onClick={() => setActiveInvoicesSubTab("payments")}
+                    className={`px-3 py-1.5 rounded ${activeInvoicesSubTab === "payments" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Payments
+                  </button>
+                </div>
+                {activeInvoicesSubTab === "ledger" && (
+                  <FinancialLedger
+                    invoicesList={invoicesList}
+                    setInvoicesList={setInvoicesList}
+                    loggedInClient={loggedInClient}
+                    paymentSuccessToast={paymentSuccessToast}
+                    setPaymentSuccessToast={setPaymentSuccessToast}
+                  />
+                )}
+                {activeInvoicesSubTab === "receipts" && (
+                  <div className="text-center py-12 text-slate-500">
+                    <FileText className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                    <p className="font-mono text-xs">Receipts workspace - Coming soon</p>
+                  </div>
+                )}
+                {activeInvoicesSubTab === "payments" && (
+                  <div className="text-center py-12 text-slate-500">
+                    <BadgeDollarSign className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                    <p className="font-mono text-xs">Payments workspace - Coming soon</p>
+                  </div>
+                )}
+              </div>
             )}
 
-            {activeTab === "advisory" && (
-              <AdvisoryRoadmap
-                roadmapTickets={roadmapTickets}
-                adviceText={adviceText}
-                setAdviceText={setAdviceText}
-                adviceCategory={adviceCategory}
-                setAdviceCategory={setAdviceCategory}
-                advicePriority={advicePriority}
-                setAdvicePriority={setAdvicePriority}
-                handlePublishAdvice={handlePublishAdvice}
-                adviceSuccess={adviceSuccess}
-              />
+            {/* Messages Workspace */}
+            {activeWorkspace === "messages" && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 text-[10px] font-mono">
+                  <button 
+                    onClick={() => setActiveMessagesSubTab("chat")}
+                    className={`px-3 py-1.5 rounded ${activeMessagesSubTab === "chat" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Live DM Chat
+                  </button>
+                  <button 
+                    onClick={() => setActiveMessagesSubTab("meetings")}
+                    className={`px-3 py-1.5 rounded ${activeMessagesSubTab === "meetings" ? "bg-cyan-500 text-black" : "bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300"}`}
+                  >
+                    Meetings
+                  </button>
+                </div>
+                {activeMessagesSubTab === "chat" && (
+                  <SupportChat
+                    chatMessages={chatMessages}
+                    activeChannel={activeChannel}
+                    setActiveChannel={setActiveChannel}
+                    newMessageText={newMessageText}
+                    setNewMessageText={setNewMessageText}
+                    handleSendChatText={handleSendChatText}
+                    typingIndicator={typingIndicator}
+                    chatScrollRef={chatScrollRef}
+                    authUser={authUser}
+                  />
+                )}
+                {activeMessagesSubTab === "meetings" && (
+                  <div className="text-center py-12 text-slate-500">
+                    <Calendar className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                    <p className="font-mono text-xs">Meetings workspace - Coming soon</p>
+                  </div>
+                )}
+              </div>
             )}
 
-            {activeTab === "credentials" && (
+            {/* Security Workspace */}
+            {activeWorkspace === "security" && (
               <SecurityCredentials
                 tokenVisible={tokenVisible}
                 setTokenVisible={setTokenVisible}
@@ -627,6 +840,13 @@ export default function ClientPortal({ clientProfiles, onFeedbackAdd, wsSocket, 
               />
             )}
 
+            {/* Settings Workspace */}
+            {activeWorkspace === "settings" && (
+              <div className="text-center py-12 text-slate-500">
+                <Settings className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                <p className="font-mono text-xs">Settings workspace - Coming soon</p>
+              </div>
+            )}
           </div>
         </main>
 

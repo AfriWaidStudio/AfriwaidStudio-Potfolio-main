@@ -278,6 +278,16 @@ backend/src/
 - [x] Create auth.ts service
 - [x] Create projects.ts service
 
+### Phase 1.6: Demo Accounts
+- [x] Add Admin account (admin@afriwaid.com)
+- [x] Add Moderator account (moderator@afriwaid.com)
+- [x] Add Auditor account (auditor@afriwaid.com)
+- [x] Add Developer account (dev@afriwaid.com)
+- [x] Add Operator account (operator@afriwaid.com)
+- [x] Document demo accounts in .kilo/DEMO-ACCOUNTS.md
+- [x] Remove duplicate "Admin Dashboard" from WORKSPACE HUB dropdown
+- [x] Test all 8 login accounts (all passing)
+
 ---
 
 ## Notes

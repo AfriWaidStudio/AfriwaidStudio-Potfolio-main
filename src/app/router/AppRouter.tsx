@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import AboutUs from "../../components/AboutUs";
 import FounderProfile from "../../components/FounderProfile";
@@ -14,25 +15,13 @@ import ClientPortal from "../../components/ClientPortal";
 import AdminDashboard from "../../components/AdminDashboard";
 import SecuritySettings from "../../components/SecuritySettings";
 import { Project, Article, JournalEntry, CV, ClientProfile, Inquiry, TrackedAnalytics, ServiceOffer, MediaItem, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings } from "../../types";
-
-export type AppTab = 
-  | "Home" 
-  | "Projects" 
-  | "Services" 
-  | "Build Journal" 
-  | "AI Lab" 
-  | "Publishing" 
-  | "Media" 
-  | "Resumé CV" 
-  | "Founder Profile" 
-  | "Company Profile" 
-  | "Client Access" 
-  | "Admin Central" 
-  | "Security Settings" 
-  | "Contact";
+import { AdminWorkspaceLayout } from "../../workspaces/admin/AdminWorkspaceLayout";
+import { ClientWorkspaceLayout } from "../../workspaces/client/ClientWorkspaceLayout";
+import { ModeratorWorkspaceLayout } from "../../workspaces/moderator/ModeratorWorkspaceLayout";
+import { AuditorWorkspaceLayout } from "../../workspaces/auditor/AuditorWorkspaceLayout";
+import ModeratorDashboard from "../../components/ModeratorDashboard";
 
 interface AppRouterProps {
-  activeTab: AppTab;
   projects: Project[];
   articles: Article[];
   journal: JournalEntry[];
@@ -47,7 +36,6 @@ interface AppRouterProps {
   testimonials: Testimonial[];
   teamMembers: TeamMember[];
   customization: CustomizationSettings;
-  onNavigate: (tab: AppTab) => void;
   onViewIncrement: (id: string) => void;
   onReadIncrement: (id: string) => void;
   onPlayIncrement: (id: string) => void;
@@ -57,152 +45,177 @@ interface AppRouterProps {
   wsSocket?: WebSocket | null;
 }
 
-export function AppRouter({
-  activeTab,
-  projects,
-  articles,
-  journal,
-  cvs,
-  clients,
-  inquiries,
-  analytics,
-  services,
-  media,
-  homepageStats,
-  techStack,
-  testimonials,
-  teamMembers,
-  customization,
-  onNavigate,
-  onViewIncrement,
-  onReadIncrement,
-  onPlayIncrement,
-  onDownloadIncrement,
-  onFeedbackAdd,
-  onInquirySubmitted,
-  wsSocket,
-}: AppRouterProps) {
-  const { user, logout } = useAuth();
+const ROLE_REDIRECTS: Record<string, string> = {
+  "Super Admin": "/admin/dashboard",
+  "Admin": "/admin",
+  "Developer": "/developer",
+  "Operator": "/operator",
+  "Moderator": "/moderator",
+  "Auditor": "/auditor",
+  "Client": "/client",
+  "User": "/dashboard"
+};
 
-  if (activeTab === "Client Access" && user) {
-    return <ClientPortal clientProfiles={clients} onFeedbackAdd={onFeedbackAdd} wsSocket={wsSocket} />;
+function getRedirectPathByRole(role: string): string {
+  return ROLE_REDIRECTS[role] || "/studio";
+}
+
+function PublicRoute({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  if (user) {
+    return <Navigate to={getRedirectPathByRole(user.role)} replace />;
   }
+  return <>{children}</>;
+}
+
+function ProtectedRoute({ children, requiredRole }: { children: React.ReactNode; requiredRole?: string }) {
+  const { user } = useAuth();
+  const location = useLocation();
+  
+  if (!user) {
+    return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname)}`} replace />;
+  }
+  
+  if (requiredRole && user.role !== requiredRole && !(user.role === "Super Admin" && requiredRole === "admin")) {
+    return <Navigate to={getRedirectPathByRole(user.role)} replace />;
+  }
+  
+  return <>{children}</>;
+}
+
+export function AppRouter({
+  projects, articles, journal, cvs, clients, inquiries, analytics, services, media,
+  homepageStats, techStack, testimonials, teamMembers, customization,
+  onViewIncrement, onReadIncrement, onPlayIncrement, onDownloadIncrement,
+  onFeedbackAdd, onInquirySubmitted, wsSocket
+}: AppRouterProps) {
+  const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      {activeTab === "Home" && (
-        <div className="space-y-16 py-4 md:py-8">
-          <h1 className="text-4xl md:text-7xl font-bold text-center">{customization.heroHeadline || "AFRIWAID STUDIO"}</h1>
-          <p className="text-slate-600 text-center max-w-3xl mx-auto">
-            {customization.heroSubtitle || "A world-class technology, portfolio, AI innovation, and client management node."}
-          </p>
-        </div>
-      )}
+    <Routes>
+      <Route path="/" element={
+        <PublicRoute>
+          <div className="space-y-16 py-4 md:py-8">
+            <h1 className="text-4xl md:text-7xl font-bold text-center">{customization.heroHeadline || "AFRIWAID STUDIO"}</h1>
+            <p className="text-slate-600 text-center max-w-3xl mx-auto">
+              {customization.heroSubtitle || "A world-class technology, portfolio, AI innovation, and client management node."}
+            </p>
+          </div>
+        </PublicRoute>
+      } />
       
-      {activeTab === "Projects" && (
-        <ProjectsPage projects={projects} onViewIncrement={onViewIncrement} customization={customization} />
-      )}
+      <Route path="/login" element={
+        <PublicRoute>
+          <div>Login Page</div>
+        </PublicRoute>
+      } />
       
-      {activeTab === "Services" && (
-        <ServicesPage services={services} customization={customization} onSelectInquiryCategory={() => {}} onNavigateToTab={() => {}} />
-      )}
+      <Route path="/register" element={
+        <PublicRoute>
+          <div>Register Page</div>
+        </PublicRoute>
+      } />
       
-      {activeTab === "Build Journal" && (
-        <BuildJournal entries={journal} customization={customization} />
-      )}
+      <Route path="/studio" element={
+        <ProtectedRoute>
+          <div>Studio Dashboard</div>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "AI Lab" && <AILab customization={customization} />}
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <div>User Dashboard</div>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Publishing" && (
-        <WritingHub articles={articles} onReadIncrement={onReadIncrement} customization={customization} />
-      )}
+      <Route path="/admin" element={
+        <ProtectedRoute requiredRole="admin">
+          <AdminWorkspaceLayout>
+            <AdminDashboard
+              projects={projects} articles={articles} journal={journal} cvs={cvs}
+              clients={clients} inquiries={inquiries} analytics={analytics} services={services}
+              media={media} techStack={techStack} testimonials={testimonials} teamMembers={teamMembers}
+              customization={customization}
+              onUpdateCustomization={() => {}}
+              homepageStats={homepageStats}
+              onAddProject={() => {}} onUpdateProject={() => {}} onDeleteProject={() => {}}
+              onAddArticle={() => {}} onDeleteArticle={() => {}}
+              onAddJournal={() => {}} onToggleCV={() => {}} onUpdateCV={() => {}} onAddCV={() => {}} onDeleteCV={() => {}}
+              onAddMedia={() => {}} onDeleteMedia={() => {}} onUpdateTechStack={() => {}}
+              onAddTestimonial={() => {}} onDeleteTestimonial={() => {}}
+              onAddTeamMember={() => {}} onDeleteTeamMember={() => {}} onUpdateTeamMember={() => {}}
+              onAddService={() => {}} onUpdateService={() => {}} onDeleteService={() => {}}
+              onUpdateInquiryStatus={() => {}} onUpdateHomepageStats={() => {}}
+            />
+          </AdminWorkspaceLayout>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Media" && (
-        <MediaHub mediaItems={media} onPlayIncrement={onPlayIncrement} customization={customization} />
-      )}
+      <Route path="/admin/dashboard" element={
+        <ProtectedRoute requiredRole="admin">
+          <AdminWorkspaceLayout>
+            <AdminDashboard
+              projects={projects} articles={articles} journal={journal} cvs={cvs}
+              clients={clients} inquiries={inquiries} analytics={analytics} services={services}
+              media={media} techStack={techStack} testimonials={testimonials} teamMembers={teamMembers}
+              customization={customization}
+              onUpdateCustomization={() => {}}
+              homepageStats={homepageStats}
+              onAddProject={() => {}} onUpdateProject={() => {}} onDeleteProject={() => {}}
+              onAddArticle={() => {}} onDeleteArticle={() => {}}
+              onAddJournal={() => {}} onToggleCV={() => {}} onUpdateCV={() => {}} onAddCV={() => {}} onDeleteCV={() => {}}
+              onAddMedia={() => {}} onDeleteMedia={() => {}} onUpdateTechStack={() => {}}
+              onAddTestimonial={() => {}} onDeleteTestimonial={() => {}}
+              onAddTeamMember={() => {}} onDeleteTeamMember={() => {}} onUpdateTeamMember={() => {}}
+              onAddService={() => {}} onUpdateService={() => {}} onDeleteService={() => {}}
+              onUpdateInquiryStatus={() => {}} onUpdateHomepageStats={() => {}}
+            />
+          </AdminWorkspaceLayout>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Resumé CV" && (
-        <CVCenter cvs={cvs} onDownloadIncrement={onDownloadIncrement} customization={customization} />
-      )}
+      <Route path="/client" element={
+        <ProtectedRoute requiredRole="client">
+          <ClientWorkspaceLayout>
+            <ClientPortal clientProfiles={clients} onFeedbackAdd={onFeedbackAdd} wsSocket={wsSocket} />
+          </ClientWorkspaceLayout>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Founder Profile" && (
-        <FounderProfile cvs={cvs} onDownloadIncrement={onDownloadIncrement} onContactClick={() => onNavigate("Services")} />
-      )}
+      <Route path="/moderator" element={
+        <ProtectedRoute requiredRole="moderator">
+          <ModeratorWorkspaceLayout>
+            <ModeratorDashboard clientProfiles={clients} inquiries={inquiries} />
+          </ModeratorWorkspaceLayout>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Company Profile" && (
-        <AboutUs testimonials={testimonials} teamMembers={teamMembers} customization={customization} />
-      )}
+      <Route path="/auditor" element={
+        <ProtectedRoute requiredRole="auditor">
+          <AuditorWorkspaceLayout><div>Auditor Workspace</div></AuditorWorkspaceLayout>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Admin Central" && user && (user.role === "Super Admin" || user.role === "Admin") && (
-        <AdminDashboard
-          projects={projects}
-          articles={articles}
-          journal={journal}
-          cvs={cvs}
-          clients={clients}
-          inquiries={inquiries}
-          analytics={analytics || { 
-            visitorsLast30Days: 0, 
-            totalViews: 0, 
-            projectDownloads: 0, 
-            contactCount: 0, 
-            pageViews: [],
-            topProjects: [],
-            topArticles: []
-          }}
-          services={services}
-          media={media}
-          techStack={techStack}
-          testimonials={testimonials}
-          teamMembers={teamMembers}
-          customization={customization}
-          onUpdateCustomization={() => {}}
-          homepageStats={homepageStats || {
-            projectsCompleted: 0,
-            applicationsBuilt: 0,
-            aiSystemsDeveloped: 0,
-            articlesPublished: 0,
-            brandsCreated: 0,
-            videosProduced: 0,
-            clientsServed: 0
-          }}
-          onAddProject={() => {}}
-          onUpdateProject={() => {}}
-          onDeleteProject={() => {}}
-          onAddArticle={() => {}}
-          onDeleteArticle={() => {}}
-          onAddJournal={() => {}}
-          onToggleCV={() => {}}
-          onUpdateCV={() => {}}
-          onAddCV={() => {}}
-          onDeleteCV={() => {}}
-          onAddMedia={() => {}}
-          onDeleteMedia={() => {}}
-          onUpdateTechStack={() => {}}
-          onAddTestimonial={() => {}}
-          onDeleteTestimonial={() => {}}
-          onAddTeamMember={() => {}}
-          onDeleteTeamMember={() => {}}
-          onUpdateTeamMember={() => {}}
-          onAddService={() => {}}
-          onUpdateService={() => {}}
-          onDeleteService={() => {}}
-          onUpdateInquiryStatus={() => {}}
-          onUpdateHomepageStats={() => {}}
-        />
-      )}
+      <Route path="/developer" element={
+        <ProtectedRoute requiredRole="developer">
+          <div>Developer Workspace</div>
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Security Settings" && user && (
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
+      <Route path="/operator" element={
+        <ProtectedRoute requiredRole="operator">
+          <div>Operator Workspace</div>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/settings" element={
+        <ProtectedRoute>
           <SecuritySettings />
-        </div>
-      )}
+        </ProtectedRoute>
+      } />
       
-      {activeTab === "Contact" && (
-        <div className="max-w-4xl mx-auto py-10">
-          <ContactForm onInquirySubmitted={onInquirySubmitted} />
-        </div>
-      )}
-    </div>
+      <Route path="/news" element={<div>News Page</div>} />
+      <Route path="/news/:slug" element={<div>News Article</div>} />
+    </Routes>
   );
 }

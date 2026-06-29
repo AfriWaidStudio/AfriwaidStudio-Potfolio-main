@@ -7,6 +7,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { loadInitialData, saveInitialData, INITIAL_CUSTOMIZATION } from "./data";
 import { Project, Article, JournalEntry, CV, ClientProfile, Inquiry, TrackedAnalytics, ServiceOffer, MediaItem, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings } from "./types";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const formatStat = (val: string | number | undefined, defaultVal: string | number, suffix: string) => {
   const v = val !== undefined && val !== null ? val.toString().trim() : defaultVal.toString().trim();
@@ -32,8 +33,19 @@ import AdminDashboard from "./components/AdminDashboard";
 import { AuthProvider, useAuth } from "./components/AuthContext";
 import UnifiedAuthGate from "./components/UnifiedAuthGate";
 import SecuritySettings from "./components/SecuritySettings";
-import { AdminWorkspaceLayout } from "./workspaces/admin/AdminWorkspaceLayout";
 import { ClientWorkspaceLayout } from "./workspaces/client/ClientWorkspaceLayout";
+import { DashboardLayout } from "./components/layout/DashboardLayout";
+import DashboardPage from "./pages/client/DashboardPage";
+import ClientProjectsPage from "./pages/client/ProjectsPage";
+import DeliverablesPage from "./pages/client/DeliverablesPage";
+import ApprovalsPage from "./pages/client/ApprovalsPage";
+import InvoicesPage from "./pages/client/InvoicesPage";
+import MeetingsPage from "./pages/client/MeetingsPage";
+import MessagesPage from "./pages/client/MessagesPage";
+import FilesPage from "./pages/client/FilesPage";
+import TeamPage from "./pages/client/TeamPage";
+import ReportsPage from "./pages/client/ReportsPage";
+import SettingsPage from "./pages/client/SettingsPage";
 
 export default function App() {
   return (
@@ -45,9 +57,91 @@ export default function App() {
 
 function AppContent() {
   const { user, logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  const getInitialTabFromPath = (path: string): "Home" | "Projects" | "Services" | "Build Journal" | "AI Lab" | "Publishing" | "Media" | "Resumé CV" | "Founder Profile" | "Company Profile" | "Client Access" | "Admin Central" | "Security Settings" | "Contact" => {
+    if (path.startsWith("/workspace/admin") || path.startsWith("/admin")) {
+      return "Admin Central";
+    } else if (path.startsWith("/portal") || path.startsWith("/client")) {
+      return "Client Access";
+    } else if (path.startsWith("/security-settings") || path.startsWith("/settings")) {
+      return "Security Settings";
+    }
+    return "Home";
+  };
+
   const [activeTab, setActiveTab] = useState<
     "Home" | "Projects" | "Services" | "Build Journal" | "AI Lab" | "Publishing" | "Media" | "Resumé CV" | "Founder Profile" | "Company Profile" | "Client Access" | "Admin Central" | "Security Settings" | "Contact"
-  >("Home");
+  >(getInitialTabFromPath(location.pathname));
+
+  const getInitialSubTabFromPath = (path: string): "analytics" | "projects" | "articles" | "journal" | "inquiries" | "cvs" | "media" | "tech" | "stats" | "testimonials" | "team" | "services" | "users" | "roles" | "audit_logs" | "workspaces" | "clients_billing" | "support_chat" | "alert_broadcasts" | "site_customization" => {
+    if (path.startsWith("/workspace/admin") || path.startsWith("/admin")) {
+      if (path.includes("/users")) return "users";
+      if (path.includes("/settings") || path.includes("/site-customization")) return "site_customization";
+      if (path.includes("/analytics")) return "analytics";
+      if (path.includes("/projects")) return "projects";
+      if (path.includes("/articles")) return "articles";
+      if (path.includes("/journal")) return "journal";
+      if (path.includes("/inquiries")) return "inquiries";
+      if (path.includes("/cvs")) return "cvs";
+      if (path.includes("/media")) return "media";
+      if (path.includes("/tech")) return "tech";
+      if (path.includes("/stats")) return "stats";
+      if (path.includes("/testimonials")) return "testimonials";
+      if (path.includes("/team")) return "team";
+      if (path.includes("/services")) return "services";
+      if (path.includes("/roles")) return "roles";
+      if (path.includes("/audit")) return "audit_logs";
+      if (path.includes("/workspaces")) return "workspaces";
+    }
+    return "analytics";
+  };
+
+  const [initialSubTab, setInitialSubTab] = useState<"analytics" | "projects" | "articles" | "journal" | "inquiries" | "cvs" | "media" | "tech" | "stats" | "testimonials" | "team" | "services" | "users" | "roles" | "audit_logs" | "workspaces" | "clients_billing" | "support_chat" | "alert_broadcasts" | "site_customization">(() => getInitialSubTabFromPath(location.pathname));
+
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.startsWith("/workspace/admin") || path.startsWith("/admin")) {
+      setActiveTab("Admin Central");
+      setInitialSubTab(getInitialSubTabFromPath(path));
+    } else if (path.startsWith("/portal") || path.startsWith("/client")) {
+      setActiveTab("Client Access");
+    } else if (path.startsWith("/security-settings") || path.startsWith("/settings")) {
+      setActiveTab("Security Settings");
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (user) {
+      const role = user.role;
+      if (role === "Super Admin" || role === "Admin") {
+        if (!location.pathname.startsWith("/workspace/admin")) {
+          navigate("/workspace/admin", { replace: true });
+        }
+      } else if (role === "Client") {
+        if (!location.pathname.startsWith("/portal") && !location.pathname.startsWith("/client")) {
+          navigate("/portal", { replace: true });
+        }
+      } else if (role === "Moderator") {
+        if (!location.pathname.startsWith("/workspace/moderator")) {
+          navigate("/workspace/moderator", { replace: true });
+        }
+      } else if (role === "Auditor") {
+        if (!location.pathname.startsWith("/workspace/auditor")) {
+          navigate("/workspace/auditor", { replace: true });
+        }
+      } else if (role === "Developer") {
+        if (!location.pathname.startsWith("/workspace/developer")) {
+          navigate("/workspace/developer", { replace: true });
+        }
+      } else if (role === "Operator") {
+        if (!location.pathname.startsWith("/workspace/operator")) {
+          navigate("/workspace/operator", { replace: true });
+        }
+      }
+    }
+  }, [user, location.pathname, navigate]);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
@@ -1232,10 +1326,27 @@ function AppContent() {
           <AboutUs testimonials={testimonials} teamMembers={teamMembers} customization={customization} />
         )}
 
-        {/* Render: 10. Client Access */}
+        {/* Render: 10. Client Access - New Enterprise Portal */}
         {activeTab === "Client Access" && (
           user ? (
-            <ClientPortal clientProfiles={clients} onFeedbackAdd={handleFeedbackAdd} wsSocket={wsSocket} isEmbedded={true} />
+            <DashboardLayout>
+              {location.pathname === "/portal" && <DashboardPage />}
+              {location.pathname === "/portal/dashboard" && <DashboardPage />}
+              {location.pathname === "/portal/projects" && <ClientProjectsPage />}
+              {location.pathname === "/portal/projects/active" && <ClientProjectsPage />}
+              {location.pathname === "/portal/projects/kanban" && <ClientProjectsPage />}
+              {location.pathname === "/portal/deliverables" && <DeliverablesPage />}
+              {location.pathname === "/portal/approvals" && <ApprovalsPage />}
+              {location.pathname === "/portal/invoices" && <InvoicesPage />}
+              {location.pathname === "/portal/invoices/ledger" && <InvoicesPage />}
+              {location.pathname === "/portal/meetings" && <MeetingsPage />}
+              {location.pathname === "/portal/messages" && <MessagesPage />}
+              {location.pathname === "/portal/files" && <FilesPage />}
+              {location.pathname === "/portal/team" && <TeamPage />}
+              {location.pathname === "/portal/reports" && <ReportsPage />}
+              {location.pathname === "/portal/settings" && <SettingsPage />}
+              {location.pathname === "/portal/settings/security" && <SettingsPage />}
+            </DashboardLayout>
           ) : (
             <UnifiedAuthGate
               onAuthSuccess={() => setActiveTab("Client Access")}
@@ -1244,30 +1355,29 @@ function AppContent() {
           )
         )}
 
-        {/* Render: 11. Admin Central */}
+{/* Render: 11. Admin Central */}
         {activeTab === "Admin Central" && (
           user && (user.role === "Super Admin" || user.role === "Admin") ? (
-            <AdminWorkspaceLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <AdminDashboard
-                projects={projects}
-                articles={articles}
-                journal={journal}
-                cvs={cvs}
-                clients={clients}
-                inquiries={inquiries}
-                analytics={analytics || { visitorsLast30Days: 250, projectDownloads: 45, pageViews: [] }}
-                services={services}
-                media={media}
-                techStack={techStack}
-                testimonials={testimonials}
-                teamMembers={teamMembers}
-                customization={customization}
-                onUpdateCustomization={handleUpdateCustomization}
-                homepageStats={homepageStats || {
-                  projectsCompleted: 24,
-                  applicationsBuilt: 18,
-                  aiSystemsDeveloped: 12,
-                  articlesPublished: 8,
+            <AdminDashboard
+              projects={projects}
+              articles={articles}
+              journal={journal}
+              cvs={cvs}
+              clients={clients}
+              inquiries={inquiries}
+              analytics={analytics || { visitorsLast30Days: 250, projectDownloads: 45, pageViews: [] }}
+              services={services}
+              media={media}
+              techStack={techStack}
+              testimonials={testimonials}
+              teamMembers={teamMembers}
+              customization={customization}
+              onUpdateCustomization={handleUpdateCustomization}
+              homepageStats={homepageStats || {
+                projectsCompleted: 24,
+                applicationsBuilt: 18,
+                aiSystemsDeveloped: 12,
+                articlesPublished: 8,
                 brandsCreated: 6,
                 videosProduced: 15,
                 clientsServed: 30
@@ -1292,15 +1402,15 @@ function AppContent() {
               onDeleteTeamMember={handleDeleteTeamMember}
               onUpdateTeamMember={handleUpdateTeamMember}
               onAddService={handleAddService}
-onUpdateService={handleUpdateService}
-               onDeleteService={handleDeleteService}
-               onUpdateArticle={handleUpdateArticle}
-               onUpdateJournal={handleUpdateJournal}
-               onDeleteJournal={handleDeleteJournal}
-               onUpdateInquiryStatus={handleUpdateInquiryStatus}
-               onUpdateHomepageStats={handleUpdateHomepageStats}
-             />
-            </AdminWorkspaceLayout>
+              onUpdateService={handleUpdateService}
+              onDeleteService={handleDeleteService}
+              onUpdateArticle={handleUpdateArticle}
+              onUpdateJournal={handleUpdateJournal}
+              onDeleteJournal={handleDeleteJournal}
+              onUpdateInquiryStatus={handleUpdateInquiryStatus}
+              onUpdateHomepageStats={handleUpdateHomepageStats}
+              initialSubTab={initialSubTab}
+            />
           ) : (
             <UnifiedAuthGate
               onAuthSuccess={() => setActiveTab("Admin Central")}

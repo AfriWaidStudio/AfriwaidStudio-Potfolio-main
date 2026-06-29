@@ -90,11 +90,11 @@ export const INITIAL_PROJECTS: Project[] = [
   },
   {
     id: "proj-2",
-    name: "Kortex Decision Matrix",
+    name: "KonsOSDecision Matrix",
     category: "KI",
     coverImage: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=800&auto=format&fit=crop",
     description: "A secure cognitive platform applying multi-criteria decision analysis (MCDA) algorithms paired with semantic memory indexes to evaluate risk vectors.",
-    longSummary: "Kortex Decision Matrix delivers a highly structured, audit-defensible decision ecosystem for enterprise portfolios and technology investments. Pairing classical Multi-Criteria Decision Analysis (MCDA) algorithms with rich semantic text index vectors, Kortex allows executives to mathematically evaluate complex risks and evaluate alternative architectures. It extracts intelligence directly from dense regulatory and safety document backlogs, maps system dependencies as dynamic SVG nodes, and aggregates scores in real-time. This dual-engine approach guarantees that tactical investment decisions remain perfectly transparent, predictable, and mathematically sound.",
+    longSummary: "KonsOSDecision Matrix delivers a highly structured, audit-defensible decision ecosystem for enterprise portfolios and technology investments. Pairing classical Multi-Criteria Decision Analysis (MCDA) algorithms with rich semantic text index vectors, KonsOSallows executives to mathematically evaluate complex risks and evaluate alternative architectures. It extracts intelligence directly from dense regulatory and safety document backlogs, maps system dependencies as dynamic SVG nodes, and aggregates scores in real-time. This dual-engine approach guarantees that tactical investment decisions remain perfectly transparent, predictable, and mathematically sound.",
     technologiesUsed: ["TypeScript", "Recharts", "Node.js", "Vector DB", "React-Flow"],
     problemSolved: "Corporate boards and system architects require audit-proof, mathematical validation for technology investments, completely separate from conversational model guesswork.",
     features: [
@@ -247,7 +247,7 @@ Classical mobile applications fail because they demand constant, high-speed inte
 
 ### Enter Decentralized Agent Frameworks
 
-By decoupling logic into a multi-agent framework on the backend (using systems like our **Kortex Cognitive Matrix**), small queries can be processed offline. Compact SMS/USSD packets are sent to a cloud-based orchestrator, triggering a cascading system of micro-agents:
+By decoupling logic into a multi-agent framework on the backend (using systems like our **KonsOSCognitive Matrix**), small queries can be processed offline. Compact SMS/USSD packets are sent to a cloud-based orchestrator, triggering a cascading system of micro-agents:
 
 1. **Procurement Agent**: Constantly monitors wholesaler pricing signals using semantic search.
 2. **Logistics Agent**: Audits local telemetry to establish route safety.
@@ -374,7 +374,7 @@ export const INITIAL_SERVICES: ServiceOffer[] = [
     estimatedTimeline: "4 to 12 weeks",
     portfolioExamples: [
       { name: "WaidPulse AI Engine", projectId: "proj-1" },
-      { name: "Kortex Decision Matrix", projectId: "proj-2" }
+      { name: "KonsOSDecision Matrix", projectId: "proj-2" }
     ]
   },
   {
@@ -417,7 +417,7 @@ export const INITIAL_SERVICES: ServiceOffer[] = [
     ],
     estimatedTimeline: "8 to 10 weeks",
     portfolioExamples: [
-      { name: "Kortex Decision Matrix", projectId: "proj-2" }
+      { name: "KonsOSDecision Matrix", projectId: "proj-2" }
     ]
   },
   {
@@ -581,7 +581,7 @@ export const INITIAL_INQUIRIES: Inquiry[] = [
     name: "Sarah Jenkins",
     email: "sjenkins@kenyatechgroup.co.ke",
     organization: "Kenya Tech Group",
-    message: "We are building an intra-day supply catalog for regional micro-vendors and want to implement an automated USSD-to-AI SMS routing scheduler using Kortex MCDA algorithms. Please schedule an architecture review.",
+    message: "We are building an intra-day supply catalog for regional micro-vendors and want to implement an automated USSD-to-AI SMS routing scheduler using KonsOSMCDA algorithms. Please schedule an architecture review.",
     type: "service",
     serviceCategory: "Software Development",
     date: "2026-06-12",
@@ -613,7 +613,7 @@ export const INITIAL_ANALYTICS: TrackedAnalytics = {
   ],
   topProjects: [
     { name: "WaidPulse AI Engine", views: 412 },
-    { name: "Kortex Decision Matrix", views: 310 },
+    { name: "KonsOSDecision Matrix", views: 310 },
     { name: "AfriWaid Brand Canvas", views: 295 }
   ],
   topArticles: [
@@ -713,7 +713,7 @@ export const INITIAL_TESTIMONIALS: Testimonial[] = [
     clientCompany: "Alpha Cognitive Capital",
     clientRole: "Head of Risk Analysis",
     rating: 5,
-    text: "Implementing AfriWaid's Kortex MCDA algorithms reduced our regulatory compliance auditing time from 20 business days to under six hours. Symmetrical, clean, and mathematically rigorous.",
+    text: "Implementing AfriWaid's KonsOSMCDA algorithms reduced our regulatory compliance auditing time from 20 business days to under six hours. Symmetrical, clean, and mathematically rigorous.",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
     category: "AI Solutions",
     isPublished: true

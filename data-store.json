@@ -6,11 +6,11 @@
       "lastName": "Soko",
       "username": "alasiri_waid",
       "email": "waidsoko@gmail.com",
-      "passwordHash": "$2b$12$PE6Y66j9M2.2X6yYXD5LKu6Dztz0skqaSmpFkIEWxsOmHYG5UmYlO",
+      "passwordHash": "$2b$12$6yG5VsC1pxjxrsTCZ3bqFOoKctlUxThDk2xnzje.10vI2xE8J8bA2",
       "role": "Super Admin",
       "isEmailVerified": true,
       "status": "active",
-      "createdAt": "2026-06-29T04:54:35.599Z"
+      "createdAt": "2026-06-29T12:07:25.908Z"
     },
     {
       "id": "u-2",
@@ -18,11 +18,11 @@
       "lastName": "Logistics",
       "username": "aeroglobal",
       "email": "logistics@aeroglobal.com",
-      "passwordHash": "$2b$12$0zy9Z18l9PtNmOTBbCaeUuGnkFC74JPiIs.RxaS2qn3ljoYaXhXpO",
+      "passwordHash": "$2b$12$BW1hc1.1Cn9vKwMAYNWHyeeu1TEl8pMEPPK.ahX0qldtZ/h52KAlC",
       "role": "Client",
       "isEmailVerified": true,
       "status": "active",
-      "createdAt": "2026-06-29T04:54:35.989Z"
+      "createdAt": "2026-06-29T12:07:26.580Z"
     },
     {
       "id": "u-3",
@@ -30,11 +30,71 @@
       "lastName": "Okonkwo",
       "username": "amara_vanguard",
       "email": "user@afriwaid.com",
-      "passwordHash": "$2b$12$1oZPVA71DcAXQ2mR4wq3QOZyNRdIMZ9RFOy5oJUoLyD8KB3vi8UtW",
+      "passwordHash": "$2b$12$fPdlv8RPPEXhL/VNMTDVJu5mLbe9hQr8k/o1tt1zjg2N0Vr/m6cu.",
       "role": "User",
       "isEmailVerified": false,
       "status": "active",
-      "createdAt": "2026-06-29T04:54:36.389Z"
+      "createdAt": "2026-06-29T12:07:27.290Z"
+    },
+    {
+      "id": "u-4",
+      "firstName": "Admin",
+      "lastName": "User",
+      "username": "admin_user",
+      "email": "admin@afriwaid.com",
+      "passwordHash": "$2b$12$jurXzko5FB.rIMmZLg4m1e0scyKVj/.uXUhm9f73.z1E5Y96W4yPK",
+      "role": "Admin",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-06-29T12:07:27.900Z"
+    },
+    {
+      "id": "u-5",
+      "firstName": "Moderator",
+      "lastName": "User",
+      "username": "moderator_user",
+      "email": "moderator@afriwaid.com",
+      "passwordHash": "$2b$12$WwnrXykZCW2teIieaximc.itkLUuj8tpXKc.E8JSh01ML8Cfdbd/S",
+      "role": "Moderator",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-06-29T12:07:28.492Z"
+    },
+    {
+      "id": "u-6",
+      "firstName": "Auditor",
+      "lastName": "User",
+      "username": "auditor_user",
+      "email": "auditor@afriwaid.com",
+      "passwordHash": "$2b$12$EzSKchJpP5lTTHsJTqwhtOWcJmgB/nwcO5Hpwft79T9jG3EshjTrO",
+      "role": "Auditor",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-06-29T12:07:29.025Z"
+    },
+    {
+      "id": "u-7",
+      "firstName": "Dev",
+      "lastName": "User",
+      "username": "dev_user",
+      "email": "dev@afriwaid.com",
+      "passwordHash": "$2b$12$BunByukweE8G13jLpnDviuHOMy2DcLcleUQBuhtsTWm0p3At.cHvu",
+      "role": "Developer",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-06-29T12:07:29.706Z"
+    },
+    {
+      "id": "u-8",
+      "firstName": "Operator",
+      "lastName": "User",
+      "username": "operator_user",
+      "email": "operator@afriwaid.com",
+      "passwordHash": "$2b$12$RNOySN1muyhgGgFfKzzXeOSS/0.s3lhAy3og1W5rIlctfiWBL9Ia2",
+      "role": "Operator",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-06-29T12:07:30.254Z"
     }
   ],
   "roles": [
@@ -226,83 +286,11 @@
       "description": "Alter core site metadata and modules configuration"
     }
   ],
-  "sessions": [
-    {
-      "id": "s-b451e551-e604-44f3-9080-17b0dec6da40",
-      "userId": "u-2",
-      "token": "token_8bd1814a307cb46a25a4fd04631ae94aa67290f1de11486070b70c91019abc9e17379f1ea2557675",
-      "ipAddress": "127.0.0.1",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
-      "isActive": false,
-      "createdAt": "2026-06-29T05:28:24.230Z",
-      "expiresAt": "2026-06-29T07:28:24.228Z"
-    }
-  ],
+  "sessions": [],
   "password_resets": [],
   "email_verifications": [],
-  "login_attempts": [
-    {
-      "id": "la-e7f1d2d1-4371-457c-b6f5-17e807b04d43",
-      "ip": "127.0.0.1",
-      "email": "waidsoko@gmail.com",
-      "count": 3,
-      "lockedUntil": null
-    }
-  ],
-  "audit_logs": [
-    {
-      "id": "l-b15bcc3b-7143-437b-bb8a-88de8684db73",
-      "username": "waidsoko@gmail.com",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGIN",
-      "module": "auth",
-      "status": "failure",
-      "details": "Invalid security passcode audit check failed",
-      "timestamp": "2026-06-29T05:45:13.077Z"
-    },
-    {
-      "id": "l-e4ffcce0-34d6-464c-96da-f7ea9cfbe077",
-      "username": "waidsoko@gmail.com",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGIN",
-      "module": "auth",
-      "status": "failure",
-      "details": "Invalid security passcode audit check failed",
-      "timestamp": "2026-06-29T05:37:46.222Z"
-    },
-    {
-      "id": "l-805ceb09-cf14-4a63-bebc-83c09f267726",
-      "username": "waidsoko@gmail.com",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGIN",
-      "module": "auth",
-      "status": "failure",
-      "details": "Invalid security passcode audit check failed",
-      "timestamp": "2026-06-29T05:37:34.073Z"
-    },
-    {
-      "id": "l-59967d35-eb2d-43f8-94cb-80d6785c538f",
-      "userId": "u-2",
-      "username": "aeroglobal",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGOUT",
-      "module": "auth",
-      "status": "success",
-      "details": "Terminated login session client request",
-      "timestamp": "2026-06-29T05:37:24.789Z"
-    },
-    {
-      "id": "l-e6582ed7-e77b-4b58-ae57-20d135fe68ad",
-      "userId": "u-2",
-      "username": "aeroglobal",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGIN",
-      "module": "auth",
-      "status": "success",
-      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-29T05:28:24.230Z"
-    }
-  ],
+  "login_attempts": [],
+  "audit_logs": [],
   "clients": [
     {
       "id": "cl-1",
