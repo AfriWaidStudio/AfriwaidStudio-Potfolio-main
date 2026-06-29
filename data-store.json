@@ -1,0 +1,684 @@
+{
+  "users": [
+    {
+      "id": "u-1",
+      "firstName": "Waid",
+      "lastName": "Soko",
+      "username": "alasiri_waid",
+      "email": "waidsoko@gmail.com",
+      "passwordHash": "$2b$12$PE6Y66j9M2.2X6yYXD5LKu6Dztz0skqaSmpFkIEWxsOmHYG5UmYlO",
+      "role": "Super Admin",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-06-29T04:54:35.599Z"
+    },
+    {
+      "id": "u-2",
+      "firstName": "Aero",
+      "lastName": "Logistics",
+      "username": "aeroglobal",
+      "email": "logistics@aeroglobal.com",
+      "passwordHash": "$2b$12$0zy9Z18l9PtNmOTBbCaeUuGnkFC74JPiIs.RxaS2qn3ljoYaXhXpO",
+      "role": "Client",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-06-29T04:54:35.989Z"
+    },
+    {
+      "id": "u-3",
+      "firstName": "Amara",
+      "lastName": "Okonkwo",
+      "username": "amara_vanguard",
+      "email": "user@afriwaid.com",
+      "passwordHash": "$2b$12$1oZPVA71DcAXQ2mR4wq3QOZyNRdIMZ9RFOy5oJUoLyD8KB3vi8UtW",
+      "role": "User",
+      "isEmailVerified": false,
+      "status": "active",
+      "createdAt": "2026-06-29T04:54:36.389Z"
+    }
+  ],
+  "roles": [
+    {
+      "id": "r-1",
+      "name": "Super Admin",
+      "slug": "super-admin",
+      "description": "Absolute control over entire system.",
+      "permissions": [
+        "p-1",
+        "p-2",
+        "p-3",
+        "p-4",
+        "p-5",
+        "p-6",
+        "p-7",
+        "p-8",
+        "p-9",
+        "p-10",
+        "p-11",
+        "p-12",
+        "p-13"
+      ]
+    },
+    {
+      "id": "r-2",
+      "name": "Admin",
+      "slug": "admin",
+      "description": "Access user operations and content controls.",
+      "permissions": [
+        "p-1",
+        "p-2",
+        "p-4",
+        "p-5",
+        "p-6",
+        "p-8",
+        "p-9",
+        "p-10",
+        "p-11"
+      ]
+    },
+    {
+      "id": "r-3",
+      "name": "Operator",
+      "slug": "operator",
+      "description": "Deploy project milestones and deliverables.",
+      "permissions": [
+        "p-5",
+        "p-6",
+        "p-8",
+        "p-10"
+      ]
+    },
+    {
+      "id": "r-4",
+      "name": "Moderator",
+      "slug": "moderator",
+      "description": "Moderate portal logs and chats.",
+      "permissions": [
+        "p-8",
+        "p-9"
+      ]
+    },
+    {
+      "id": "r-5",
+      "name": "Auditor",
+      "slug": "auditor",
+      "description": "Compliance auditing read-only mode.",
+      "permissions": [
+        "p-4",
+        "p-10"
+      ]
+    },
+    {
+      "id": "r-6",
+      "name": "Developer",
+      "slug": "developer",
+      "description": "Integrations configurations and diagnostics.",
+      "permissions": [
+        "p-12",
+        "p-13",
+        "p-4"
+      ]
+    },
+    {
+      "id": "r-7",
+      "name": "Client",
+      "slug": "client",
+      "description": "Client project monitoring, billing, and communication.",
+      "permissions": [
+        "p-8",
+        "p-10"
+      ]
+    },
+    {
+      "id": "r-8",
+      "name": "User",
+      "slug": "user",
+      "description": "Unprivileged authenticated user profile.",
+      "permissions": [
+        "p-8"
+      ]
+    },
+    {
+      "id": "r-9",
+      "name": "Guest",
+      "slug": "guest",
+      "description": "Unauthenticated context views.",
+      "permissions": []
+    }
+  ],
+  "permissions": [
+    {
+      "id": "p-1",
+      "module": "users",
+      "action": "create",
+      "description": "Create new platform users"
+    },
+    {
+      "id": "p-2",
+      "module": "users",
+      "action": "edit",
+      "description": "Modify user accounts and status"
+    },
+    {
+      "id": "p-3",
+      "module": "users",
+      "action": "delete",
+      "description": "Permanently delete user accounts"
+    },
+    {
+      "id": "p-4",
+      "module": "users",
+      "action": "view",
+      "description": "View list of platform users"
+    },
+    {
+      "id": "p-5",
+      "module": "projects",
+      "action": "create",
+      "description": "Initiate and publish showcase projects"
+    },
+    {
+      "id": "p-6",
+      "module": "projects",
+      "action": "edit",
+      "description": "Update project artifacts and statuses"
+    },
+    {
+      "id": "p-7",
+      "module": "projects",
+      "action": "delete",
+      "description": "Remove projects from registry"
+    },
+    {
+      "id": "p-8",
+      "module": "chat",
+      "action": "send",
+      "description": "Dispatch portal chat messages"
+    },
+    {
+      "id": "p-9",
+      "module": "chat",
+      "action": "manage",
+      "description": "Configure system chat channels and groups"
+    },
+    {
+      "id": "p-10",
+      "module": "invoice",
+      "action": "view",
+      "description": "Observe and download billing invoices"
+    },
+    {
+      "id": "p-11",
+      "module": "invoice",
+      "action": "manage",
+      "description": "Generate, edit, or delete client invoices"
+    },
+    {
+      "id": "p-12",
+      "module": "system",
+      "action": "monitoring",
+      "description": "Access server operational telemetry and logs"
+    },
+    {
+      "id": "p-13",
+      "module": "system",
+      "action": "settings",
+      "description": "Alter core site metadata and modules configuration"
+    }
+  ],
+  "sessions": [],
+  "password_resets": [],
+  "email_verifications": [],
+  "login_attempts": [],
+  "audit_logs": [],
+  "clients": [
+    {
+      "id": "cl-1",
+      "name": "AeroGlobal Logistics",
+      "company": "AeroGlobal Inc.",
+      "email": "logistics@aeroglobal.com",
+      "userId": "u-2",
+      "assignedProjectName": "WaidPulse AI Integrations",
+      "projectProgress": 65,
+      "archived": false,
+      "createdAt": "2026-06-01T08:00:00.000Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "name": "WaidPulse AI Integrations",
+      "category": "AI Middleware",
+      "coverImage": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop",
+      "description": "An advanced orchestration middleware that connects enterprise databases with autonomous LLM agents to automate cross-departmental operations.",
+      "technologiesUsed": [
+        "React",
+        "Express",
+        "@google/genai",
+        "TypeScript",
+        "Tailwind CSS"
+      ],
+      "problemSolved": "Enterprise companies struggle to allow AI agents to safely access cross-departmental operations.",
+      "features": [
+        "Dynamic Multi-Agent Orchestration",
+        "Secure SQL metadata pipelines",
+        "Unified feedback routing"
+      ],
+      "projectStatus": "In Development",
+      "completionDate": "2026-07-05",
+      "tags": [
+        "Agentic AI",
+        "Enterprise",
+        "Secure Core"
+      ],
+      "clientProgPercent": 65,
+      "clientId": "cl-1",
+      "createdAt": "2026-06-01T08:30:00.000Z"
+    }
+  ],
+  "project_members": [
+    {
+      "id": "pm-1",
+      "projectId": "proj-1",
+      "userId": "u-2",
+      "role": "Client"
+    },
+    {
+      "id": "pm-2",
+      "projectId": "proj-1",
+      "userId": "u-1",
+      "role": "Super Admin"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "mils-1",
+      "projectId": "proj-1",
+      "title": "Technical Discovery",
+      "phase": "Research",
+      "status": "completed",
+      "date": "2026-06-01"
+    },
+    {
+      "id": "mils-2",
+      "projectId": "proj-1",
+      "title": "API Safe Guard Architecture Draft",
+      "phase": "Design",
+      "status": "completed",
+      "date": "2026-06-05"
+    },
+    {
+      "id": "mils-3",
+      "projectId": "proj-1",
+      "title": "Middleware Core Module Integration",
+      "phase": "Development",
+      "status": "active",
+      "date": "2026-06-10"
+    },
+    {
+      "id": "mils-4",
+      "projectId": "proj-1",
+      "title": "Staging Pipeline Load Testing",
+      "phase": "Testing",
+      "status": "planned",
+      "date": "2026-06-25"
+    },
+    {
+      "id": "mils-5",
+      "projectId": "proj-1",
+      "title": "System Hot-Deploy Deployment",
+      "phase": "Launch",
+      "status": "planned",
+      "date": "2026-07-05"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-1",
+      "projectId": "proj-1",
+      "milestoneId": "mils-3",
+      "title": "Integrate database filters",
+      "desc": "Set up security gateway filters for model interactions.",
+      "status": "completed",
+      "assignee": "u-1"
+    },
+    {
+      "id": "task-2",
+      "projectId": "proj-1",
+      "milestoneId": "mils-3",
+      "title": "Configure Gemini tool specs",
+      "desc": "Build strictly schema-bound type constraints.",
+      "status": "active",
+      "assignee": "u-1"
+    },
+    {
+      "id": "task-3",
+      "projectId": "proj-1",
+      "milestoneId": "mils-4",
+      "title": "Verify edge latency",
+      "desc": "Test query latency bottlenecks on Cloud Run.",
+      "status": "planned",
+      "assignee": "u-1"
+    }
+  ],
+  "files": [
+    {
+      "id": "file-1",
+      "projectId": "proj-1",
+      "name": "Requirements_Blueprint.pdf",
+      "size": "2.4 MB",
+      "uploadedBy": "u-1",
+      "category": "Documents",
+      "tags": [
+        "Spec",
+        "Discovery"
+      ],
+      "version": 1,
+      "uploadedAt": "2026-06-02T11:00:00.000Z"
+    },
+    {
+      "id": "file-2",
+      "projectId": "proj-1",
+      "name": "UX_Interactive_Map.fig",
+      "size": "15.8 MB",
+      "uploadedBy": "u-1",
+      "category": "Design",
+      "tags": [
+        "Mockup",
+        "Figma"
+      ],
+      "version": 2,
+      "uploadedAt": "2026-06-06T14:20:00.000Z"
+    },
+    {
+      "id": "file-3",
+      "projectId": "proj-1",
+      "name": "WaidPulse_Alpha_Core.zip",
+      "size": "4.1 MB",
+      "uploadedBy": "u-1",
+      "category": "Source Code",
+      "tags": [
+        "Build",
+        "Archived"
+      ],
+      "version": 1,
+      "uploadedAt": "2026-06-11T12:00:00.000Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv-1",
+      "name": "AeroGlobal ↔ AfriWaid Core Team",
+      "type": "support",
+      "projectId": "proj-1"
+    },
+    {
+      "id": "conv-proj-general",
+      "name": "General Channel",
+      "type": "channel",
+      "projectId": "proj-1",
+      "category": "General"
+    },
+    {
+      "id": "conv-proj-files",
+      "name": "Files Sync Channel",
+      "type": "channel",
+      "projectId": "proj-1",
+      "category": "Files"
+    },
+    {
+      "id": "conv-proj-payments",
+      "name": "Payments / Billing Support",
+      "type": "channel",
+      "projectId": "proj-1",
+      "category": "Payments"
+    },
+    {
+      "id": "conv-proj-feedback",
+      "name": "Deliverables / Client Feedback",
+      "type": "channel",
+      "projectId": "proj-1",
+      "category": "Feedback"
+    },
+    {
+      "id": "conv-proj-support",
+      "name": "Developer Support Desk",
+      "type": "channel",
+      "projectId": "proj-1",
+      "category": "Support"
+    },
+    {
+      "id": "conv-team-internal",
+      "name": "Internal Engineering Node",
+      "type": "group"
+    }
+  ],
+  "conversation_participants": [
+    {
+      "id": "cp-1",
+      "conversationId": "conv-1",
+      "userId": "u-1"
+    },
+    {
+      "id": "cp-2",
+      "conversationId": "conv-1",
+      "userId": "u-2"
+    },
+    {
+      "id": "cp-3",
+      "conversationId": "conv-proj-general",
+      "userId": "u-1"
+    },
+    {
+      "id": "cp-4",
+      "conversationId": "conv-proj-general",
+      "userId": "u-2"
+    },
+    {
+      "id": "cp-5",
+      "conversationId": "conv-proj-files",
+      "userId": "u-1"
+    },
+    {
+      "id": "cp-6",
+      "conversationId": "conv-proj-files",
+      "userId": "u-2"
+    },
+    {
+      "id": "cp-7",
+      "conversationId": "conv-proj-payments",
+      "userId": "u-1"
+    },
+    {
+      "id": "cp-8",
+      "conversationId": "conv-proj-payments",
+      "userId": "u-2"
+    },
+    {
+      "id": "cp-9",
+      "conversationId": "conv-proj-feedback",
+      "userId": "u-1"
+    },
+    {
+      "id": "cp-10",
+      "conversationId": "conv-proj-feedback",
+      "userId": "u-2"
+    },
+    {
+      "id": "cp-11",
+      "conversationId": "conv-proj-support",
+      "userId": "u-1"
+    },
+    {
+      "id": "cp-12",
+      "conversationId": "conv-proj-support",
+      "userId": "u-2"
+    },
+    {
+      "id": "cp-13",
+      "conversationId": "conv-team-internal",
+      "userId": "u-1"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-1",
+      "conversationId": "conv-1",
+      "senderId": "u-1",
+      "body": "Hello AeroGlobal Logistics! Welcome to your secure AfriWaid Workspace. We have loaded your requirements draft files.",
+      "timestamp": "2026-06-12T10:00:00.000Z",
+      "readBy": [
+        "u-2"
+      ],
+      "pinned": true,
+      "reactions": []
+    },
+    {
+      "id": "msg-2",
+      "conversationId": "conv-1",
+      "senderId": "u-2",
+      "body": "Thank you, Waid! The node tracking system looks extremely clear. I scanned the requirements and everything tracks perfectly.",
+      "timestamp": "2026-06-12T10:05:00.000Z",
+      "readBy": [
+        "u-1"
+      ],
+      "reactions": [
+        {
+          "userId": "u-1",
+          "emoji": "👍"
+        }
+      ]
+    },
+    {
+      "id": "msg-3",
+      "conversationId": "conv-1",
+      "senderId": "u-1",
+      "body": "Splendid! We completed the design phase and have started the core middleware integration. Feel free to monitor milestones directly.",
+      "timestamp": "2026-06-12T10:10:00.000Z",
+      "readBy": [
+        "u-2"
+      ],
+      "reactions": []
+    }
+  ],
+  "notifications": [
+    {
+      "id": "nt-1",
+      "userId": "u-2",
+      "title": "New Deliverable Completed",
+      "msg": "AeroGlobal UX Interactive Map has been compiled and is ready for client review.",
+      "category": "deliverable",
+      "read": false,
+      "createdAt": "2026-06-14T05:00:00.000Z"
+    },
+    {
+      "id": "nt-2",
+      "userId": "u-2",
+      "title": "Milestone Update",
+      "msg": "Middleware Core Module Integration phase is now ACTIVE.",
+      "category": "milestone",
+      "read": false,
+      "createdAt": "2026-06-14T05:15:00.000Z"
+    },
+    {
+      "id": "nt-3",
+      "userId": "u-2",
+      "title": "New Invoice Issued",
+      "msg": "Invoice INV-2026-088 of $30,000 USD for Phase 2 integration has been released.",
+      "category": "invoice",
+      "read": true,
+      "createdAt": "2026-06-12T08:00:00.000Z"
+    }
+  ],
+  "feedback": [
+    {
+      "id": "fb-1",
+      "projectId": "proj-1",
+      "clientId": "cl-1",
+      "text": "The node tracking mockups look extremely clear. Our compliance directors immediately understood how the model filters run.",
+      "rating": 5,
+      "date": "2026-06-13T12:00:00.000Z"
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "del-1",
+      "projectId": "proj-1",
+      "name": "Requirements_Blueprint.pdf",
+      "desc": "Comprehensive analysis of AeroGlobal data structures.",
+      "status": "approved",
+      "fileName": "Requirements_Blueprint.pdf",
+      "fileSize": "2.4 MB"
+    },
+    {
+      "id": "del-2",
+      "projectId": "proj-1",
+      "name": "UX_Interactive_Map.fig",
+      "desc": "Interactive figma layout maps.",
+      "status": "completed",
+      "fileName": "UX_Interactive_Map.fig",
+      "fileSize": "15.8 MB"
+    },
+    {
+      "id": "del-3",
+      "projectId": "proj-1",
+      "name": "WaidPulse_Alpha_Core.zip",
+      "desc": "Initial module structure.",
+      "status": "pending",
+      "fileName": "WaidPulse_Alpha_Core.zip",
+      "fileSize": "4.1 MB"
+    }
+  ],
+  "project_activities": [
+    {
+      "id": "act-1",
+      "projectId": "proj-1",
+      "title": "Project Initiated",
+      "details": "WaidPulse AI Integrations workspace created with AeroGlobal client allocation.",
+      "timestamp": "2026-06-01T09:00:00.000Z",
+      "userId": "u-1"
+    },
+    {
+      "id": "act-2",
+      "projectId": "proj-1",
+      "title": "Requirements Blueprint Uploaded",
+      "details": "Senior architect uploaded standard discovery PDF.",
+      "timestamp": "2026-06-02T11:00:00.000Z",
+      "userId": "u-1"
+    },
+    {
+      "id": "act-3",
+      "projectId": "proj-1",
+      "title": "Milestone Approved",
+      "details": "Client entity approved Technical Discovery milestone.",
+      "timestamp": "2026-06-10T14:30:00.000Z",
+      "userId": "u-2"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv-1",
+      "projectId": "proj-1",
+      "invoiceNo": "INV-2026-088",
+      "amount": 30000,
+      "currency": "USD",
+      "company": "AeroGlobal Inc.",
+      "description": "Phase 2 Integration Deliverables",
+      "status": "paid",
+      "issueDate": "2026-06-12",
+      "dueDate": "2026-06-26"
+    },
+    {
+      "id": "inv-2",
+      "projectId": "proj-1",
+      "invoiceNo": "INV-2026-089",
+      "amount": 25000,
+      "currency": "USD",
+      "company": "AeroGlobal Inc.",
+      "description": "Phase 3 Client Handover Operations",
+      "status": "unpaid",
+      "issueDate": "2026-06-14",
+      "dueDate": "2026-06-28"
+    }
+  ]
+}
