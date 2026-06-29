@@ -226,11 +226,73 @@
       "description": "Alter core site metadata and modules configuration"
     }
   ],
-  "sessions": [],
+  "sessions": [
+    {
+      "id": "s-b451e551-e604-44f3-9080-17b0dec6da40",
+      "userId": "u-2",
+      "token": "token_8bd1814a307cb46a25a4fd04631ae94aa67290f1de11486070b70c91019abc9e17379f1ea2557675",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "isActive": false,
+      "createdAt": "2026-06-29T05:28:24.230Z",
+      "expiresAt": "2026-06-29T07:28:24.228Z"
+    }
+  ],
   "password_resets": [],
   "email_verifications": [],
-  "login_attempts": [],
-  "audit_logs": [],
+  "login_attempts": [
+    {
+      "id": "la-e7f1d2d1-4371-457c-b6f5-17e807b04d43",
+      "ip": "127.0.0.1",
+      "email": "waidsoko@gmail.com",
+      "count": 2,
+      "lockedUntil": null
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": "l-e4ffcce0-34d6-464c-96da-f7ea9cfbe077",
+      "username": "waidsoko@gmail.com",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "failure",
+      "details": "Invalid security passcode audit check failed",
+      "timestamp": "2026-06-29T05:37:46.222Z"
+    },
+    {
+      "id": "l-805ceb09-cf14-4a63-bebc-83c09f267726",
+      "username": "waidsoko@gmail.com",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "failure",
+      "details": "Invalid security passcode audit check failed",
+      "timestamp": "2026-06-29T05:37:34.073Z"
+    },
+    {
+      "id": "l-59967d35-eb2d-43f8-94cb-80d6785c538f",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGOUT",
+      "module": "auth",
+      "status": "success",
+      "details": "Terminated login session client request",
+      "timestamp": "2026-06-29T05:37:24.789Z"
+    },
+    {
+      "id": "l-e6582ed7-e77b-4b58-ae57-20d135fe68ad",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-06-29T05:28:24.230Z"
+    }
+  ],
   "clients": [
     {
       "id": "cl-1",

@@ -250,25 +250,33 @@ backend/src/
 - [x] Create `src/lib/` directory
 - [x] Create `src/components/ui/` directory
 - [x] Create `src/components/shared/` directory
-- [ ] Create `src/components/layout/` directory
-- [ ] Create `src/components/navigation/` directory
+- [x] Create `src/workspaces/admin/` directory
+- [x] Create `src/workspaces/client/` directory
+- [x] Create `src/app/guards/` directory
+- [x] Create `src/app/router/` directory
 
-### Phase 3: Routing Extraction
-- [x] Create `src/app/router/AppRouter.tsx`
-- [x] Create `src/app/providers/AppProviders.tsx`
-- [x] Extract routing logic to AppRouter
-- [ ] Move tab state to URL params
-- [ ] Create ProtectedRoute component
-- [ ] Create RoleProtectedRoute component
-- [ ] Update main.tsx
+### Phase 3: Workspace Layouts
+- [x] Create AdminWorkspaceLayout component
+- [x] Create ClientWorkspaceLayout component
+- [x] Integrate layouts with existing App.tsx
+- [x] Preserve existing ClientPortal functionality
+- [x] Preserve existing AdminDashboard functionality
+- [x] Add BrowserRouter to main.tsx
+- [x] Fix useLocation context error
 
 ### Phase 4: UI Primitives
-- [ ] Create Button primitive
-- [ ] Create Card primitive
-- [ ] Create Input primitive
-- [ ] Create Modal primitive
-- [ ] Create Badge primitive
-- [ ] Migrate existing components
+- [x] Create Button primitive
+- [x] Create Card primitive
+- [x] Create Input primitive
+- [x] Create Textarea primitive
+- [x] Create Badge primitive
+- [x] Create Modal primitive
+- [x] Create typography tokens
+
+### Phase 5: Service Layer
+- [x] Create api.ts service
+- [x] Create auth.ts service
+- [x] Create projects.ts service
 
 ---
 

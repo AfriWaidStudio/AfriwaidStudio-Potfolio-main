@@ -32,6 +32,8 @@ import AdminDashboard from "./components/AdminDashboard";
 import { AuthProvider, useAuth } from "./components/AuthContext";
 import UnifiedAuthGate from "./components/UnifiedAuthGate";
 import SecuritySettings from "./components/SecuritySettings";
+import { AdminWorkspaceLayout } from "./workspaces/admin/AdminWorkspaceLayout";
+import { ClientWorkspaceLayout } from "./workspaces/client/ClientWorkspaceLayout";
 
 export default function App() {
   return (
@@ -622,7 +624,9 @@ function AppContent() {
   // Full-portal takeover if user is logged in as a Client role
   if (user && user.role === "Client") {
     return (
-      <ClientPortal clientProfiles={clients} onFeedbackAdd={handleFeedbackAdd} wsSocket={wsSocket} />
+      <ClientWorkspaceLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+        <ClientPortal clientProfiles={clients} onFeedbackAdd={handleFeedbackAdd} wsSocket={wsSocket} />
+      </ClientWorkspaceLayout>
     );
   }
 
@@ -1243,26 +1247,27 @@ function AppContent() {
         {/* Render: 11. Admin Central */}
         {activeTab === "Admin Central" && (
           user && (user.role === "Super Admin" || user.role === "Admin") ? (
-            <AdminDashboard
-              projects={projects}
-              articles={articles}
-              journal={journal}
-              cvs={cvs}
-              clients={clients}
-              inquiries={inquiries}
-              analytics={analytics || { visitorsLast30Days: 250, projectDownloads: 45, pageViews: [] }}
-              services={services}
-              media={media}
-              techStack={techStack}
-              testimonials={testimonials}
-              teamMembers={teamMembers}
-              customization={customization}
-              onUpdateCustomization={handleUpdateCustomization}
-              homepageStats={homepageStats || {
-                projectsCompleted: 24,
-                applicationsBuilt: 18,
-                aiSystemsDeveloped: 12,
-                articlesPublished: 8,
+            <AdminWorkspaceLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <AdminDashboard
+                projects={projects}
+                articles={articles}
+                journal={journal}
+                cvs={cvs}
+                clients={clients}
+                inquiries={inquiries}
+                analytics={analytics || { visitorsLast30Days: 250, projectDownloads: 45, pageViews: [] }}
+                services={services}
+                media={media}
+                techStack={techStack}
+                testimonials={testimonials}
+                teamMembers={teamMembers}
+                customization={customization}
+                onUpdateCustomization={handleUpdateCustomization}
+                homepageStats={homepageStats || {
+                  projectsCompleted: 24,
+                  applicationsBuilt: 18,
+                  aiSystemsDeveloped: 12,
+                  articlesPublished: 8,
                 brandsCreated: 6,
                 videosProduced: 15,
                 clientsServed: 30
@@ -1287,14 +1292,15 @@ function AppContent() {
               onDeleteTeamMember={handleDeleteTeamMember}
               onUpdateTeamMember={handleUpdateTeamMember}
               onAddService={handleAddService}
-              onUpdateService={handleUpdateService}
-              onDeleteService={handleDeleteService}
-              onUpdateArticle={handleUpdateArticle}
-              onUpdateJournal={handleUpdateJournal}
-              onDeleteJournal={handleDeleteJournal}
-              onUpdateInquiryStatus={handleUpdateInquiryStatus}
-              onUpdateHomepageStats={handleUpdateHomepageStats}
-            />
+onUpdateService={handleUpdateService}
+               onDeleteService={handleDeleteService}
+               onUpdateArticle={handleUpdateArticle}
+               onUpdateJournal={handleUpdateJournal}
+               onDeleteJournal={handleDeleteJournal}
+               onUpdateInquiryStatus={handleUpdateInquiryStatus}
+               onUpdateHomepageStats={handleUpdateHomepageStats}
+             />
+            </AdminWorkspaceLayout>
           ) : (
             <UnifiedAuthGate
               onAuthSuccess={() => setActiveTab("Admin Central")}
