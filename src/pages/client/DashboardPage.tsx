@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart3, Folder, FileText, BadgeDollarSign, MessageSquare, Check, Layers, TrendingUp, Users, Calendar, Activity } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
+import { Card } from "../../components/ui";
 
 interface StatCardProps {
   title: string;
@@ -11,7 +12,7 @@ interface StatCardProps {
 
 function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
   return (
-    <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+    <Card className="p-4">
       <div className="flex items-center justify-between mb-2">
         <span className="text-[10px] text-slate-400 font-mono uppercase">{title}</span>
         <Icon className={`w-4 h-4 ${color}`} />
@@ -19,7 +20,7 @@ function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
       <div className="text-2xl font-display font-black text-slate-900 dark:text-white">
         {value}
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -53,10 +54,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 rounded-xl p-6">
-          <h3 className="text-lg font-display font-bold text-slate-900 dark:text-white mb-4">
-            Recent Activity
-          </h3>
+        <Card title="Recent Activity" className="p-6">
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center gap-3 text-sm">
@@ -70,12 +68,9 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
-        <div className="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 rounded-xl p-6">
-          <h3 className="text-lg font-display font-bold text-slate-900 dark:text-white mb-4">
-            Quick Stats
-          </h3>
+        <Card title="Quick Stats" className="p-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-slate-50 dark:bg-zinc-950 rounded-lg">
               <p className="text-[10px] text-slate-400 font-mono uppercase">Team Members</p>
@@ -94,7 +89,7 @@ export default function DashboardPage() {
               <p className="text-xl font-bold text-slate-900 dark:text-white">{stats.upcomingMeetings}</p>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

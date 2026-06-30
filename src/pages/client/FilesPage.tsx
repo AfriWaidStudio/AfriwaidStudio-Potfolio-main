@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Folder, FileText, Image, FileJson, Copy, Download, Trash2 } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
+import { Card } from "../../components/ui";
 
 interface File {
   id: string;
@@ -69,7 +70,7 @@ export default function FilesPage() {
           {files.map((f) => {
             const Icon = getIcon(f.type);
             return (
-              <div key={f.id} className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 hover:shadow-lg transition-shadow">
+              <Card key={f.id} className="p-4 hover:shadow-lg transition-shadow">
                 <div className="flex items-center justify-between mb-3">
                   <Icon className="w-8 h-8 text-slate-500" />
                   <div className="flex gap-1">
@@ -86,7 +87,7 @@ export default function FilesPage() {
                 </div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{f.name}</p>
                 <p className="text-[10px] text-slate-400 font-mono">{f.size}</p>
-              </div>
+              </Card>
             );
           })}
         </div>

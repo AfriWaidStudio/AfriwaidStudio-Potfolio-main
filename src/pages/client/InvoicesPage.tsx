@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DollarSign, CreditCard, Banknote, RefreshCw } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
 import { Button } from "../../components/ui";
-import { Card } from "../../components/ui";
+import { Card, Badge } from "../../components/ui";
 import { Input } from "../../components/ui";
 
 interface Invoice {
@@ -61,32 +61,29 @@ export default function InvoicesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+        <Card>
           <DollarSign className="w-6 h-6 text-slate-500 mb-2" />
           <p className="text-[10px] text-slate-400 font-mono uppercase">Total Invoices</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.total}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+        </Card>
+        <Card>
           <Banknote className="w-6 h-6 text-emerald-500 mb-2" />
           <p className="text-[10px] text-slate-400 font-mono uppercase">Paid</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.paid}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+        </Card>
+        <Card>
           <CreditCard className="w-6 h-6 text-red-500 mb-2" />
           <p className="text-[10px] text-slate-400 font-mono uppercase">Unpaid</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.unpaid}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+        </Card>
+        <Card>
           <DollarSign className="w-6 h-6 text-blue-500 mb-2" />
           <p className="text-[10px] text-slate-400 font-mono uppercase">Total Amount</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">${stats.totalAmount.toLocaleString()}</p>
-        </div>
+        </Card>
       </div>
 
-      <div className="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 rounded-xl p-6">
-        <h3 className="text-lg font-display font-bold text-slate-900 dark:text-white mb-4">
-          Invoice List
-        </h3>
+      <Card title="Invoice List">
         {loading ? (
           <div className="text-center py-12 text-slate-500">
             <RefreshCw className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-spin" />
@@ -106,18 +103,16 @@ export default function InvoicesPage() {
                   <p className="text-[10px] text-slate-400">{inv.company} - ${inv.amount} {inv.currency}</p>
                 </div>
                 <div className="text-right">
-                  <span className={`text-[10px] px-2 py-1 rounded font-mono uppercase ${
-                    inv.status === "paid" ? "bg-emerald-500/20 text-emerald-600" : "bg-red-500/20 text-red-600"
-                  }`}>
+                  <Badge variant={inv.status === "paid" ? "success" : "error"}>
                     {inv.status}
-                  </span>
+                  </Badge>
                   <p className="text-[10px] text-slate-400 mt-1">Due: {inv.dueDate}</p>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

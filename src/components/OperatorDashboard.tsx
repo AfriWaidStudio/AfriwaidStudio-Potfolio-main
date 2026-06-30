@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ShieldCheck, BarChart3, Package, Calendar, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { ClientProfile } from "../types";
+import { Card, Tabs } from "./ui";
 
 interface OperatorDashboardProps {
   clientProfiles: ClientProfile[];

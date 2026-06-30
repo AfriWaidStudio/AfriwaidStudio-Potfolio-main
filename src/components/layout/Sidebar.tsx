@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  BarChart3, Folder, FileText, Check, BadgeDollarSign, MessageSquare, 
+import {
+  BarChart3, Folder, FileText, Check, BadgeDollarSign, MessageSquare,
   ShieldCheck, Settings, Calendar, Users, ChevronDown, ChevronRight, LogOut, Cpu
 } from "lucide-react";
 import { CLIENT_NAVIGATION, NavigationItem } from "../../app/navigation";
 import { useAuth } from "../AuthContext";
+import { Button } from "../ui";
 
 export function Sidebar() {
   const location = useLocation();
@@ -62,22 +63,17 @@ export function Sidebar() {
 
           return (
             <div key={item.id} className="space-y-1">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => hasChildren ? toggleItem(item.id) : undefined}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition colors ${
-                  active 
-                    ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400"
-                    : "text-slate-600 dark:text-zinc-400 hover:bg-slate-200/50 dark:hover:bg-zinc-900/50 hover:text-slate-900 dark:hover:text-white"
-                }`}
+                className={`w-full justify-start ${active ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400" : ""}`}
+                leftIcon={<item.icon className={`w-5 h-5 ${active ? "text-blue-600" : "text-slate-400"}`} />}
               >
-                <item.icon className={`w-5 h-5 ${active ? "text-blue-600" : "text-slate-400"}`} />
-                <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
+                {item.label}
                 {hasChildren && (
-                  expanded ? 
-                    <ChevronDown className="w-4 h-4 text-slate-400" /> :
-                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                  expanded ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />
                 )}
-              </button>
+              </Button>
 
               {hasChildren && expanded && (
                 <div className="ml-6 pl-2 border-l border-slate-200 dark:border-zinc-800">
@@ -111,16 +107,17 @@ export function Sidebar() {
           <Cpu className="w-3.5 h-3.5 text-purple-400" />
           <span className="font-bold">SYSTEM OVERSEER: ARCH-1</span>
         </div>
-        <button 
+        <Button
+          variant="ghost"
           onClick={() => {
             logout();
             window.location.reload();
           }}
-          className="w-full flex items-center justify-center gap-2 py-2 bg-slate-100 hover:bg-red-500/10 dark:bg-zinc-900 hover:bg-red-950/20 text-slate-600 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 rounded-lg transition font-bold"
+          className="w-full justify-center text-slate-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 font-bold"
+          leftIcon={<LogOut className="w-3.5 h-3.5" />}
         >
-          <LogOut className="w-3.5 h-3.5" />
-          <span>LOGOUT</span>
-        </button>
+          LOGOUT
+        </Button>
       </div>
     </aside>
   );

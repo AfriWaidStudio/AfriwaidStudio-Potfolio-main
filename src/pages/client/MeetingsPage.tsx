@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, Clock, Plus, RefreshCw } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
+import { Card, Badge } from "../../components/ui";
 
 interface Meeting {
   id: string;
@@ -55,27 +56,24 @@ export default function MeetingsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+        <Card className="p-4">
           <Calendar className="w-6 h-6 text-slate-500 mb-2" />
           <p className="text-[10px] text-slate-400 font-mono uppercase">Total Meetings</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.total}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+        </Card>
+        <Card className="p-4">
           <Clock className="w-6 h-6 text-blue-500 mb-2" />
           <p className="text-[10px] text-slate-400 font-mono uppercase">Upcoming</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.upcoming}</p>
-        </div>
-        <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+        </Card>
+        <Card className="p-4">
           <Plus className="w-6 h-6 text-emerald-500 mb-2" />
           <p className="text-[10px] text-slate-400 font-mono uppercase">Completed</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.completed}</p>
-        </div>
+        </Card>
       </div>
 
-      <div className="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 rounded-xl p-6">
-        <h3 className="text-lg font-display font-bold text-slate-900 dark:text-white mb-4">
-          Upcoming Meetings
-        </h3>
+      <Card title="Upcoming Meetings" className="p-6">
         {loading ? (
           <div className="text-center py-12 text-slate-500">
             <RefreshCw className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-spin" />
@@ -94,14 +92,12 @@ export default function MeetingsPage() {
                   <p className="text-sm font-medium text-slate-900 dark:text-white">{m.title}</p>
                   <p className="text-[10px] text-slate-400">{m.date} | {m.startTime} - {m.endTime}</p>
                 </div>
-                <span className="text-[10px] px-2 py-1 bg-blue-500/20 text-blue-600 rounded font-mono uppercase">
-                  {m.status}
-                </span>
+                <Badge variant="info">{m.status}</Badge>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

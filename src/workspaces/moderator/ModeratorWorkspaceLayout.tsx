@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FileText, MessageSquare, BarChart3, Shield, Settings, LogOut, AlertCircle } from "lucide-react";
+import { Button } from "../../components/ui";
 
 const MODERATOR_NAVIGATION = [
   { icon: BarChart3, label: "Overview", path: "/workspace/moderator" },
@@ -41,18 +42,19 @@ export function ModeratorWorkspaceLayout({ children }: ModeratorWorkspaceLayoutP
         </nav>
         
         <div className="p-4 border-t border-slate-200 dark:border-neutral-800">
-          <button 
+          <Button
+            variant="ghost"
             onClick={() => {
               localStorage.removeItem('auth_token');
               localStorage.removeItem('token');
               localStorage.removeItem('afriwaid_admin_role');
               window.location.href = '/';
             }}
-            className="w-full flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-zinc-400 hover:text-red-600 rounded-lg transition-colors"
+            className="w-full justify-start text-slate-600 dark:text-zinc-400 hover:text-red-600"
+            leftIcon={<LogOut className="w-4 h-4" />}
           >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
+            Logout
+          </Button>
         </div>
       </aside>
       

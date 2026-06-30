@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Shield, Users, Settings, BarChart3, FileText, MessageSquare, Database, Globe, Key, Activity, LogOut } from "lucide-react";
+import { Button } from "../../components/ui";
 
 const ADMIN_NAVIGATION = [
   { icon: BarChart3, label: "Overview", path: "/workspace/admin" },
@@ -43,35 +44,33 @@ export function AdminWorkspaceLayout({ children, activeTab = "Admin Central", se
             const isActive = activeTab === item.label;
             const Icon = item.icon;
             return (
-              <button
+              <Button
                 key={item.path}
+                variant={isActive ? "primary" : "ghost"}
                 onClick={() => handleNavigationClick(item.path, item.label)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  isActive 
-                    ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400"
-                    : "text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900"
-                }`}
+                className="w-full justify-start"
+                leftIcon={<Icon className="w-5 h-5" />}
               >
-                <Icon className="w-5 h-5" />
-                <span>{item.label}</span>
-              </button>
+                {item.label}
+              </Button>
             );
           })}
         </nav>
         
         <div className="p-4 border-t border-slate-200 dark:border-neutral-800">
-          <button 
+          <Button
+            variant="ghost"
             onClick={() => {
               localStorage.removeItem('auth_token');
               localStorage.removeItem('token');
               localStorage.removeItem('afriwaid_admin_role');
               window.location.href = '/';
             }}
-            className="w-full flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-zinc-400 hover:text-red-600 rounded-lg transition-colors"
+            className="w-full justify-start text-slate-600 dark:text-zinc-400 hover:text-red-600"
+            leftIcon={<LogOut className="w-4 h-4" />}
           >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
+            Logout
+          </Button>
         </div>
       </aside>
       
@@ -79,12 +78,12 @@ export function AdminWorkspaceLayout({ children, activeTab = "Admin Central", se
         <header className="h-14 border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between px-6">
           <h1 className="font-semibold">Administration Center</h1>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-600 hover:text-blue-600">
+            <Button variant="ghost" size="sm" className="p-2">
               <Key className="w-4 h-4" />
-            </button>
-            <button className="relative p-2 text-slate-600 hover:text-blue-600">
+            </Button>
+            <Button variant="ghost" size="sm" className="p-2">
               <Activity className="w-4 h-4" />
-            </button>
+            </Button>
           </div>
         </header>
         

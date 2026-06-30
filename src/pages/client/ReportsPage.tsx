@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart3, PieChart, TrendingUp, Download, Calendar, DollarSign } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
+import { Card } from "../../components/ui";
 
 export default function ReportsPage() {
   const { token } = useAuth();
@@ -46,42 +47,36 @@ export default function ReportsPage() {
       ) : (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+            <Card className="p-4">
               <Calendar className="w-6 h-6 text-slate-500 mb-2" />
               <p className="text-[10px] text-slate-400 font-mono uppercase">Projects</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{report.summary.projects}</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+            </Card>
+            <Card className="p-4">
               <DollarSign className="w-6 h-6 text-emerald-500 mb-2" />
               <p className="text-[10px] text-slate-400 font-mono uppercase">Invoices</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{report.summary.invoices}</p>
-            </div>
-            <div className="p-4 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800">
+            </Card>
+            <Card className="p-4">
               <TrendingUp className="w-6 h-6 text-blue-500 mb-2" />
               <p className="text-[10px] text-slate-400 font-mono uppercase">Deliverables</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{report.summary.deliverables}</p>
-            </div>
+            </Card>
           </div>
 
-          <div className="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 rounded-xl p-6">
-            <h3 className="text-lg font-display font-bold text-slate-900 dark:text-white mb-4">
-              Project Progress
-            </h3>
+          <Card title="Project Progress" className="p-6">
             <div className="h-40 flex items-center justify-center text-slate-400">
               <BarChart3 className="w-12 h-12 mb-2" />
               <p className="font-mono text-xs">Chart visualization</p>
             </div>
-          </div>
+          </Card>
 
-          <div className="bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 rounded-xl p-6">
-            <h3 className="text-lg font-display font-bold text-slate-900 dark:text-white mb-4">
-              Financial Overview
-            </h3>
+          <Card title="Financial Overview" className="p-6">
             <div className="h-40 flex items-center justify-center text-slate-400">
               <PieChart className="w-12 h-12 mb-2" />
               <p className="font-mono text-xs">Financial chart</p>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

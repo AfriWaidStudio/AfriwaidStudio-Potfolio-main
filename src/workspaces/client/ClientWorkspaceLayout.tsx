@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Folder, MessageSquare, FileText, Calendar, Shield, Settings, LogOut, Users, CheckSquare, Clock, Receipt } from "lucide-react";
+import { Button } from "../../components/ui";
 
 const CLIENT_NAVIGATION = [
   { icon: Users, label: "Overview", path: "/portal" },
@@ -48,7 +49,8 @@ export function ClientWorkspaceLayout({ children }: ClientWorkspaceLayoutProps) 
         </nav>
         
         <div className="p-4 border-t border-slate-200 dark:border-neutral-800">
-          <button 
+          <Button
+            variant="ghost"
             onClick={() => {
               localStorage.removeItem('auth_token');
               localStorage.removeItem('token');
@@ -57,11 +59,11 @@ export function ClientWorkspaceLayout({ children }: ClientWorkspaceLayoutProps) 
               localStorage.removeItem('afriwaid_fallback_user');
               window.location.href = '/';
             }}
-            className="w-full flex items-center gap-2 px-3 py-2 text-slate-600 dark:text-zinc-400 hover:text-red-600 rounded-lg transition-colors"
+            className="w-full justify-start text-slate-600 dark:text-zinc-400 hover:text-red-600"
+            leftIcon={<LogOut className="w-4 h-4" />}
           >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
+            Logout
+          </Button>
         </div>
       </aside>
       

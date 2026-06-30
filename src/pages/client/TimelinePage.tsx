@@ -1,5 +1,6 @@
 import React from "react";
 import { Calendar, Clock, CheckCircle } from "lucide-react";
+import { Card } from "../../components/ui";
 
 export default function TimelinePage() {
   return (
@@ -13,10 +14,12 @@ export default function TimelinePage() {
         </p>
       </div>
 
-      <div className="text-center py-12 text-slate-500 dark:text-zinc-400">
-        <Calendar className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-        <p className="font-mono">Timeline view coming soon</p>
-      </div>
+      <Card className="p-12">
+        <div className="text-center text-slate-500 dark:text-zinc-400">
+          <Calendar className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+          <p className="font-mono">Timeline view coming soon</p>
+        </div>
+      </Card>
     </div>
   );
 }

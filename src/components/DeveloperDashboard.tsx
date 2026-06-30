@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ShieldCheck, BarChart3, Code, Database, Terminal, Settings, Activity, AlertCircle } from "lucide-react";
 import { ClientProfile } from "../types";
+import { Card, Tabs } from "./ui";
 
 interface DeveloperDashboardProps {
   clientProfiles: ClientProfile[];

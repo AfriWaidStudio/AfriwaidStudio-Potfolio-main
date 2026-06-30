@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MessageSquare, Send, Paperclip, Image, Smile } from "lucide-react";
+import { Button, Input } from "../../components/ui";
 
 export default function MessagesPage() {
   const [message, setMessage] = useState("");
@@ -58,16 +59,15 @@ export default function MessagesPage() {
             <button type="button" className="p-2 text-slate-500 hover:text-slate-700 rounded">
               <Image className="w-4 h-4" />
             </button>
-            <input
-              type="text"
+            <Input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type a message..."
-              className="flex-1 px-3 py-2 border border-slate-200 dark:border-zinc-800 rounded-lg bg-white dark:bg-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1"
             />
-            <button type="submit" className="p-2 text-blue-500 hover:text-blue-600 rounded">
+            <Button type="submit" variant="primary" size="sm">
               <Send className="w-4 h-4" />
-            </button>
+            </Button>
           </form>
         </div>
       </div>
