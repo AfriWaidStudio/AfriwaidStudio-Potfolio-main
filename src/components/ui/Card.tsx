@@ -1,7 +1,7 @@
 import React from "react";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
+  title?: React.ReactNode;
   description?: string;
   action?: React.ReactNode;
 }

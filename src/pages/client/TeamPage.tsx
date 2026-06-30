@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Users, Mail, Phone, ExternalLink } from "lucide-react";
+import { Users, Mail, ExternalLink } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Badge } from "../../components/ui";
+import { PortalState } from "./PortalState";
 
 interface TeamMember {
   id: string;
@@ -12,29 +13,32 @@ interface TeamMember {
 }
 
 export default function TeamPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadTeam = async () => {
+    if (!user) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/team", {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+      });
+      if (!res.ok) throw new Error(`Team could not be loaded (${res.status}).`);
+      const data = await res.json();
+      setTeam(data.team || []);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Team could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadTeam = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch("/api/team", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setTeam(data.team || []);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadTeam();
-  }, [token]);
+  }, [user]);
 
   return (
     <div className="space-y-6">
@@ -48,15 +52,11 @@ export default function TeamPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">
-          <Users className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-pulse" />
-          <p className="font-mono text-xs">Loading team...</p>
-        </div>
+        <PortalState loading icon={Users} title="Loading team" />
+      ) : error ? (
+        <PortalState icon={Users} title="Team unavailable" message={error} actionLabel="Retry" onAction={loadTeam} />
       ) : team.length === 0 ? (
-        <div className="text-center py-12 text-slate-500">
-          <Users className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-          <p className="font-mono text-xs">No team members</p>
-        </div>
+        <PortalState icon={Users} title="No team members" message="Assigned collaborators will appear once your project team is configured." />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {team.map((m) => (
@@ -81,7 +81,7 @@ export default function TeamPage() {
                   <Badge variant={m.status === "active" ? "success" : "default"}>
                     {m.status}
                   </Badge>
-                  <button className="text-slate-400 hover:text-slate-600">
+                  <button className="text-slate-400 hover:text-slate-600" title="View member details" aria-label="View member details">
                     <ExternalLink className="w-3 h-3" />
                   </button>
                 </div>

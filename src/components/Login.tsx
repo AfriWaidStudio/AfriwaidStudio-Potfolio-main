@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Lock, Mail, Eye, EyeOff, AlertCircle, ShieldCheck, UserCheck, Settings } from "lucide-react";
 import { useAuth } from "./AuthContext";
+import { Button, Input, Card } from "./ui";
 
 interface LoginProps {
   onNavigateToRegister: () => void;

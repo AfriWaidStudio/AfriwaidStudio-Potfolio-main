@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Folder, Layers, Calendar, BarChart3, FileText, Users, Plus } from "lucide-react";
+import { Folder, Layers, Calendar, BarChart3, Plus } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Button } from "../../components/ui";
+import { PortalState, getRouteLeaf } from "./PortalState";
 
 interface Project {
   id: string;
@@ -9,37 +11,73 @@ interface Project {
   status: string;
   progress: number;
   dueDate: string;
+  clientId?: string;
 }
 
 export default function ProjectsPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
+  const location = useLocation();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadProjects = async () => {
+    const token = localStorage.getItem("afriwaid_auth_token");
+    if (!token) {
+      setError("Your session is missing. Please sign in again.");
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/projects", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        throw new Error(`Projects could not be loaded (${res.status}).`);
+      }
+      const data = await res.json();
+      setProjects(data.projects || data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Projects could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadProjects = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch("/api/projects", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setProjects(data.projects || data);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadProjects();
-  }, [token]);
+  }, []);
+
+  const section = getRouteLeaf(location.pathname, "/portal/projects");
+  const filteredProjects = projects.filter((p) => {
+    if (section === "active" || section === "kanban" || section === "calendar") return p.status === "active";
+    if (section === "archived") return p.status === "archived" || p.status === "completed";
+    if (section === "templates") return false;
+    return true;
+  });
+
+  const pageCopy: Record<string, { title: string; subtitle: string; listTitle: string }> = {
+    overview: { title: "Projects", subtitle: "Manage all your projects and track progress.", listTitle: "Project List" },
+    active: { title: "Active Projects", subtitle: "Current workstreams that are still moving.", listTitle: "Active Project List" },
+    archived: { title: "Archived Projects", subtitle: "Completed or closed project records.", listTitle: "Archived Project List" },
+    templates: { title: "Project Templates", subtitle: "Reusable project structures prepared for future work.", listTitle: "Available Templates" },
+    kanban: { title: "Kanban Board", subtitle: "A board-style view of active project execution.", listTitle: "Active Project Board" },
+    calendar: { title: "Project Calendar", subtitle: "Upcoming dates grouped from active projects.", listTitle: "Scheduled Project Dates" },
+    analytics: { title: "Project Analytics", subtitle: "Progress and delivery health across your projects.", listTitle: "Project Analytics" },
+  };
+  const copy = pageCopy[section] || pageCopy.overview;
 
   const stats = {
     total: projects.length,
     active: projects.filter(p => p.status === "active").length,
-    dueThisWeek: 3,
+    dueThisWeek: projects.filter((p) => {
+      if (!p.dueDate) return false;
+      const due = new Date(p.dueDate).getTime();
+      const now = Date.now();
+      return due >= now && due <= now + 7 * 24 * 60 * 60 * 1000;
+    }).length,
     avgProgress: projects.length > 0 ? Math.round(projects.reduce((sum, p) => sum + (p.progress || 0), 0) / projects.length) : 0,
   };
 
@@ -47,15 +85,13 @@ export default function ProjectsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-display font-black text-slate-900 dark:text-white mb-2">
-            Projects
-          </h1>
+          <h1 className="text-2xl font-display font-black text-slate-900 dark:text-white mb-2">{copy.title}</h1>
           <p className="text-slate-500 dark:text-zinc-400 text-sm">
-            Manage all your projects and track progress.
+            {copy.subtitle}
           </p>
         </div>
-        <Button variant="primary" leftIcon={<Plus className="w-4 h-4" />}>
-          New Project
+        <Button variant="outline" leftIcon={<Plus className="w-4 h-4" />} onClick={() => window.dispatchEvent(new CustomEvent("app:goto-tab", { detail: "Contact" }))}>
+          Request Project
         </Button>
       </div>
 
@@ -82,21 +118,16 @@ export default function ProjectsPage() {
         </Card>
       </div>
 
-      <Card title="Project List" className="p-6">
+      <Card title={copy.listTitle} className="p-6">
         {loading ? (
-          <div className="text-center py-12 text-slate-500">
-            <Folder className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-pulse" />
-            <p className="font-mono text-xs">Loading projects...</p>
-          </div>
-        ) : projects.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
-            <Folder className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-            <p className="font-mono text-xs mb-4">No projects found</p>
-            <Button variant="primary">Create First Project</Button>
-          </div>
+          <PortalState loading icon={Folder} title="Loading projects" />
+        ) : error ? (
+          <PortalState icon={Folder} title="Projects unavailable" message={error} actionLabel="Retry" onAction={loadProjects} />
+        ) : filteredProjects.length === 0 ? (
+          <PortalState icon={Folder} title="No projects found" message="There are no project records for this view yet." />
         ) : (
           <div className="space-y-3">
-            {projects.map((p) => (
+            {filteredProjects.map((p) => (
               <div key={p.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-zinc-950 rounded-lg">
                 <div>
                   <p className="text-sm font-medium text-slate-900 dark:text-white">{p.name}</p>

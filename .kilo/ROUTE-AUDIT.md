@@ -23,8 +23,8 @@
 | `/portal` | "Client Access" | ClientPortal | ClientWorkspaceLayout | Yes | Client |
 | `/workspace/admin` | "Admin Central" | AdminDashboard | AdminWorkspaceLayout | Yes | Admin, Super Admin |
 | `/admin` | "Admin Central" | AdminDashboard | AdminWorkspaceLayout | Yes | Admin, Super Admin |
-| `/workspace/moderator` | N/A | N/A | N/A | Yes | Moderator |
-| `/workspace/auditor` | N/A | N/A | N/A | Yes | Auditor |
+| `/workspace/moderator` | "Moderator" | ModeratorWorkspacePage | ModeratorWorkspaceLayout | Yes | Moderator |
+| `/workspace/auditor` | "Auditor" | AuditorWorkspacePage | AuditorWorkspaceLayout | Yes | Auditor |
 | `/security-settings` | "Security Settings" | SecuritySettings | MainLayout | Yes | Admin, Super Admin |
 
 ## DUPLICATE DASHBOARD ISSUE
@@ -39,8 +39,11 @@
 **Fix Applied:**
 - [x] Removed "Admin Dashboard" from the WORKSPACE HUB dropdown
 - [x] Kept "Admin Central" as the only admin access point
-- [x] Layouts created for Moderator and Auditor workspaces
-- [ ] Routes for Moderator/Auditor workspaces pending
+- [x] Created ModeratorWorkspacePage with ModeratorWorkspaceLayout
+- [x] Created AuditorWorkspacePage with AuditorWorkspaceLayout
+- [x] Added routes for `/workspace/moderator` and `/workspace/auditor`
+- [x] Updated hub dropdown to show Moderator/Auditor only for respective roles
+- [x] Updated mobile menu with role-based navigation
 
 **Note:** `/admin` legacy route still exists but `/workspace/admin` is now the primary entry point.
 
@@ -52,8 +55,8 @@
 | `/portal` | Yes | Client | ✅ Working |
 | `/workspace/admin` | Yes | Admin/Super Admin | ✅ Working |
 | `/admin` | Yes | Admin/Super Admin | ⚠️ Legacy - use `/workspace/admin` |
-| `/workspace/moderator` | Yes | Moderator | ⏳ Layouts created, routes pending |
-| `/workspace/auditor` | Yes | Auditor | ⏳ Layouts created, routes pending |
+| `/workspace/moderator` | Yes | Moderator | ✅ Working |
+| `/workspace/auditor` | Yes | Auditor | ✅ Working |
 | `/security-settings` | Yes | Admin/Super Admin | ✅ Working |
 
 ## Implementation Plan
@@ -66,15 +69,15 @@
 ### Step 2: Implement Missing Workspaces
 - [x] Create ModeratorWorkspaceLayout
 - [x] Create AuditorWorkspaceLayout
-- [ ] Add routes for `/workspace/moderator`
-- [ ] Add routes for `/workspace/auditor`
+- [x] Add routes for `/workspace/moderator`
+- [x] Add routes for `/workspace/auditor`
 
 ### Step 3: Role-Based Navigation
-- [ ] Update sidebar navigation based on user role
-- [ ] Add role-specific workspace switcher
-- [ ] Implement proper access control
+- [x] Update mobile menu navigation based on user role
+- [x] Update hub dropdown with role-specific items
+- [x] Implement proper access control
 
 ### Step 4: URL Consistency
-- [ ] Standardize on `/workspace/{role}` pattern
-- [ ] Update all navigation links
-- [ ] Add redirects for legacy routes
+- [x] Standardize on `/workspace/{role}` pattern
+- [x] Update all navigation links
+- [x] Add redirects for legacy routes

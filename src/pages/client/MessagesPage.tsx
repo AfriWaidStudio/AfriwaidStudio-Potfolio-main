@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MessageSquare, Send, Paperclip, Image, Smile } from "lucide-react";
+import { Send, Paperclip, Image } from "lucide-react";
 import { Button, Input } from "../../components/ui";
 
 export default function MessagesPage() {
@@ -13,6 +13,17 @@ export default function MessagesPage() {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
+    const now = new Date();
+    setMessages(prev => [
+      ...prev,
+      {
+        id: `local-${now.getTime()}`,
+        sender: "You",
+        role: "Client",
+        body: message.trim(),
+        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      },
+    ]);
     setMessage("");
   };
 
@@ -53,10 +64,10 @@ export default function MessagesPage() {
 
         <div className="border-t border-slate-200 dark:border-zinc-800 p-4">
           <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-            <button type="button" className="p-2 text-slate-500 hover:text-slate-700 rounded">
+            <button type="button" className="p-2 text-slate-500 hover:text-slate-700 rounded" title="Attach file" aria-label="Attach file">
               <Paperclip className="w-4 h-4" />
             </button>
-            <button type="button" className="p-2 text-slate-500 hover:text-slate-700 rounded">
+            <button type="button" className="p-2 text-slate-500 hover:text-slate-700 rounded" title="Attach image" aria-label="Attach image">
               <Image className="w-4 h-4" />
             </button>
             <Input
@@ -65,7 +76,7 @@ export default function MessagesPage() {
               placeholder="Type a message..."
               className="flex-1"
             />
-            <Button type="submit" variant="primary" size="sm">
+            <Button type="submit" variant="primary" size="sm" title="Send message" aria-label="Send message">
               <Send className="w-4 h-4" />
             </Button>
           </form>

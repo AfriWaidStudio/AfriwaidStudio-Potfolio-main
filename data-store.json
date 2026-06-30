@@ -296,12 +296,54 @@
       "isActive": false,
       "createdAt": "2026-06-29T16:37:01.542Z",
       "expiresAt": "2026-06-29T18:37:01.542Z"
+    },
+    {
+      "id": "s-931716d0-01f3-4685-9dc8-ce0b2525f01f",
+      "userId": "u-2",
+      "token": "token_b84438ed0b9e97484a844ab5fb03cf8cf496f43882ec6cc841e3472a2edd77be93866ad8b5f3b14f",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "isActive": true,
+      "createdAt": "2026-06-30T02:40:03.515Z",
+      "expiresAt": "2026-06-30T04:40:03.514Z"
+    },
+    {
+      "id": "s-abfd8f6e-1172-4cc3-b3d0-11f02979f7b3",
+      "userId": "u-2",
+      "token": "token_d941499c14185939ecaf3a5c664fc7de00459c079192f7ca950c960e7dbc788ddbbcbdebb5340a23",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-06-30T04:07:23.007Z",
+      "expiresAt": "2026-07-30T04:07:23.004Z"
     }
   ],
   "password_resets": [],
   "email_verifications": [],
   "login_attempts": [],
   "audit_logs": [
+    {
+      "id": "l-52c5ba56-16ea-476a-bd68-4d4437bdea4c",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-06-30T04:07:23.007Z"
+    },
+    {
+      "id": "l-fcb8e804-753a-4b70-8751-3f91aefd55e0",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-06-30T02:40:03.515Z"
+    },
     {
       "id": "l-bee822ee-7ee1-46f3-be60-b0c03c445b63",
       "userId": "u-2",
@@ -762,6 +804,22 @@
       "status": "unpaid",
       "issueDate": "2026-06-14",
       "dueDate": "2026-06-28"
+    }
+  ],
+  "team_members": [
+    {
+      "id": "tm-1",
+      "projectId": "proj-1",
+      "userId": "u-3",
+      "role": "Developer",
+      "status": "active"
+    },
+    {
+      "id": "tm-2",
+      "projectId": "proj-1",
+      "userId": "u-4",
+      "role": "Designer",
+      "status": "active"
     }
   ]
 }

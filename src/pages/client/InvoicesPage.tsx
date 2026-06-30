@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { DollarSign, CreditCard, Banknote, RefreshCw } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
-import { Button } from "../../components/ui";
 import { Card, Badge } from "../../components/ui";
-import { Input } from "../../components/ui";
+import { PortalState, getRouteLeaf } from "./PortalState";
 
 interface Invoice {
   id: string;
@@ -18,29 +18,47 @@ interface Invoice {
 }
 
 export default function InvoicesPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
+  const location = useLocation();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadInvoices = async () => {
+    if (!user) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/invoices", {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+      });
+      if (!res.ok) throw new Error(`Invoices could not be loaded (${res.status}).`);
+      const data = await res.json();
+      setInvoices(data.invoices || data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Invoices could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadInvoices = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch("/api/invoices", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setInvoices(data.invoices || data);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadInvoices();
-  }, [token]);
+  }, [user]);
+
+  const section = getRouteLeaf(location.pathname, "/portal/invoices");
+  const filteredInvoices = invoices.filter((i) => {
+    if (section === "receipts") return i.status === "paid";
+    if (section === "payments") return i.status === "unpaid";
+    return true;
+  });
+  const titleMap: Record<string, string> = {
+    overview: "Invoices & Billing",
+    ledger: "Ledger Desk",
+    receipts: "Receipts",
+    payments: "Payments",
+  };
+  const title = titleMap[section] || "Invoices & Billing";
 
   const stats = {
     total: invoices.length,
@@ -53,7 +71,7 @@ export default function InvoicesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-display font-black text-slate-900 dark:text-white mb-2">
-          Invoices & Billing
+          {title}
         </h1>
         <p className="text-slate-500 dark:text-zinc-400 text-sm">
           Manage invoices and billing information.
@@ -85,18 +103,14 @@ export default function InvoicesPage() {
 
       <Card title="Invoice List">
         {loading ? (
-          <div className="text-center py-12 text-slate-500">
-            <RefreshCw className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-spin" />
-            <p className="font-mono text-xs">Loading invoices...</p>
-          </div>
-        ) : invoices.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
-            <DollarSign className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-            <p className="font-mono text-xs">No invoices found</p>
-          </div>
+          <PortalState loading icon={RefreshCw} title="Loading invoices" />
+        ) : error ? (
+          <PortalState icon={DollarSign} title="Invoices unavailable" message={error} actionLabel="Retry" onAction={loadInvoices} />
+        ) : filteredInvoices.length === 0 ? (
+          <PortalState icon={DollarSign} title="No invoices found" message="There are no billing records in this view." />
         ) : (
           <div className="space-y-3">
-            {invoices.map((inv) => (
+            {filteredInvoices.map((inv) => (
               <div key={inv.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-zinc-950 rounded-lg">
                 <div>
                   <p className="text-sm font-medium text-slate-900 dark:text-white">{inv.invoiceNo}</p>

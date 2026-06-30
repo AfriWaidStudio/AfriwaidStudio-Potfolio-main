@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BarChart3, Folder, FileText, Check, BadgeDollarSign, MessageSquare,
   ShieldCheck, Settings, Calendar, Users, ChevronDown, ChevronRight, LogOut, Cpu
@@ -10,8 +10,10 @@ import { Button } from "../ui";
 
 export function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const navControlClass = "w-full inline-flex items-center justify-start rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-slate-700 hover:bg-slate-100 focus:ring-slate-500 px-4 py-2 text-base";
 
   const toggleItem = (id: string) => {
     setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
@@ -63,17 +65,28 @@ export function Sidebar() {
 
           return (
             <div key={item.id} className="space-y-1">
-              <Button
-                variant="ghost"
-                onClick={() => hasChildren ? toggleItem(item.id) : undefined}
-                className={`w-full justify-start ${active ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400" : ""}`}
-                leftIcon={<item.icon className={`w-5 h-5 ${active ? "text-blue-600" : "text-slate-400"}`} />}
-              >
-                {item.label}
-                {hasChildren && (
-                  expanded ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />
-                )}
-              </Button>
+              {hasChildren ? (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    toggleItem(item.id);
+                    navigate(item.path);
+                  }}
+                  className={`w-full justify-start ${active ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400" : ""}`}
+                  leftIcon={<item.icon className={`w-5 h-5 ${active ? "text-blue-600" : "text-slate-400"}`} />}
+                >
+                  <span className="flex-1 text-left">{item.label}</span>
+                  {expanded ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                </Button>
+              ) : (
+                <Link
+                  to={item.path}
+                  className={`${navControlClass} ${active ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400" : ""}`}
+                >
+                  <item.icon className={`w-5 h-5 mr-2 ${active ? "text-blue-600" : "text-slate-400"}`} />
+                  <span className="flex-1 text-left">{item.label}</span>
+                </Link>
+              )}
 
               {hasChildren && expanded && (
                 <div className="ml-6 pl-2 border-l border-slate-200 dark:border-zinc-800">

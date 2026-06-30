@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { 
   BarChart3, Folder, FileText, Check, BadgeDollarSign, MessageSquare, 
   ShieldCheck, Settings, Calendar, Users, Receipt, PieChart, FolderGit,
-  Layers, Globe, LifeBuoy, HelpCircle
+  Layers, Globe, LifeBuoy, HelpCircle, Clock
 } from "lucide-react";
 
 export interface NavigationItem {
@@ -44,6 +44,12 @@ export const CLIENT_NAVIGATION: NavigationItem[] = [
       { id: "calendar", label: "Calendar", path: "/portal/projects/calendar" },
       { id: "analytics", label: "Analytics", path: "/portal/projects/analytics" },
     ],
+  },
+  {
+    id: "timeline",
+    label: "Timeline",
+    icon: Clock,
+    path: "/portal/timeline",
   },
   {
     id: "deliverables",

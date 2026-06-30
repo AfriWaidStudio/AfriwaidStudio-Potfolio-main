@@ -85,10 +85,10 @@ export function Topbar({ onMobileMenuToggle }: TopbarProps) {
 
           {profileOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-neutral-800 rounded-lg shadow-lg py-1 z-50">
-              <Link to="/dashboard/settings/profile" className="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-zinc-900">
+              <Link to="/portal/settings/profile" className="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-zinc-900">
                 Profile Settings
               </Link>
-              <Link to="/dashboard/settings/security" className="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-zinc-900">
+              <Link to="/portal/settings/security" className="block px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-zinc-900">
                 Security
               </Link>
               <div className="border-t border-slate-200 dark:border-neutral-800 my-1"></div>

@@ -19,7 +19,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="h-screen flex bg-slate-50 dark:bg-black text-slate-900 dark:text-white">
-      <Sidebar />
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
       
       <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
@@ -31,10 +33,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {mobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        />
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="fixed inset-y-0 left-0 z-50 lg:hidden">
+            <Sidebar />
+          </div>
+        </>
       )}
     </div>
   );

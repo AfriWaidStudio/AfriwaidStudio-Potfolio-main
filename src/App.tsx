@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Menu, X, ArrowRight, Sparkles, Globe, Command, Search,
   ShieldCheck, Mail, Database, BrainCircuit, Play, BarChart3,
-  Calendar, Clock, Award, Sun, Moon, ChevronDown, ChevronUp, FileText, User, Maximize2, Link
+  Calendar, Clock, Award, Sun, Moon, ChevronDown, ChevronUp, FileText, User, Maximize2, Link, Eye
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { loadInitialData, saveInitialData, INITIAL_CUSTOMIZATION } from "./data";
@@ -34,6 +34,8 @@ import UnifiedAuthGate from "./components/UnifiedAuthGate";
 import SecuritySettings from "./components/SecuritySettings";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import DashboardPage from "./pages/client/DashboardPage";
+import ModeratorWorkspacePage from "./pages/workspace/ModeratorWorkspacePage";
+import AuditorWorkspacePage from "./pages/workspace/AuditorWorkspacePage";
 import TimelinePage from "./pages/client/TimelinePage";
 import ClientProjectsPage from "./pages/client/ProjectsPage";
 import DeliverablesPage from "./pages/client/DeliverablesPage";
@@ -59,9 +61,13 @@ function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const getInitialTabFromPath = (path: string): "Home" | "Projects" | "Services" | "Build Journal" | "AI Lab" | "Publishing" | "Media" | "Resumé CV" | "Founder Profile" | "Company Profile" | "Client Access" | "Admin Central" | "Security Settings" | "Contact" => {
+  const getInitialTabFromPath = (path: string): "Home" | "Projects" | "Services" | "Build Journal" | "AI Lab" | "Publishing" | "Media" | "Resumé CV" | "Founder Profile" | "Company Profile" | "Client Access" | "Admin Central" | "Moderator" | "Auditor" | "Security Settings" | "Contact" => {
     if (path.startsWith("/workspace/admin") || path.startsWith("/admin")) {
       return "Admin Central";
+    } else if (path.startsWith("/workspace/moderator")) {
+      return "Moderator";
+    } else if (path.startsWith("/workspace/auditor")) {
+      return "Auditor";
     } else if (path.startsWith("/portal") || path.startsWith("/client")) {
       return "Client Access";
     } else if (path.startsWith("/security-settings") || path.startsWith("/settings")) {
@@ -71,7 +77,7 @@ function AppContent() {
   };
 
   const [activeTab, setActiveTab] = useState<
-    "Home" | "Projects" | "Services" | "Build Journal" | "AI Lab" | "Publishing" | "Media" | "Resumé CV" | "Founder Profile" | "Company Profile" | "Client Access" | "Admin Central" | "Security Settings" | "Contact"
+    "Home" | "Projects" | "Services" | "Build Journal" | "AI Lab" | "Publishing" | "Media" | "Resumé CV" | "Founder Profile" | "Company Profile" | "Client Access" | "Admin Central" | "Moderator" | "Auditor" | "Security Settings" | "Contact"
   >(getInitialTabFromPath(location.pathname));
 
   const getInitialSubTabFromPath = (path: string): "analytics" | "projects" | "articles" | "journal" | "inquiries" | "cvs" | "media" | "tech" | "stats" | "testimonials" | "team" | "services" | "users" | "roles" | "audit_logs" | "workspaces" | "clients_billing" | "support_chat" | "alert_broadcasts" | "site_customization" => {
@@ -104,6 +110,10 @@ function AppContent() {
     if (path.startsWith("/workspace/admin") || path.startsWith("/admin")) {
       setActiveTab("Admin Central");
       setInitialSubTab(getInitialSubTabFromPath(path));
+    } else if (path.startsWith("/workspace/moderator")) {
+      setActiveTab("Moderator");
+    } else if (path.startsWith("/workspace/auditor")) {
+      setActiveTab("Auditor");
     } else if (path.startsWith("/portal") || path.startsWith("/client")) {
       setActiveTab("Client Access");
     } else if (path.startsWith("/security-settings") || path.startsWith("/settings")) {
@@ -112,35 +122,35 @@ function AppContent() {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (user) {
-      const role = user.role;
-      if (role === "Super Admin" || role === "Admin") {
-        if (!location.pathname.startsWith("/workspace/admin")) {
-          navigate("/workspace/admin", { replace: true });
-        }
-      } else if (role === "Client") {
-        if (!location.pathname.startsWith("/portal") && !location.pathname.startsWith("/client")) {
-          navigate("/portal", { replace: true });
-        }
-      } else if (role === "Moderator") {
-        if (!location.pathname.startsWith("/workspace/moderator")) {
-          navigate("/workspace/moderator", { replace: true });
-        }
-      } else if (role === "Auditor") {
-        if (!location.pathname.startsWith("/workspace/auditor")) {
-          navigate("/workspace/auditor", { replace: true });
-        }
-      } else if (role === "Developer") {
-        if (!location.pathname.startsWith("/workspace/developer")) {
-          navigate("/workspace/developer", { replace: true });
-        }
-      } else if (role === "Operator") {
-        if (!location.pathname.startsWith("/workspace/operator")) {
-          navigate("/workspace/operator", { replace: true });
+      if (user) {
+        const role = user.role;
+        if (role === "Super Admin" || role === "Admin") {
+          if (!location.pathname.startsWith("/workspace/admin")) {
+            navigate("/workspace/admin", { replace: true });
+          }
+        } else if (role === "Client") {
+          if (!location.pathname.startsWith("/portal") && !location.pathname.startsWith("/client")) {
+            navigate("/portal", { replace: true });
+          }
+        } else if (role === "Moderator") {
+          if (!location.pathname.startsWith("/workspace/moderator")) {
+            navigate("/workspace/moderator", { replace: true });
+          }
+        } else if (role === "Auditor") {
+          if (!location.pathname.startsWith("/workspace/auditor")) {
+            navigate("/workspace/auditor", { replace: true });
+          }
+        } else if (role === "Developer") {
+          if (!location.pathname.startsWith("/workspace/developer")) {
+            navigate("/workspace/developer", { replace: true });
+          }
+        } else if (role === "Operator") {
+          if (!location.pathname.startsWith("/workspace/operator")) {
+            navigate("/workspace/operator", { replace: true });
+          }
         }
       }
-    }
-  }, [user, location.pathname, navigate]);
+    }, [user, location.pathname, navigate]);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
@@ -716,25 +726,37 @@ function AppContent() {
 
   // Full-portal takeover if user is logged in as a Client role
   if (user && user.role === "Client") {
+    const isKnownPortalRoute =
+      location.pathname === "/portal" ||
+      location.pathname.startsWith("/portal/dashboard") ||
+      location.pathname.startsWith("/portal/projects") ||
+      location.pathname === "/portal/timeline" ||
+      location.pathname.startsWith("/portal/deliverables") ||
+      location.pathname.startsWith("/portal/approvals") ||
+      location.pathname.startsWith("/portal/invoices") ||
+      location.pathname.startsWith("/portal/meetings") ||
+      location.pathname.startsWith("/portal/messages") ||
+      location.pathname.startsWith("/portal/files") ||
+      location.pathname.startsWith("/portal/team") ||
+      location.pathname.startsWith("/portal/reports") ||
+      location.pathname.startsWith("/portal/settings");
+
     return (
       <DashboardLayout>
         {location.pathname === "/portal" && <DashboardPage />}
-        {location.pathname === "/portal/dashboard" && <DashboardPage />}
-        {location.pathname === "/portal/projects" && <ClientProjectsPage />}
-        {location.pathname === "/portal/projects/active" && <ClientProjectsPage />}
-        {location.pathname === "/portal/projects/kanban" && <ClientProjectsPage />}
+        {location.pathname.startsWith("/portal/dashboard") && <DashboardPage />}
+        {location.pathname.startsWith("/portal/projects") && <ClientProjectsPage />}
         {location.pathname === "/portal/timeline" && <TimelinePage />}
-        {location.pathname === "/portal/deliverables" && <DeliverablesPage />}
-        {location.pathname === "/portal/approvals" && <ApprovalsPage />}
-        {location.pathname === "/portal/invoices" && <InvoicesPage />}
-        {location.pathname === "/portal/invoices/ledger" && <InvoicesPage />}
-        {location.pathname === "/portal/meetings" && <MeetingsPage />}
-        {location.pathname === "/portal/messages" && <MessagesPage />}
-        {location.pathname === "/portal/files" && <FilesPage />}
-        {location.pathname === "/portal/team" && <TeamPage />}
-        {location.pathname === "/portal/reports" && <ReportsPage />}
-        {location.pathname === "/portal/settings" && <SettingsPage />}
-        {location.pathname === "/portal/settings/security" && <SettingsPage />}
+        {location.pathname.startsWith("/portal/deliverables") && <DeliverablesPage />}
+        {location.pathname.startsWith("/portal/approvals") && <ApprovalsPage />}
+        {location.pathname.startsWith("/portal/invoices") && <InvoicesPage />}
+        {location.pathname.startsWith("/portal/meetings") && <MeetingsPage />}
+        {location.pathname.startsWith("/portal/messages") && <MessagesPage />}
+        {location.pathname.startsWith("/portal/files") && <FilesPage />}
+        {location.pathname.startsWith("/portal/team") && <TeamPage />}
+        {location.pathname.startsWith("/portal/reports") && <ReportsPage />}
+        {location.pathname.startsWith("/portal/settings") && <SettingsPage />}
+        {!isKnownPortalRoute && <DashboardPage />}
       </DashboardLayout>
     );
   }
@@ -840,7 +862,9 @@ function AppContent() {
                       { name: "Founder Profile", tab: "Founder Profile" as const, desc: "Nwogha Chigozie's 5 expressions", icon: User, color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40", show: true },
                       { name: "Company Profile", tab: "Company Profile" as const, desc: "Core identity, team slots & values", icon: Globe, color: "text-sky-600 dark:text-sky-450 bg-sky-50 dark:bg-sky-950/40", show: true },
                       { name: "Client Portal", tab: "Client Access" as const, desc: "Interactive secure partner workstation", icon: Command, color: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40", show: true },
-                      { name: "Admin Dashboard", tab: "Admin Central" as const, desc: "Operator credentials & security logs", icon: ShieldCheck, color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40", show: true }
+                      { name: "Admin Central", tab: "Admin Central" as const, desc: "Operator credentials & security logs", icon: ShieldCheck, color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40", show: user && (user.role === "Admin" || user.role === "Super Admin") },
+                      { name: "Moderator", tab: "Moderator" as const, desc: "Content moderation & support review", icon: ShieldCheck, color: "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40", show: user && user.role === "Moderator" },
+                      { name: "Auditor", tab: "Auditor" as const, desc: "System audit logs & security monitoring", icon: Eye, color: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40", show: user && user.role === "Auditor" }
                     ].filter(item => item.show).map((item) => {
                       const Icon = item.icon;
                       const isActive = activeTab === item.tab;
@@ -1026,7 +1050,7 @@ function AppContent() {
          {/* Mobile Hamburger Navigation layout */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white dark:bg-zinc-950 border-b border-slate-200 dark:border-neutral-800 px-4 py-4 space-y-2 text-left font-mono text-xs uppercase z-40 animate-fadeIn">
-            {(["Home", "Projects", "Services", "Build Journal", "AI Lab", "Publishing", "Media", "Resumé CV", "Founder Profile", "Company Profile", "Client Access", "Admin Central"] as const)
+            {(["Home", "Projects", "Services", "Build Journal", "AI Lab", "Publishing", "Media", "Resumé CV", "Founder Profile", "Company Profile", "Client Access"] as const)
               .filter((tab) => {
                 if (tab === "Build Journal") return customization?.showJournal !== false;
                 if (tab === "AI Lab") return customization?.showAILab !== false;
@@ -1051,6 +1075,48 @@ function AppContent() {
                   {tab}
                 </button>
               ))}
+            {user && user.role === "Admin" && (
+              <button
+                key="Admin Central"
+                onClick={() => { setActiveTab("Admin Central"); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 rounded-lg block font-bold transition duration-155 ${
+                  activeTab === "Admin Central" 
+                    ? `bg-slate-100 dark:bg-zinc-900 ${accent.text} font-extrabold border-l-2 ${accent.borderColor}` 
+                    : "text-slate-600 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-zinc-900"
+                }`}
+                id="mobile-nav-admin-central"
+              >
+                Admin Central
+              </button>
+            )}
+            {user && user.role === "Moderator" && (
+              <button
+                key="Moderator"
+                onClick={() => { setActiveTab("Moderator"); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 rounded-lg block font-bold transition duration-155 ${
+                  activeTab === "Moderator" 
+                    ? `bg-slate-100 dark:bg-zinc-900 ${accent.text} font-extrabold border-l-2 ${accent.borderColor}` 
+                    : "text-slate-600 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-zinc-900"
+                }`}
+                id="mobile-nav-moderator"
+              >
+                Moderator
+              </button>
+            )}
+            {user && user.role === "Auditor" && (
+              <button
+                key="Auditor"
+                onClick={() => { setActiveTab("Auditor"); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 rounded-lg block font-bold transition duration-155 ${
+                  activeTab === "Auditor" 
+                    ? `bg-slate-100 dark:bg-zinc-900 ${accent.text} font-extrabold border-l-2 ${accent.borderColor}` 
+                    : "text-slate-600 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-zinc-900"
+                }`}
+                id="mobile-nav-auditor"
+              >
+                Auditor
+              </button>
+            )}
           </div>
         )}
       </header>
@@ -1431,6 +1497,30 @@ function AppContent() {
             <UnifiedAuthGate
               onAuthSuccess={() => setActiveTab("Admin Central")}
               subTitle="Authorize secure administrator token credentials to enter the system registers management and audit logging consoles."
+            />
+          )
+        )}
+
+        {/* Render: 11.5. Moderator Workspace */}
+        {activeTab === "Moderator" && (
+          user && user.role === "Moderator" ? (
+            <ModeratorWorkspacePage />
+          ) : (
+            <UnifiedAuthGate
+              onAuthSuccess={() => setActiveTab("Moderator")}
+              subTitle="Authenticate as a Moderator to access content review and support management."
+            />
+          )
+        )}
+
+        {/* Render: 11.6. Auditor Workspace */}
+        {activeTab === "Auditor" && (
+          user && user.role === "Auditor" ? (
+            <AuditorWorkspacePage />
+          ) : (
+            <UnifiedAuthGate
+              onAuthSuccess={() => setActiveTab("Auditor")}
+              subTitle="Authenticate as an Auditor to access system audit logs and security monitoring."
             />
           )
         )}

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FileText, Folder, Check, Clock, Archive, RefreshCw } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
-import { Button } from "../../components/ui";
 import { Card, Badge } from "../../components/ui";
+import { PortalState, getRouteLeaf } from "./PortalState";
 
 interface Deliverable {
   id: string;
@@ -14,29 +15,43 @@ interface Deliverable {
 }
 
 export default function DeliverablesPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
+  const location = useLocation();
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadDeliverables = async () => {
+    if (!user) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/deliverables", {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+      });
+      if (!res.ok) throw new Error(`Deliverables could not be loaded (${res.status}).`);
+      const data = await res.json();
+      setDeliverables(data.deliverables || data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Deliverables could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadDeliverables = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch("/api/deliverables", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setDeliverables(data.deliverables || data);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadDeliverables();
-  }, [token]);
+  }, [user]);
+
+  const section = getRouteLeaf(location.pathname, "/portal/deliverables");
+  const filteredDeliverables = deliverables.filter((d) => {
+    if (section === "pending") return d.status === "pending";
+    if (section === "in-progress") return d.status === "in-progress";
+    if (section === "completed" || section === "history") return d.status === "completed";
+    if (section === "rejected") return d.status === "rejected";
+    return true;
+  });
+  const title = section === "overview" ? "Deliverables" : `Deliverables: ${section.replace("-", " ")}`;
 
   const stats = {
     total: deliverables.length,
@@ -49,7 +64,7 @@ export default function DeliverablesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-display font-black text-slate-900 dark:text-white mb-2">
-          Deliverables
+          {title}
         </h1>
         <p className="text-slate-500 dark:text-zinc-400 text-sm">
           Track and manage project deliverables.
@@ -81,18 +96,14 @@ export default function DeliverablesPage() {
 
       <Card title="Deliverables List" className="p-6">
         {loading ? (
-          <div className="text-center py-12 text-slate-500">
-            <RefreshCw className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-spin" />
-            <p className="font-mono text-xs">Loading deliverables...</p>
-          </div>
-        ) : deliverables.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
-            <Archive className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-            <p className="font-mono text-xs">No deliverables found</p>
-          </div>
+          <PortalState loading icon={RefreshCw} title="Loading deliverables" />
+        ) : error ? (
+          <PortalState icon={Archive} title="Deliverables unavailable" message={error} actionLabel="Retry" onAction={loadDeliverables} />
+        ) : filteredDeliverables.length === 0 ? (
+          <PortalState icon={Archive} title="No deliverables found" message="There are no deliverables matching this status." />
         ) : (
           <div className="space-y-3">
-            {deliverables.map((d) => (
+            {filteredDeliverables.map((d) => (
               <div key={d.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-zinc-950 rounded-lg">
                 <div>
                   <p className="text-sm font-medium text-slate-900 dark:text-white">{d.name}</p>

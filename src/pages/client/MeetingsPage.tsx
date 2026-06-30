@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, Clock, Plus, RefreshCw } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Badge } from "../../components/ui";
+import { PortalState, getRouteLeaf } from "./PortalState";
 
 interface Meeting {
   id: string;
@@ -14,29 +16,48 @@ interface Meeting {
 }
 
 export default function MeetingsPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
+  const location = useLocation();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadMeetings = async () => {
+    if (!user) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/meetings", {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+      });
+      if (!res.ok) throw new Error(`Meetings could not be loaded (${res.status}).`);
+      const data = await res.json();
+      setMeetings(data.meetings || data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Meetings could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadMeetings = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch("/api/meetings", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setMeetings(data.meetings || data);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadMeetings();
-  }, [token]);
+  }, [user]);
+
+  const section = getRouteLeaf(location.pathname, "/portal/meetings");
+  const filteredMeetings = meetings.filter((m) => {
+    if (section === "upcoming" || section === "calendar" || section === "agenda") return m.status === "upcoming";
+    if (section === "recordings") return m.status === "completed";
+    return true;
+  });
+  const titleMap: Record<string, string> = {
+    overview: "Meetings",
+    upcoming: "Upcoming Meetings",
+    calendar: "Meeting Calendar",
+    agenda: "Meeting Agenda",
+    recordings: "Meeting Recordings",
+  };
+  const title = titleMap[section] || "Meetings";
 
   const stats = {
     total: meetings.length,
@@ -48,7 +69,7 @@ export default function MeetingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-display font-black text-slate-900 dark:text-white mb-2">
-          Meetings
+          {title}
         </h1>
         <p className="text-slate-500 dark:text-zinc-400 text-sm">
           Schedule and manage project meetings.
@@ -73,20 +94,16 @@ export default function MeetingsPage() {
         </Card>
       </div>
 
-      <Card title="Upcoming Meetings" className="p-6">
+      <Card title={title} className="p-6">
         {loading ? (
-          <div className="text-center py-12 text-slate-500">
-            <RefreshCw className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-spin" />
-            <p className="font-mono text-xs">Loading meetings...</p>
-          </div>
-        ) : meetings.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
-            <Calendar className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-            <p className="font-mono text-xs">No meetings scheduled</p>
-          </div>
+          <PortalState loading icon={RefreshCw} title="Loading meetings" />
+        ) : error ? (
+          <PortalState icon={Calendar} title="Meetings unavailable" message={error} actionLabel="Retry" onAction={loadMeetings} />
+        ) : filteredMeetings.length === 0 ? (
+          <PortalState icon={Calendar} title="No meetings scheduled" message="There are no meetings in this view." />
         ) : (
           <div className="space-y-3">
-            {meetings.filter(m => m.status === "upcoming").map((m) => (
+            {filteredMeetings.map((m) => (
               <div key={m.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-zinc-950 rounded-lg">
                 <div>
                   <p className="text-sm font-medium text-slate-900 dark:text-white">{m.title}</p>

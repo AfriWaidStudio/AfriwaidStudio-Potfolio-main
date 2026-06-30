@@ -13,6 +13,11 @@ import BuildJournal from "../../components/BuildJournal";
 import ContactForm from "../../components/ContactForm";
 import AdminDashboard from "../../components/AdminDashboard";
 import SecuritySettings from "../../components/SecuritySettings";
+import Login from "../../components/Login";
+import Register from "../../components/Register";
+import ForgotPassword from "../../components/ForgotPassword";
+import ResetPassword from "../../components/ResetPassword";
+import VerifyEmail from "../../components/VerifyEmail";
 import { Project, Article, JournalEntry, CV, ClientProfile, Inquiry, TrackedAnalytics, ServiceOffer, MediaItem, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings } from "../../types";
 import { AdminWorkspaceLayout } from "../../workspaces/admin/AdminWorkspaceLayout";
 import { ClientWorkspaceLayout } from "../../workspaces/client/ClientWorkspaceLayout";
@@ -33,6 +38,7 @@ import ClientFilesPage from "../../pages/client/FilesPage";
 import ClientTeamPage from "../../pages/client/TeamPage";
 import ClientReportsPage from "../../pages/client/ReportsPage";
 import ClientSettingsPage from "../../pages/client/SettingsPage";
+import TimelinePage from "../../pages/client/TimelinePage";
 
 interface AppRouterProps {
   projects: Project[];
@@ -59,18 +65,18 @@ interface AppRouterProps {
 }
 
 const ROLE_REDIRECTS: Record<string, string> = {
-  "Super Admin": "/admin/dashboard",
+  "Super Admin": "/admin",
   "Admin": "/admin",
   "Developer": "/developer",
   "Operator": "/operator",
   "Moderator": "/moderator",
   "Auditor": "/auditor",
-  "Client": "/client",
+  "Client": "/portal",
   "User": "/dashboard"
 };
 
 function getRedirectPathByRole(role: string): string {
-  return ROLE_REDIRECTS[role] || "/studio";
+  return ROLE_REDIRECTS[role] || "/";
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
@@ -81,19 +87,41 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+const ROLE_HIERARCHY: Record<string, string[]> = {
+  "admin": ["Super Admin", "Admin"],
+  "moderator": ["Super Admin", "Admin", "Moderator"],
+  "auditor": ["Super Admin", "Admin", "Auditor"],
+  "developer": ["Super Admin", "Admin", "Developer"],
+  "operator": ["Super Admin", "Admin", "Operator"],
+  "client": ["Super Admin", "Admin", "Client"],
+  "user": ["Super Admin", "Admin", "User"],
+};
+
 function ProtectedRoute({ children, requiredRole }: { children: React.ReactNode; requiredRole?: string }) {
   const { user } = useAuth();
   const location = useLocation();
-  
+
   if (!user) {
     return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname)}`} replace />;
   }
-  
-  if (requiredRole && user.role !== requiredRole && !(user.role === "Super Admin" && requiredRole === "admin")) {
-    return <Navigate to={getRedirectPathByRole(user.role)} replace />;
+
+  if (requiredRole) {
+    const roleKey = requiredRole.toLowerCase();
+    const allowedRoles = ROLE_HIERARCHY[roleKey] || [requiredRole];
+    if (!allowedRoles.includes(user.role)) {
+      return <Navigate to={getRedirectPathByRole(user.role)} replace />;
+    }
   }
-  
+
   return <>{children}</>;
+}
+
+function AdminSection({ Component, ...props }: { Component: React.ComponentType<any> } & any) {
+  return (
+    <AdminWorkspaceLayout>
+      <Component {...props} />
+    </AdminWorkspaceLayout>
+  );
 }
 
 export function AppRouter({
@@ -106,6 +134,7 @@ export function AppRouter({
 
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={
         <PublicRoute>
           <div className="space-y-16 py-4 md:py-8">
@@ -116,31 +145,66 @@ export function AppRouter({
           </div>
         </PublicRoute>
       } />
-      
+
+      {/* Auth Routes */}
       <Route path="/login" element={
         <PublicRoute>
-          <div>Login Page</div>
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <Login
+              onNavigateToRegister={() => window.location.href = "/register"}
+              onNavigateToForgot={() => window.location.href = "/forgot-password"}
+              onLoginSuccess={() => window.location.href = user ? getRedirectPathByRole(user.role) : "/"}
+            />
+          </div>
         </PublicRoute>
       } />
-      
+
       <Route path="/register" element={
         <PublicRoute>
-          <div>Register Page</div>
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <Register
+              onNavigateToLogin={() => window.location.href = "/login"}
+              onRegisterSuccess={() => window.location.href = "/login"}
+            />
+          </div>
         </PublicRoute>
       } />
-      
-      <Route path="/studio" element={
-        <ProtectedRoute>
-          <div>Studio Dashboard</div>
-        </ProtectedRoute>
+
+      <Route path="/forgot-password" element={
+        <PublicRoute>
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <ForgotPassword
+              onNavigateToLogin={() => window.location.href = "/login"}
+              onNavigateToReset={(token) => window.location.href = `/reset-password?token=${token}`}
+            />
+          </div>
+        </PublicRoute>
       } />
-      
+
+      <Route path="/reset-password" element={
+        <PublicRoute>
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <ResetPassword onNavigateToLogin={() => window.location.href = "/login"} />
+          </div>
+        </PublicRoute>
+      } />
+
+      <Route path="/verify-email" element={
+        <PublicRoute>
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <VerifyEmail onNavigateToLogin={() => window.location.href = "/login"} />
+          </div>
+        </PublicRoute>
+      } />
+
+      {/* User Dashboard */}
       <Route path="/dashboard" element={
-        <ProtectedRoute>
+        <ProtectedRoute requiredRole="user">
           <div>User Dashboard</div>
         </ProtectedRoute>
       } />
-      
+
+      {/* Admin Routes */}
       <Route path="/admin" element={
         <ProtectedRoute requiredRole="admin">
           <AdminWorkspaceLayout>
@@ -163,30 +227,10 @@ export function AppRouter({
           </AdminWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
-      <Route path="/admin/dashboard" element={
-        <ProtectedRoute requiredRole="admin">
-          <AdminWorkspaceLayout>
-            <AdminDashboard
-              projects={projects} articles={articles} journal={journal} cvs={cvs}
-              clients={clients} inquiries={inquiries} analytics={analytics} services={services}
-              media={media} techStack={techStack} testimonials={testimonials} teamMembers={teamMembers}
-              customization={customization}
-              onUpdateCustomization={() => {}}
-              homepageStats={homepageStats}
-              onAddProject={() => {}} onUpdateProject={() => {}} onDeleteProject={() => {}}
-              onAddArticle={() => {}} onDeleteArticle={() => {}}
-              onAddJournal={() => {}} onToggleCV={() => {}} onUpdateCV={() => {}} onAddCV={() => {}} onDeleteCV={() => {}}
-              onAddMedia={() => {}} onDeleteMedia={() => {}} onUpdateTechStack={() => {}}
-              onAddTestimonial={() => {}} onDeleteTestimonial={() => {}}
-              onAddTeamMember={() => {}} onDeleteTeamMember={() => {}} onUpdateTeamMember={() => {}}
-              onAddService={() => {}} onUpdateService={() => {}} onDeleteService={() => {}}
-              onUpdateInquiryStatus={() => {}} onUpdateHomepageStats={() => {}}
-            />
-          </AdminWorkspaceLayout>
-        </ProtectedRoute>
-      } />
-      
+
+      <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
+
+      {/* Moderator Routes */}
       <Route path="/moderator" element={
         <ProtectedRoute requiredRole="moderator">
           <ModeratorWorkspaceLayout>
@@ -194,7 +238,10 @@ export function AppRouter({
           </ModeratorWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
+      <Route path="/moderator/*" element={<Navigate to="/moderator" replace />} />
+
+      {/* Auditor Routes */}
       <Route path="/auditor" element={
         <ProtectedRoute requiredRole="auditor">
           <AuditorWorkspaceLayout>
@@ -202,7 +249,10 @@ export function AppRouter({
           </AuditorWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
+      <Route path="/auditor/*" element={<Navigate to="/auditor" replace />} />
+
+      {/* Developer Routes */}
       <Route path="/developer" element={
         <ProtectedRoute requiredRole="developer">
           <div className="p-6">
@@ -210,7 +260,10 @@ export function AppRouter({
           </div>
         </ProtectedRoute>
       } />
-      
+
+      <Route path="/developer/*" element={<Navigate to="/developer" replace />} />
+
+      {/* Operator Routes */}
       <Route path="/operator" element={
         <ProtectedRoute requiredRole="operator">
           <div className="p-6">
@@ -219,102 +272,124 @@ export function AppRouter({
         </ProtectedRoute>
       } />
 
+      <Route path="/operator/*" element={<Navigate to="/operator" replace />} />
+
+      {/* Client Portal Routes */}
       <Route path="/portal" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientDashboard />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/projects" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientProjects />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
+      <Route path="/portal/timeline" element={
+        <ProtectedRoute requiredRole="client">
+          <ClientWorkspaceLayout>
+            <TimelinePage />
+          </ClientWorkspaceLayout>
+        </ProtectedRoute>
+      } />
+
       <Route path="/portal/deliverables" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientDeliverablesPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/approvals" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientApprovalsPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/invoices" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientInvoicesPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/meetings" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientMeetingsPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/messages" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientMessagesPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/files" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientFilesPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/team" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientTeamPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/reports" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientReportsPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/portal/settings" element={
-        <ProtectedRoute requiredRole="Client">
+        <ProtectedRoute requiredRole="client">
           <ClientWorkspaceLayout>
             <ClientSettingsPage />
           </ClientWorkspaceLayout>
         </ProtectedRoute>
       } />
-      
+
+      <Route path="/portal/*" element={<Navigate to="/portal" replace />} />
+
+      {/* Settings */}
       <Route path="/settings" element={
         <ProtectedRoute>
           <SecuritySettings />
         </ProtectedRoute>
       } />
-      
-      <Route path="/news" element={<div>News Page</div>} />
-      <Route path="/news/:slug" element={<div>News Article</div>} />
+
+      {/* 404 Catch-all */}
+      <Route path="*" element={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-6xl font-bold text-slate-300 dark:text-zinc-700">404</h1>
+            <p className="text-lg text-slate-500 dark:text-zinc-400 mt-2">Page not found</p>
+            <a href="/" className="text-blue-500 hover:text-blue-600 mt-4 inline-block">Go Home</a>
+          </div>
+        </div>
+      } />
     </Routes>
   );
 }

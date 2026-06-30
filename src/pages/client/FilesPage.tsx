@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Folder, FileText, Image, FileJson, Copy, Download, Trash2 } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
 import { Card } from "../../components/ui";
+import { PortalState } from "./PortalState";
 
 interface File {
   id: string;
@@ -13,29 +14,32 @@ interface File {
 }
 
 export default function FilesPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadFiles = async () => {
+    if (!user) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/files", {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+      });
+      if (!res.ok) throw new Error(`Files could not be loaded (${res.status}).`);
+      const data = await res.json();
+      setFiles(data.files || []);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Files could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadFiles = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch("/api/files", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setFiles(data.files || []);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadFiles();
-  }, [token]);
+  }, [user]);
 
   const getIcon = (type: string) => {
     if (type.includes("image")) return Image;
@@ -56,15 +60,11 @@ export default function FilesPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">
-          <Folder className="w-12 h-12 mx-auto mb-4 text-slate-300 animate-pulse" />
-          <p className="font-mono text-xs">Loading files...</p>
-        </div>
+        <PortalState loading icon={Folder} title="Loading files" />
+      ) : error ? (
+        <PortalState icon={Folder} title="Files unavailable" message={error} actionLabel="Retry" onAction={loadFiles} />
       ) : files.length === 0 ? (
-        <div className="text-center py-12 text-slate-500">
-          <FileText className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-          <p className="font-mono text-xs">No files available</p>
-        </div>
+        <PortalState icon={FileText} title="No files available" message="Project files and deliverables will appear here once shared." />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {files.map((f) => {
@@ -74,13 +74,13 @@ export default function FilesPage() {
                 <div className="flex items-center justify-between mb-3">
                   <Icon className="w-8 h-8 text-slate-500" />
                   <div className="flex gap-1">
-                    <button className="p-1 text-slate-400 hover:text-slate-600">
+                    <button className="p-1 text-slate-400 hover:text-slate-600" title="Copy file reference" aria-label={`Copy ${f.name} reference`}>
                       <Copy className="w-4 h-4" />
                     </button>
-                    <button className="p-1 text-slate-400 hover:text-slate-600">
+                    <button className="p-1 text-slate-400 hover:text-slate-600" title="Download file" aria-label={`Download ${f.name}`}>
                       <Download className="w-4 h-4" />
                     </button>
-                    <button className="p-1 text-slate-400 hover:text-red-500">
+                    <button className="p-1 text-slate-400 hover:text-red-500" title="Delete file" aria-label={`Delete ${f.name}`}>
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

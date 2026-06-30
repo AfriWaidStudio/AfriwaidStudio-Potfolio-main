@@ -1,30 +1,29 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Shield, Users, Settings, BarChart3, FileText, MessageSquare, Database, Globe, Key, Activity, LogOut } from "lucide-react";
 import { Button } from "../../components/ui";
 
 const ADMIN_NAVIGATION = [
-  { icon: BarChart3, label: "Overview", path: "/workspace/admin" },
-  { icon: Users, label: "Users", path: "/workspace/admin/users" },
-  { icon: FileText, label: "Projects", path: "/workspace/admin/projects" },
-  { icon: Database, label: "Content", path: "/workspace/admin/content" },
-  { icon: MessageSquare, label: "Support", path: "/workspace/admin/support" },
-  { icon: Globe, label: "Website", path: "/" },
-  { icon: Settings, label: "Settings", path: "/workspace/admin/settings" },
+  { icon: BarChart3, label: "Overview", path: "/admin" },
+  { icon: Users, label: "Users", path: "/admin/users" },
+  { icon: FileText, label: "Projects", path: "/admin/projects" },
+  { icon: Database, label: "Content", path: "/admin/content" },
+  { icon: MessageSquare, label: "Support", path: "/admin/support" },
+  { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];
 
 interface AdminWorkspaceLayoutProps {
   children: React.ReactNode;
-  activeTab?: string;
-  setActiveTab?: (tab: string) => void;
 }
 
-export function AdminWorkspaceLayout({ children, activeTab = "Admin Central", setActiveTab }: AdminWorkspaceLayoutProps) {
-  const handleNavigationClick = (path: string, tabName: string) => {
-    if (setActiveTab) {
-      setActiveTab(tabName);
+export function AdminWorkspaceLayout({ children }: AdminWorkspaceLayoutProps) {
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === "/admin") {
+      return location.pathname === "/admin";
     }
-    window.history.pushState({}, "", path);
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -38,25 +37,28 @@ export function AdminWorkspaceLayout({ children, activeTab = "Admin Central", se
             <span className="font-bold text-lg">AfriWaid Admin</span>
           </Link>
         </div>
-        
-        <nav className="flex-1 p-4 space-y-1">
+
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {ADMIN_NAVIGATION.map((item) => {
-            const isActive = activeTab === item.label;
             const Icon = item.icon;
+            const active = isActive(item.path);
             return (
-              <Button
+              <Link
                 key={item.path}
-                variant={isActive ? "primary" : "ghost"}
-                onClick={() => handleNavigationClick(item.path, item.label)}
-                className="w-full justify-start"
-                leftIcon={<Icon className="w-5 h-5" />}
+                to={item.path}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                  active
+                    ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400"
+                    : "text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900"
+                }`}
               >
-                {item.label}
-              </Button>
+                <Icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </Link>
             );
           })}
         </nav>
-        
+
         <div className="p-4 border-t border-slate-200 dark:border-neutral-800">
           <Button
             variant="ghost"
@@ -64,6 +66,8 @@ export function AdminWorkspaceLayout({ children, activeTab = "Admin Central", se
               localStorage.removeItem('auth_token');
               localStorage.removeItem('token');
               localStorage.removeItem('afriwaid_admin_role');
+              localStorage.removeItem('afriwaid_auth_token');
+              localStorage.removeItem('afriwaid_fallback_user');
               window.location.href = '/';
             }}
             className="w-full justify-start text-slate-600 dark:text-zinc-400 hover:text-red-600"
@@ -73,9 +77,9 @@ export function AdminWorkspaceLayout({ children, activeTab = "Admin Central", se
           </Button>
         </div>
       </aside>
-      
+
       <div className="flex-1 flex flex-col">
-        <header className="h-14 border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between px-6">
+        <header className="h-14 border-b border-slate-200 dark:border-neutral-800 flex items-center justify-between px-6 bg-white dark:bg-zinc-950">
           <h1 className="font-semibold">Administration Center</h1>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" className="p-2">
@@ -86,8 +90,8 @@ export function AdminWorkspaceLayout({ children, activeTab = "Admin Central", se
             </Button>
           </div>
         </header>
-        
-        <main className="flex-1 p-6">
+
+        <main className="flex-1 p-6 overflow-y-auto">
           {children}
         </main>
       </div>
