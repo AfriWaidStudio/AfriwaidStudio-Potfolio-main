@@ -272,7 +272,7 @@ function AppContent() {
   const [wsSocket, setWsSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+    const token = localStorage.getItem("afriwaid_auth_token") || sessionStorage.getItem("afriwaid_auth_token") || "";
     if (!token) {
       if (wsSocket) {
         wsSocket.close();
@@ -913,7 +913,7 @@ function AppContent() {
                   <button
                     onClick={async () => {
                       try {
-                        const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+                        const token = localStorage.getItem("afriwaid_auth_token") || sessionStorage.getItem("afriwaid_auth_token") || "";
                         await fetch("/api/notifications/read-all", {
                           method: "PUT",
                           headers: { "Authorization": `Bearer ${token}` }
@@ -1412,22 +1412,18 @@ function AppContent() {
           user ? (
             <DashboardLayout>
               {location.pathname === "/portal" && <DashboardPage />}
-              {location.pathname === "/portal/dashboard" && <DashboardPage />}
-              {location.pathname === "/portal/projects" && <ClientProjectsPage />}
-              {location.pathname === "/portal/projects/active" && <ClientProjectsPage />}
-              {location.pathname === "/portal/projects/kanban" && <ClientProjectsPage />}
-              {location.pathname === "/portal/deliverables" && <DeliverablesPage />}
-              {location.pathname === "/portal/approvals" && <ApprovalsPage />}
-              {location.pathname === "/portal/invoices" && <InvoicesPage />}
-              {location.pathname === "/portal/invoices/ledger" && <InvoicesPage />}
-              {location.pathname === "/portal/meetings" && <MeetingsPage />}
-              {location.pathname === "/portal/messages" && <MessagesPage />}
-              {location.pathname === "/portal/files" && <FilesPage />}
-              {location.pathname === "/portal/team" && <TeamPage />}
-              {location.pathname === "/portal/reports" && <ReportsPage />}
-              {location.pathname === "/portal/settings" && <SettingsPage />}
-              {location.pathname === "/portal/settings/security" && <SettingsPage />}
-              {location.pathname === "/portal/timeline" && <TimelinePage />}
+              {location.pathname.startsWith("/portal/dashboard") && <DashboardPage />}
+              {location.pathname.startsWith("/portal/projects") && <ClientProjectsPage />}
+              {location.pathname.startsWith("/portal/deliverables") && <DeliverablesPage />}
+              {location.pathname.startsWith("/portal/approvals") && <ApprovalsPage />}
+              {location.pathname.startsWith("/portal/invoices") && <InvoicesPage />}
+              {location.pathname.startsWith("/portal/meetings") && <MeetingsPage />}
+              {location.pathname.startsWith("/portal/messages") && <MessagesPage />}
+              {location.pathname.startsWith("/portal/files") && <FilesPage />}
+              {location.pathname.startsWith("/portal/team") && <TeamPage />}
+              {location.pathname.startsWith("/portal/reports") && <ReportsPage />}
+              {location.pathname.startsWith("/portal/settings") && <SettingsPage />}
+              {location.pathname.startsWith("/portal/timeline") && <TimelinePage />}
             </DashboardLayout>
           ) : (
             <UnifiedAuthGate

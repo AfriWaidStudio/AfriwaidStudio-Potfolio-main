@@ -36,30 +36,22 @@ export default function SecuritySettings() {
   // Active Sessions
   const [sessions, setSessions] = useState<SessionDetails[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [sessionsErrorMsg, setSessionsErrorMsg] = useState("");
 
   const fetchActiveSessions = async () => {
     if (!token) return;
     setSessionsLoading(true);
+    setSessionsErrorMsg("");
     try {
       const res = await fetch("/api/auth/sessions", {
         headers: { "Authorization": `Bearer ${token}` }
       });
-      if (res.ok) {
-        const data = await res.json();
-        setSessions(data.sessions || []);
-      }
+      if (!res.ok) throw new Error(`Sessions could not be loaded (${res.status}).`);
+      const data = await res.json();
+      setSessions(data.sessions || []);
     } catch (e) {
-      console.warn("Sessions retrieval fallback activated (local simulated sessions listed)", e);
-      setSessions([
-        {
-          id: "s-simulated-1",
-          ipAddress: "127.0.0.1",
-          userAgent: navigator.userAgent,
-          createdAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-          isCurrent: true
-        }
-      ]);
+      console.warn("Sessions retrieval failed.", e);
+      setSessionsErrorMsg(e instanceof Error ? e.message : "Sessions could not be loaded.");
     } finally {
       setSessionsLoading(false);
     }
@@ -135,10 +127,12 @@ export default function SecuritySettings() {
       });
       if (res.ok) {
         setSessions(prev => prev.filter(s => s.id !== sessionId));
+      } else {
+        setSessionsErrorMsg(`Session could not be revoked (${res.status}).`);
       }
     } catch (e) {
-      console.warn("Session revoke request failed. Offline bypass enabled.", e);
-      setSessions([]);
+      console.warn("Session revoke request failed.", e);
+      setSessionsErrorMsg("Session could not be revoked. Please try again shortly.");
     }
   };
 
@@ -346,6 +340,15 @@ export default function SecuritySettings() {
             Revoke All Other Sessions
           </button>
         </div>
+
+        {sessionsErrorMsg && (
+          <div className="p-3 rounded-lg border border-red-200 bg-red-50 text-red-700 font-mono text-xs flex items-center justify-between gap-3">
+            <span>{sessionsErrorMsg}</span>
+            <button type="button" onClick={fetchActiveSessions} className="font-bold uppercase text-[9px] text-red-800 hover:text-red-950">
+              Retry
+            </button>
+          </div>
+        )}
 
         {sessionsLoading ? (
           <div className="py-12 text-center text-slate-400 font-mono text-[11px] flex items-center justify-center gap-1.5">

@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Badge } from "../../components/ui";
 import { PortalState, getRouteLeaf } from "./PortalState";
+import { getPortalAuthHeaders } from "./auth";
+import { PortalMetricCard } from "./PortalMetricCard";
 
 interface Invoice {
   id: string;
@@ -30,7 +32,7 @@ export default function InvoicesPage() {
     setError("");
     try {
       const res = await fetch("/api/invoices", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+        headers: getPortalAuthHeaders()
       });
       if (!res.ok) throw new Error(`Invoices could not be loaded (${res.status}).`);
       const data = await res.json();
@@ -79,26 +81,10 @@ export default function InvoicesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <DollarSign className="w-6 h-6 text-slate-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Total Invoices</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.total}</p>
-        </Card>
-        <Card>
-          <Banknote className="w-6 h-6 text-emerald-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Paid</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.paid}</p>
-        </Card>
-        <Card>
-          <CreditCard className="w-6 h-6 text-red-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Unpaid</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.unpaid}</p>
-        </Card>
-        <Card>
-          <DollarSign className="w-6 h-6 text-blue-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Total Amount</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">${stats.totalAmount.toLocaleString()}</p>
-        </Card>
+        <PortalMetricCard label="Total Invoices" value={stats.total} icon={DollarSign} tone="slate" helper="Billing records" />
+        <PortalMetricCard label="Paid" value={stats.paid} icon={Banknote} tone="emerald" helper="Settled invoices" />
+        <PortalMetricCard label="Unpaid" value={stats.unpaid} icon={CreditCard} tone="rose" helper="Needs payment" />
+        <PortalMetricCard label="Total Amount" value={`$${stats.totalAmount.toLocaleString()}`} icon={DollarSign} tone="blue" helper="Visible ledger value" />
       </div>
 
       <Card title="Invoice List">

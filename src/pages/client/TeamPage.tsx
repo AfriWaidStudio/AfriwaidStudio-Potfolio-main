@@ -3,6 +3,7 @@ import { Users, Mail, ExternalLink } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Badge } from "../../components/ui";
 import { PortalState } from "./PortalState";
+import { getPortalAuthHeaders } from "./auth";
 
 interface TeamMember {
   id: string;
@@ -24,7 +25,7 @@ export default function TeamPage() {
     setError("");
     try {
       const res = await fetch("/api/team", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+        headers: getPortalAuthHeaders()
       });
       if (!res.ok) throw new Error(`Team could not be loaded (${res.status}).`);
       const data = await res.json();

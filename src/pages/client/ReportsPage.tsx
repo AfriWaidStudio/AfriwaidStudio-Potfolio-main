@@ -3,6 +3,7 @@ import { BarChart3, PieChart, TrendingUp, Calendar, DollarSign } from "lucide-re
 import { useAuth } from "../../components/AuthContext";
 import { Card } from "../../components/ui";
 import { PortalState } from "./PortalState";
+import { getPortalAuthHeaders } from "./auth";
 
 export default function ReportsPage() {
   const { user } = useAuth();
@@ -16,7 +17,7 @@ export default function ReportsPage() {
     setError("");
     try {
       const res = await fetch("/api/reports", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+        headers: getPortalAuthHeaders()
       });
       if (!res.ok) throw new Error(`Reports could not be loaded (${res.status}).`);
       const data = await res.json();

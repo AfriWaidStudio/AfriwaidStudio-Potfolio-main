@@ -497,11 +497,7 @@ async function startServer() {
       return res.status(400).json({ error: "An account with this email address or username is already registered." });
     }
 
-    // Dynamic Role resolve: default is User, but Super Admins can assign or bypass
-    let finalRole = "User";
-    if (role && ["Admin", "Operator", "Moderator", "Auditor", "Developer", "Client", "User"].includes(role)) {
-      finalRole = role;
-    }
+    const finalRole = role === "Client" ? "Client" : "User";
 
     const newUser = {
       id: "u-" + crypto.randomUUID(),
@@ -541,8 +537,7 @@ async function startServer() {
         role: newUser.role,
         isEmailVerified: newUser.isEmailVerified,
         status: newUser.status
-      },
-      debugVerificationToken: verifToken // Return token during preview mode for simple testing bypass
+      }
     });
   });
 
@@ -656,6 +651,7 @@ async function startServer() {
 
   // Google Login Endpoint with Automatic Client Allocation & Auto-Provisioning
   app.post("/api/auth/google-login", (req, res) => {
+    return res.status(501).json({ error: "Google sign-in is not configured for this deployment." });
     const { email, firstName, lastName, googleId, avatarUrl } = req.body;
     const ip = req.ip || "127.0.0.1";
     const userAgent = req.headers["user-agent"] || "unknown";
@@ -928,7 +924,6 @@ async function startServer() {
     res.json({
       success: true,
       message: "If matching account credentials are values in registry, forgot verification instructions have been generated.",
-      debugResetToken: resetToken // Expose for testing bypass in container
     });
   });
 
@@ -1026,7 +1021,7 @@ async function startServer() {
     logAudit(db, user.id, user.username, req.ip || "127.0.0.1", "EMAIL_VERIFICATION_RESEND", "auth", "success", "Enqueued standard address token reissue");
     saveDatabase(db);
 
-    res.json({ success: true, debugVerificationToken: verifToken });
+    res.json({ success: true, message: "Verification instructions have been regenerated." });
   });
 
   // UPDATE PASSWORD INSIDE PROTECTED SETTINGS
@@ -1038,7 +1033,7 @@ async function startServer() {
     const db = loadDatabase();
     const user = db.users.find(u => u.id === req.user.id);
 
-    if (!user || user.passwordHash !== hashPassword(currentPassword)) {
+    if (!user || !verifyPassword(currentPassword, user.passwordHash)) {
       logAudit(db, req.user.id, req.user.username, req.ip || "127.0.0.1", "UPDATE_PASSWORD", "auth", "failure", "Failed current password verification");
       saveDatabase(db);
       return res.status(400).json({ error: "Current password validation parameters matching failed." });
@@ -1763,6 +1758,16 @@ async function startServer() {
   // ----------------------------------------------------
   // REAL-TIME CHAT & MESSAGING API MODULE
   // ----------------------------------------------------
+  const enrichChatMessage = (db: DatabaseSchema, msg: any) => {
+    const sender = db.users.find(u => u.id === msg.senderId);
+    return {
+      ...msg,
+      senderUsername: sender?.username || "unknown",
+      senderRole: sender?.role || "User",
+      senderName: sender ? `${sender.firstName} ${sender.lastName}` : "Unknown User"
+    };
+  };
+
   app.get("/api/conversations", (req: any, res) => {
     const db = loadDatabase();
     if (!req.user) return res.status(401).json({ error: "Unauthorized" });
@@ -1781,7 +1786,7 @@ async function startServer() {
     const formatted = conversations.map(c => {
       const messages = db.messages.filter(m => m.conversationId === c.id);
       const sorted = [...messages].sort((a,b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-      const latestMsg = sorted[sorted.length - 1] || null;
+      const latestMsg = sorted[sorted.length - 1] ? enrichChatMessage(db, sorted[sorted.length - 1]) : null;
       
       const unreadCount = messages.filter(m => m.senderId !== req.user.id && (!m.readBy || !m.readBy.includes(req.user.id))).length;
 
@@ -1859,7 +1864,7 @@ async function startServer() {
       broadcastToConversation(convId, { type: "chat:read", payload: { conversationId: convId, userId: req.user.id } });
     }
 
-    res.json({ messages });
+    res.json({ messages: messages.map(m => enrichChatMessage(db, m)) });
   });
 
   app.post("/api/messages", (req: any, res) => {
@@ -1891,7 +1896,9 @@ async function startServer() {
     db.messages.push(newMsg);
     saveDatabase(db);
 
-    broadcastToConversation(conversationId, { type: "chat:message", payload: { message: newMsg } });
+    const enrichedNewMsg = enrichChatMessage(db, newMsg);
+
+    broadcastToConversation(conversationId, { type: "chat:message", payload: { message: enrichedNewMsg } });
 
     const participants = db.conversation_participants
       .filter(p => p.conversationId === conversationId && p.userId !== req.user.id);
@@ -1912,7 +1919,7 @@ async function startServer() {
     });
 
     saveDatabase(db);
-    res.json({ success: true, message: newMsg });
+    res.json({ success: true, message: enrichedNewMsg });
   });
 
   app.put("/api/messages/:id", (req: any, res) => {
@@ -2152,7 +2159,17 @@ async function startServer() {
   // DELIVERABLES MANAGER
   app.get("/api/deliverables", (req: any, res) => {
     const db = loadDatabase();
-    res.json({ deliverables: db.deliverables });
+    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+
+    if (req.user.role === "Super Admin" || req.user.role === "Admin" || req.user.role === "Operator") {
+      return res.json({ deliverables: db.deliverables });
+    }
+
+    const clientProfile = db.clients.find(c => c.userId === req.user.id);
+    const memberProjectIds = db.project_members.filter(pm => pm.userId === req.user.id).map(pm => pm.projectId);
+    const ownedProjectIds = clientProfile ? db.projects.filter(p => p.clientId === clientProfile.id).map(p => p.id) : [];
+    const allowedProjectIds = Array.from(new Set([...memberProjectIds, ...ownedProjectIds]));
+    res.json({ deliverables: db.deliverables.filter(d => allowedProjectIds.includes(d.projectId)) });
   });
 
   app.put("/api/deliverables/:id/review", (req: any, res) => {
@@ -2197,10 +2214,17 @@ async function startServer() {
   // APPROVALS API
   app.get("/api/approvals", (req: any, res) => {
     const db = loadDatabase();
-    const clientProfile = db.clients.find(c => c.userId === (req.user?.id || "u-2"));
+    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+
+    const clientProfile = db.clients.find(c => c.userId === req.user.id);
     const clientProjectIds = db.project_members
-      .filter(pm => pm.userId === (req.user?.id || "u-2"))
+      .filter(pm => pm.userId === req.user.id)
       .map(pm => pm.projectId);
+    if (clientProfile) {
+      db.projects.filter(p => p.clientId === clientProfile.id).forEach(p => {
+        if (!clientProjectIds.includes(p.id)) clientProjectIds.push(p.id);
+      });
+    }
     
     const deliverables = db.deliverables.filter(d => clientProjectIds.includes(d.projectId));
     const milestones = db.milestones.filter(m => clientProjectIds.includes(m.projectId));
@@ -2225,10 +2249,17 @@ async function startServer() {
   // MEETINGS API
   app.get("/api/meetings", (req: any, res) => {
     const db = loadDatabase();
-    const clientProfile = db.clients.find(c => c.userId === (req.user?.id || "u-2"));
+    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+
+    const clientProfile = db.clients.find(c => c.userId === req.user.id);
     const clientProjectIds = db.project_members
-      .filter(pm => pm.userId === (req.user?.id || "u-2"))
+      .filter(pm => pm.userId === req.user.id)
       .map(pm => pm.projectId);
+    if (clientProfile) {
+      db.projects.filter(p => p.clientId === clientProfile.id).forEach(p => {
+        if (!clientProjectIds.includes(p.id)) clientProjectIds.push(p.id);
+      });
+    }
     
     const milestones = db.milestones.filter(m => clientProjectIds.includes(m.projectId));
     
@@ -2248,18 +2279,38 @@ async function startServer() {
   // TEAM API
   app.get("/api/team", (req: any, res) => {
     const db = loadDatabase();
-    const clientProfile = db.clients.find(c => c.userId === (req.user?.id || "u-2"));
+    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+
+    const clientProfile = db.clients.find(c => c.userId === req.user.id);
+    const clientProjectIds = db.project_members
+      .filter(pm => pm.userId === req.user.id)
+      .map(pm => pm.projectId);
+    if (clientProfile) {
+      db.projects.filter(p => p.clientId === clientProfile.id).forEach(p => {
+        if (!clientProjectIds.includes(p.id)) clientProjectIds.push(p.id);
+      });
+    }
     const teamMembers = db.team_members || [];
-    res.json({ team: teamMembers, client: clientProfile });
+    const scopedTeam = req.user.role === "Super Admin" || req.user.role === "Admin"
+      ? teamMembers
+      : teamMembers.filter(tm => clientProjectIds.includes(tm.projectId));
+    res.json({ team: scopedTeam, client: clientProfile || null });
   });
 
   // REPORTS API
   app.get("/api/reports", (req: any, res) => {
     const db = loadDatabase();
-    const clientProfile = db.clients.find(c => c.userId === (req.user?.id || "u-2"));
-    const clientProjectIds = db.project_members.filter(pm => pm.userId === (req.user?.id || "u-2")).map(pm => pm.projectId);
+    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+
+    const clientProfile = db.clients.find(c => c.userId === req.user.id);
+    const clientProjectIds = db.project_members.filter(pm => pm.userId === req.user.id).map(pm => pm.projectId);
+    if (clientProfile) {
+      db.projects.filter(p => p.clientId === clientProfile.id).forEach(p => {
+        if (!clientProjectIds.includes(p.id)) clientProjectIds.push(p.id);
+      });
+    }
     const projects = db.projects.filter(p => clientProjectIds.includes(p.id));
-    const invoices = db.invoices.filter(i => clientProfile && i.clientId === clientProfile.id);
+    const invoices = db.invoices.filter(i => clientProfile && (i.clientId === clientProfile.id || i.company === clientProfile.company));
     const deliverables = db.deliverables.filter(d => clientProjectIds.includes(d.projectId));
     res.json({ 
       summary: { projects: projects.length, invoices: invoices.length, deliverables: deliverables.length },
@@ -2290,10 +2341,17 @@ async function startServer() {
   // FILES API
   app.get("/api/files", (req: any, res) => {
     const db = loadDatabase();
-    const clientProfile = db.clients.find(c => c.userId === (req.user?.id || "u-2"));
+    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+
+    const clientProfile = db.clients.find(c => c.userId === req.user.id);
     const clientProjectIds = db.project_members
-      .filter(pm => pm.userId === (req.user?.id || "u-2"))
+      .filter(pm => pm.userId === req.user.id)
       .map(pm => pm.projectId);
+    if (clientProfile) {
+      db.projects.filter(p => p.clientId === clientProfile.id).forEach(p => {
+        if (!clientProjectIds.includes(p.id)) clientProjectIds.push(p.id);
+      });
+    }
     
     const files = db.files
       .filter(f => clientProjectIds.includes(f.projectId))

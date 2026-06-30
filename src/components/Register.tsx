@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 
 interface RegisterProps {
   onNavigateToLogin: () => void;
-  onRegisterSuccess: (debugToken?: string) => void;
+  onRegisterSuccess: () => void;
 }
 
 export default function Register({ onNavigateToLogin, onRegisterSuccess }: RegisterProps) {
@@ -100,7 +100,7 @@ export default function Register({ onNavigateToLogin, onRegisterSuccess }: Regis
     setIsLoading(false);
 
     if (res.success) {
-      onRegisterSuccess(res.debugVerificationToken);
+      onRegisterSuccess();
     } else {
       setErrorMsg(res.error || "Registry transactional request failed.");
     }

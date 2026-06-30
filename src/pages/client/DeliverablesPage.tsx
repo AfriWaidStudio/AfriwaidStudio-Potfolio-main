@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Badge } from "../../components/ui";
 import { PortalState, getRouteLeaf } from "./PortalState";
+import { getPortalAuthHeaders } from "./auth";
+import { PortalMetricCard } from "./PortalMetricCard";
 
 interface Deliverable {
   id: string;
@@ -27,7 +29,7 @@ export default function DeliverablesPage() {
     setError("");
     try {
       const res = await fetch("/api/deliverables", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+        headers: getPortalAuthHeaders()
       });
       if (!res.ok) throw new Error(`Deliverables could not be loaded (${res.status}).`);
       const data = await res.json();
@@ -72,26 +74,10 @@ export default function DeliverablesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4">
-          <FileText className="w-6 h-6 text-slate-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Total</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.total}</p>
-        </Card>
-        <Card className="p-4">
-          <Folder className="w-6 h-6 text-blue-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Pending</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.pending}</p>
-        </Card>
-        <Card className="p-4">
-          <Check className="w-6 h-6 text-emerald-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Completed</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.completed}</p>
-        </Card>
-        <Card className="p-4">
-          <Clock className="w-6 h-6 text-purple-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">In Progress</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.inProgress}</p>
-        </Card>
+        <PortalMetricCard label="Total" value={stats.total} icon={FileText} tone="slate" helper="All deliverables" />
+        <PortalMetricCard label="Pending" value={stats.pending} icon={Folder} tone="blue" helper="Awaiting review" />
+        <PortalMetricCard label="Completed" value={stats.completed} icon={Check} tone="emerald" helper="Approved assets" />
+        <PortalMetricCard label="In Progress" value={stats.inProgress} icon={Clock} tone="purple" helper="Currently moving" />
       </div>
 
       <Card title="Deliverables List" className="p-6">

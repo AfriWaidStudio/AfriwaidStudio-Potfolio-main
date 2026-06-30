@@ -2,27 +2,8 @@ import React, { useState, useEffect } from "react";
 import { BarChart3, FileText, BadgeDollarSign, Layers, Users, Calendar, Activity } from "lucide-react";
 import { useAuth } from "../../components/AuthContext";
 import { Card } from "../../components/ui";
-
-interface StatCardProps {
-  title: string;
-  value: string | number;
-  icon: React.ElementType;
-  color: string;
-}
-
-function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
-  return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] text-slate-400 font-mono uppercase">{title}</span>
-        <Icon className={`w-4 h-4 ${color}`} />
-      </div>
-      <div className="text-2xl font-display font-black text-slate-900 dark:text-white">
-        {value}
-      </div>
-    </Card>
-  );
-}
+import { getPortalAuthToken } from "./auth";
+import { PortalMetricCard } from "./PortalMetricCard";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -39,7 +20,7 @@ export default function DashboardPage() {
   ]);
 
   useEffect(() => {
-    const token = localStorage.getItem("afriwaid_auth_token") || "";
+    const token = getPortalAuthToken();
     if (!token) return;
 
     Promise.all([
@@ -83,10 +64,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Progress" value={`${stats.progress}%`} icon={BarChart3} color="text-cyan-500" />
-        <StatCard title="Active Tasks" value={stats.tasks} icon={Layers} color="text-purple-500" />
-        <StatCard title="Deliverables" value={stats.deliverables} icon={FileText} color="text-slate-500" />
-        <StatCard title="Invoices" value={stats.invoices} icon={BadgeDollarSign} color="text-emerald-500" />
+        <PortalMetricCard label="Progress" value={`${stats.progress}%`} icon={BarChart3} tone="cyan" helper="Average project progress" />
+        <PortalMetricCard label="Projects" value={stats.tasks} icon={Layers} tone="purple" helper="Visible workspaces" />
+        <PortalMetricCard label="Deliverables" value={stats.deliverables} icon={FileText} tone="slate" helper="Available assets" />
+        <PortalMetricCard label="Invoices" value={stats.invoices} icon={BadgeDollarSign} tone="emerald" helper="Billing records" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

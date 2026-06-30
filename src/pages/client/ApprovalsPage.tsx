@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Badge } from "../../components/ui";
 import { PortalState, getRouteLeaf } from "./PortalState";
+import { getPortalAuthHeaders } from "./auth";
+import { PortalMetricCard } from "./PortalMetricCard";
 
 interface Approval {
   id: string;
@@ -25,7 +27,7 @@ export default function ApprovalsPage() {
     setError("");
     try {
       const res = await fetch("/api/approvals", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+        headers: getPortalAuthHeaders()
       });
       if (!res.ok) throw new Error(`Approvals could not be loaded (${res.status}).`);
       const data = await res.json();
@@ -64,26 +66,10 @@ export default function ApprovalsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card className="p-4">
-          <CheckSquare className="w-6 h-6 text-slate-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Total</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.total}</p>
-        </Card>
-        <Card className="p-4">
-          <Clock className="w-6 h-6 text-blue-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Pending</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.pending}</p>
-        </Card>
-        <Card className="p-4">
-          <CheckSquare className="w-6 h-6 text-emerald-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Approved</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.approved}</p>
-        </Card>
-        <Card className="p-4">
-          <Archive className="w-6 h-6 text-purple-500 mb-2" />
-          <p className="text-[10px] text-slate-400 font-mono uppercase">Rejected</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.rejected}</p>
-        </Card>
+        <PortalMetricCard label="Total" value={stats.total} icon={CheckSquare} tone="slate" helper="All approval items" />
+        <PortalMetricCard label="Pending" value={stats.pending} icon={Clock} tone="blue" helper="Needs attention" />
+        <PortalMetricCard label="Approved" value={stats.approved} icon={CheckSquare} tone="emerald" helper="Cleared items" />
+        <PortalMetricCard label="Rejected" value={stats.rejected} icon={Archive} tone="rose" helper="Returned items" />
       </div>
 
       <Card title="Approvals List" className="p-6">

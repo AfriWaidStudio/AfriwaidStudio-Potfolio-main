@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Card, Input, Button } from "../../components/ui";
 import { PortalState, getRouteLeaf } from "./PortalState";
+import { getPortalAuthHeaders } from "./auth";
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ export default function SettingsPage() {
     setError("");
     try {
       const res = await fetch("/api/settings", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+        headers: getPortalAuthHeaders()
       });
       if (!res.ok) throw new Error(`Settings could not be loaded (${res.status}).`);
       const data = await res.json();
@@ -43,7 +44,7 @@ export default function SettingsPage() {
     try {
       const res = await fetch("/api/settings/profile", {
         method: "PUT",
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}`, "Content-Type": "application/json" },
+        headers: { ...getPortalAuthHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify(settings.profile)
       });
       if (!res.ok) throw new Error(`Settings could not be saved (${res.status}).`);

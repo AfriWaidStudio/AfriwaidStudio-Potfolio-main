@@ -575,6 +575,7 @@ export default function AdminDashboard({
   const [newDeliverableDesc, setNewDeliverableDesc] = useState("");
   const [workspaceSuccessMsg, setWorkspaceSuccessMsg] = useState("");
 
+  const [selectedAdminClientId, setSelectedAdminClientId] = useState("");
   const [activeAdminConvoId, setActiveAdminConvoId] = useState("");
   const [adminChatMessages, setAdminChatMessages] = useState<any[]>([]);
   const [adminNewMessageText, setAdminNewMessageText] = useState("");
@@ -5300,32 +5301,32 @@ export default function AdminDashboard({
                     
                     <div className="space-y-2">
                       {clients.map((c) => {
-                        const isSelected = activeAdminConvoId === c.id;
+                        const isSelected = selectedAdminClientId === c.id;
                         return (
                           <div
                             key={c.id}
                             onClick={async () => {
-                              setActiveAdminConvoId(c.id);
-                              // Fetch conversation history from the database
-                              const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+                              setSelectedAdminClientId(c.id);
+                              setActiveAdminConvoId("");
+                              setAdminChatMessages([]);
+                              const token = localStorage.getItem("afriwaid_auth_token") || sessionStorage.getItem("afriwaid_auth_token") || "";
                               try {
                                 const res = await fetch("/api/conversations", {
                                   headers: { "Authorization": `Bearer ${token}` }
                                 });
                                 const convos = await res.json();
-                                if (convos && convos.length > 0) {
-                                  // Fetch messages for this convo
-                                  const cId = convos[0].id;
-                                  const listRes = await fetch(`/api/conversations/${cId}/messages`, {
+                                const list = Array.isArray(convos) ? convos : (convos.conversations || []);
+                                const supportConvo = list.find((convo: any) => {
+                                  const name = `${convo.name || ""}`.toLowerCase();
+                                  return convo.type === "support" && (name.includes(c.company.toLowerCase()) || name.includes(c.name.toLowerCase()));
+                                }) || list.find((convo: any) => convo.type === "support") || list[0];
+                                if (supportConvo?.id) {
+                                  setActiveAdminConvoId(supportConvo.id);
+                                  const listRes = await fetch(`/api/messages/${supportConvo.id}`, {
                                     headers: { "Authorization": `Bearer ${token}` }
                                   });
-                                  const msgs = await listRes.json();
-                                  setAdminChatMessages(msgs);
-                                } else {
-                                  // Fallback simulation support logs
-                                  setAdminChatMessages([
-                                    { id: "sm-1", senderUsername: c.email.split("@")[0], senderRole: "Client", body: `Hello! We uploaded the project spec and have questions on stage 2 deliverables.`, createdAt: new Date().toISOString() }
-                                  ]);
+                                  const msgPayload = await listRes.json();
+                                  setAdminChatMessages(Array.isArray(msgPayload) ? msgPayload : (msgPayload.messages || []));
                                 }
                               } catch (err) {
                                 console.error("Error loading chat in admin panel", err);
@@ -5361,11 +5362,12 @@ export default function AdminDashboard({
                             <div className="text-slate-400 dark:text-zinc-555 text-center pt-24 font-mono">Channel active. Type a greeting below.</div>
                           ) : (
                             adminChatMessages.map((msg, idx) => {
-                              const isClient = msg.senderRole === "Client" || msg.senderUsername !== authUser?.username;
+                              const senderLabel = msg.senderUsername || msg.senderName || msg.senderId || "Unknown";
+                              const isClient = msg.senderRole === "Client" || senderLabel !== authUser?.username;
                               return (
                                 <div key={msg.id || idx} className={`flex flex-col max-w-[75%] space-y-1 ${isClient ? "mr-auto text-left" : "ml-auto text-right"}`}>
                                   <span className="text-[8px] text-slate-500 dark:text-zinc-500 font-mono">
-                                    {msg.senderUsername} • {new Date(msg.createdAt).toLocaleTimeString()}
+                                    {senderLabel} - {new Date(msg.createdAt || msg.timestamp).toLocaleTimeString()}
                                   </span>
                                   <div className={`p-3 rounded-2xl text-xs leading-relaxed ${
                                     isClient 
@@ -5386,21 +5388,22 @@ export default function AdminDashboard({
                           e.preventDefault();
                           if (!adminNewMessageText.trim()) return;
                           
-                          const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
-                          const targetConvoId = "simulate-global-convo";
+                          const token = localStorage.getItem("afriwaid_auth_token") || sessionStorage.getItem("afriwaid_auth_token") || "";
+                          const targetConvoId = activeAdminConvoId;
+                          if (!targetConvoId) return;
 
                           try {
-                            const res = await fetch(`/api/conversations/${targetConvoId}/messages`, {
+                            const res = await fetch("/api/messages", {
                               method: "POST",
                               headers: {
                                 "Content-Type": "application/json",
                                 "Authorization": `Bearer ${token}`
                               },
-                              body: JSON.stringify({ body: adminNewMessageText })
+                              body: JSON.stringify({ conversationId: targetConvoId, body: adminNewMessageText })
                             });
                             const data = await res.json();
-                            if (data && data.msg) {
-                              setAdminChatMessages(prev => [...prev, data.msg]);
+                            if (data && data.message) {
+                              setAdminChatMessages(prev => [...prev, data.message]);
                               setAdminNewMessageText("");
                             }
                           } catch (err) {
@@ -5453,7 +5456,7 @@ export default function AdminDashboard({
                     e.preventDefault();
                     if (!broadcastTitle || !broadcastBody) return;
                     
-                    const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+                    const token = localStorage.getItem("afriwaid_auth_token") || sessionStorage.getItem("afriwaid_auth_token") || "";
                     try {
                       const res = await fetch("/api/notifications/broadcast", {
                         method: "POST",

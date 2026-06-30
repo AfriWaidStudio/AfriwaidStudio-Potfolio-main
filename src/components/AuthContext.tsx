@@ -8,11 +8,11 @@ interface AuthContextType {
   permissionsAndRoles: { roles: Role[]; permissions: Permission[] };
   login: (credential: string, code: string, remember: boolean) => Promise<{ success: boolean; error?: string }>;
   googleLogin: (email: string, firstName: string, lastName: string, googleId?: string, avatarUrl?: string) => Promise<{ success: boolean; error?: string }>;
-  register: (first: string, last: string, user: string, mail: string, code: string, requestedRole?: string) => Promise<{ success: boolean; error?: string; debugVerificationToken?: string }>;
+  register: (first: string, last: string, user: string, mail: string, code: string, requestedRole?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   updateProfile: (first: string, last: string, user: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (curr: string, nextPass: string) => Promise<{ success: boolean; error?: string }>;
-  forgotPassword: (mail: string) => Promise<{ success: boolean; message?: string; error?: string; debugResetToken?: string }>;
+  forgotPassword: (mail: string) => Promise<{ success: boolean; message?: string; error?: string }>;
   resetPassword: (tokenStr: string, passcode: string) => Promise<{ success: boolean; error?: string }>;
   verifyEmail: (tokenStr: string) => Promise<{ success: boolean; error?: string }>;
   checkPermission: (action: string) => boolean;
@@ -75,12 +75,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             sessionStorage.removeItem("afriwaid_auth_token");
           }
         } catch (e) {
-          console.warn("Offline server detection mode enabled. Reading fallback standard session storage.", e);
-          const fallbackUser = localStorage.getItem("afriwaid_fallback_user");
-          if (fallbackUser && !user) {
-            setUser(JSON.parse(fallbackUser));
-            setToken(storedToken);
-          }
+          console.warn("Auth bootstrap failed; clearing local session.", e);
+          localStorage.removeItem("afriwaid_auth_token");
+          sessionStorage.removeItem("afriwaid_auth_token");
         }
       }
       
@@ -109,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           localStorage.setItem("afriwaid_auth_token", data.token);
         } else {
           sessionStorage.setItem("afriwaid_auth_token", data.token);
-          localStorage.setItem("afriwaid_auth_token", data.token); // Keep in local fallback
+          localStorage.removeItem("afriwaid_auth_token");
         }
         await reloadPermissionsAndUsers();
         return { success: true };
@@ -117,86 +114,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: data.error || "Logins authenticate trigger failed." };
       }
     } catch (e) {
-      // Simulate client fallback if backend is offline/under startup build
-      console.warn("Bypassing server logic - enabling static fallback authorization", e);
-      if (credential === "logistics@aeroglobal.com" && code === "waidpulse") {
-        const simulatedUser: User = {
-          id: "u-2",
-          firstName: "Aero",
-          lastName: "Logistics",
-          username: "aeroglobal",
-          email: "logistics@aeroglobal.com",
-          role: "Client",
-          isEmailVerified: true,
-          status: "active",
-          createdAt: new Date().toISOString()
-        };
-        setUser(simulatedUser);
-        setToken("simulated_active_token");
-        localStorage.setItem("afriwaid_auth_token", "simulated_active_token");
-        localStorage.setItem("afriwaid_fallback_user", JSON.stringify(simulatedUser));
-        return { success: true };
-      } else if (credential === "waidsoko@gmail.com" && code === "superpassword") {
-        const simulatedUser: User = {
-          id: "u-1",
-          firstName: "Waid",
-          lastName: "Soko",
-          username: "lasiri_waid",
-          email: "waidsoko@gmail.com",
-          role: "Super Admin",
-          isEmailVerified: true,
-          status: "active",
-          createdAt: new Date().toISOString()
-        };
-        setUser(simulatedUser);
-        setToken("simulated_active_token_admin");
-        localStorage.setItem("afriwaid_auth_token", "simulated_active_token_admin");
-        localStorage.setItem("afriwaid_fallback_user", JSON.stringify(simulatedUser));
-        return { success: true };
-      }
-      return { success: false, error: "Authentication credentials verification mismatch error." };
+      console.warn("Login request failed.", e);
+      return { success: false, error: "Authentication service is unavailable. Please try again shortly." };
     }
   };
 
   const googleLogin = async (email: string, firstName: string, lastName: string, googleId?: string, avatarUrl?: string): Promise<{ success: boolean; error?: string }> => {
-    try {
-      const res = await fetch("/api/auth/google-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, firstName, lastName, googleId, avatarUrl })
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setUser(data.user);
-        setToken(data.token);
-        localStorage.setItem("afriwaid_auth_token", data.token);
-        await reloadPermissionsAndUsers();
-        return { success: true };
-      } else {
-        return { success: false, error: data.error || "Google login parameters validation failed." };
-      }
-    } catch (e) {
-      console.warn("Offline google login fallback", e);
-      const simulatedUser: User = {
-        id: "u-1",
-        firstName: firstName || "Waid",
-        lastName: lastName || "Soko",
-        username: email.split("@")[0] + "_g",
-        email: email,
-        role: "Client",
-        isEmailVerified: true,
-        status: "active",
-        createdAt: new Date().toISOString()
-      };
-      setUser(simulatedUser);
-      setToken("simulated_active_token_google");
-      localStorage.setItem("afriwaid_auth_token", "simulated_active_token_google");
-      localStorage.setItem("afriwaid_fallback_user", JSON.stringify(simulatedUser));
-      return { success: true };
-    }
+    return { success: false, error: "Google sign-in is not configured for this deployment." };
   };
 
-  const register = async (first: string, last: string, userStr: string, mail: string, code: string, requestedRole = "User"): Promise<{ success: boolean; error?: string; debugVerificationToken?: string }> => {
+  const register = async (first: string, last: string, userStr: string, mail: string, code: string, requestedRole = "User"): Promise<{ success: boolean; error?: string }> => {
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -205,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        return { success: true, debugVerificationToken: data.debugVerificationToken };
+        return { success: true };
       } else {
         return { success: false, error: data.error || "Registration validation transaction failed." };
       }
@@ -229,7 +156,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setToken(null);
     localStorage.removeItem("afriwaid_auth_token");
-    localStorage.removeItem("afriwaid_fallback_user");
     localStorage.removeItem("afriwaid_admin_role");
     sessionStorage.removeItem("afriwaid_auth_token");
   };
@@ -247,21 +173,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await res.json();
       if (res.ok && data.success) {
         setUser(data.user);
-        if (localStorage.getItem("afriwaid_fallback_user")) {
-          localStorage.setItem("afriwaid_fallback_user", JSON.stringify(data.user));
-        }
         return { success: true };
       }
       return { success: false, error: data.error || "Failed profile updating." };
     } catch (e) {
-      // Offline fallback
-      if (user) {
-        const updated = { ...user, firstName: first, lastName: last, username: userStr };
-        setUser(updated);
-        localStorage.setItem("afriwaid_fallback_user", JSON.stringify(updated));
-        return { success: true };
-      }
-      return { success: false, error: "System routing interface exception." };
+      console.warn("Profile update request failed.", e);
+      return { success: false, error: "Profile service is unavailable. Please try again shortly." };
     }
   };
 
@@ -283,7 +200,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const forgotPassword = async (mail: string): Promise<{ success: boolean; message?: string; error?: string; debugResetToken?: string }> => {
+  const forgotPassword = async (mail: string): Promise<{ success: boolean; message?: string; error?: string }> => {
     try {
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
@@ -292,7 +209,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       const data = await res.json();
       if (res.ok) {
-        return { success: true, message: data.message, debugResetToken: data.debugResetToken };
+        return { success: true, message: data.message };
       }
       return { success: false, error: data.error || "Request reset trigger failed." };
     } catch (e) {
@@ -327,7 +244,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (user) {
           const updated = { ...user, isEmailVerified: true };
           setUser(updated);
-          localStorage.setItem("afriwaid_fallback_user", JSON.stringify(updated));
         }
         return { success: true };
       }

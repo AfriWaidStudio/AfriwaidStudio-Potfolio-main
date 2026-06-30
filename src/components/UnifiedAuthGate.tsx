@@ -22,13 +22,9 @@ export default function UnifiedAuthGate({ onAuthSuccess, requiredRole, subTitle 
     setMode("reset");
   };
 
-  const handleRegisterSuccess = (debugToken?: string) => {
-    if (debugToken) {
-      setVerificationToken(debugToken);
-      setMode("verify");
-    } else {
-      setMode("verify"); // Go to standard verification token paste page
-    }
+  const handleRegisterSuccess = () => {
+    setVerificationToken("");
+    setMode("verify");
   };
 
   return (

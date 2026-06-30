@@ -3,6 +3,7 @@ import { Folder, FileText, Image, FileJson, Copy, Download, Trash2 } from "lucid
 import { useAuth } from "../../components/AuthContext";
 import { Card } from "../../components/ui";
 import { PortalState } from "./PortalState";
+import { getPortalAuthHeaders } from "./auth";
 
 interface File {
   id: string;
@@ -25,7 +26,7 @@ export default function FilesPage() {
     setError("");
     try {
       const res = await fetch("/api/files", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("afriwaid_auth_token") || ""}` }
+        headers: getPortalAuthHeaders()
       });
       if (!res.ok) throw new Error(`Files could not be loaded (${res.status}).`);
       const data = await res.json();

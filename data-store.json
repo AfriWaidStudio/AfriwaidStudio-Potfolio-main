@@ -95,6 +95,18 @@
       "isEmailVerified": true,
       "status": "active",
       "createdAt": "2026-06-29T12:07:30.254Z"
+    },
+    {
+      "id": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
+      "firstName": "Chinnikstah",
+      "lastName": "Smai",
+      "username": "chinnikstah",
+      "email": "smaichinnikstah@gmail.com",
+      "passwordHash": "$2b$12$V7eVTnS9kcfrDhgDMxHuge/o3/fzFmkYxRgLO2rV43fJtGVPPUKli",
+      "role": "User",
+      "isEmailVerified": false,
+      "status": "active",
+      "createdAt": "2026-06-30T05:01:41.201Z"
     }
   ],
   "roles": [
@@ -303,7 +315,7 @@
       "token": "token_b84438ed0b9e97484a844ab5fb03cf8cf496f43882ec6cc841e3472a2edd77be93866ad8b5f3b14f",
       "ipAddress": "127.0.0.1",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-06-30T02:40:03.515Z",
       "expiresAt": "2026-06-30T04:40:03.514Z"
     },
@@ -316,12 +328,83 @@
       "isActive": true,
       "createdAt": "2026-06-30T04:07:23.007Z",
       "expiresAt": "2026-07-30T04:07:23.004Z"
+    },
+    {
+      "id": "s-9582bc8e-e79a-4354-90ce-fc6257a4f2ba",
+      "userId": "u-2",
+      "token": "token_ebd7e60417484b00dab2e3f3a879bb878568f9d6ac75df483927be1cf0fcbde340572e6e2b0dbb9c",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "isActive": true,
+      "createdAt": "2026-06-30T04:31:31.868Z",
+      "expiresAt": "2026-06-30T06:31:31.867Z"
+    },
+    {
+      "id": "s-0a8bd4ee-741c-42c5-91e9-3dbe89313b44",
+      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
+      "token": "token_38b06e9858839f9e12f2fe709f71b48c75bfc22854d92f10614d77691179629178d0026c5a437b13",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "isActive": true,
+      "createdAt": "2026-06-30T05:02:00.051Z",
+      "expiresAt": "2026-06-30T07:02:00.051Z"
     }
   ],
   "password_resets": [],
-  "email_verifications": [],
+  "email_verifications": [
+    {
+      "id": "ev-3a6339b2-9f72-4925-9f95-f7dd00625710",
+      "email": "smaichinnikstah@gmail.com",
+      "token": "02607d63cf48928642c43c21e7c1559c2bdb8024e45f46ea459a26bc0cf5ceab",
+      "expiresAt": "2026-07-01T05:01:41.201Z"
+    }
+  ],
   "login_attempts": [],
   "audit_logs": [
+    {
+      "id": "l-8cf64330-5ad2-4deb-a41c-2b4985ad40a6",
+      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
+      "username": "chinnikstah",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-06-30T05:02:00.051Z"
+    },
+    {
+      "id": "l-f73208b5-b623-4824-923b-69edcdb58a9b",
+      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
+      "username": "chinnikstah",
+      "ipAddress": "127.0.0.1",
+      "action": "REGISTER",
+      "module": "auth",
+      "status": "success",
+      "details": "Successfully registered user account with assigned role: User",
+      "timestamp": "2026-06-30T05:01:41.201Z"
+    },
+    {
+      "id": "l-38248a81-c6ee-4e21-99e5-4c0d061705be",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-06-30T04:31:31.868Z"
+    },
+    {
+      "id": "l-c16695cb-7050-413b-98b0-88b57137c733",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGOUT",
+      "module": "auth",
+      "status": "success",
+      "details": "Terminated login session client request",
+      "timestamp": "2026-06-30T04:26:17.855Z"
+    },
     {
       "id": "l-52c5ba56-16ea-476a-bd68-4d4437bdea4c",
       "userId": "u-2",
