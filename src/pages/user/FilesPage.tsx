@@ -135,7 +135,7 @@ export default function FilesPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h2 className="font-bold text-slate-900 dark:text-white">{file.name}</h2>
-                  <p className="text-xs text-slate-500">{file.category} · version {file.version} · {file.size}</p>
+                  <p className="text-xs text-slate-500">{file.category} / version {file.version} / {file.size}</p>
                   <p className="text-[10px] text-slate-400 mt-1">Uploaded {formatDate(file.uploadedAt)}</p>
                 </div>
                 <Button

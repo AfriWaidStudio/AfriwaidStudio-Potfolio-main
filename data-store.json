@@ -666,6 +666,66 @@
       "isActive": false,
       "createdAt": "2026-07-01T11:12:01.904Z",
       "expiresAt": "2026-07-01T13:12:01.904Z"
+    },
+    {
+      "id": "s-b4db9afd-8ca1-4a58-9f2e-6641e2eac990",
+      "userId": "u-demo-super-admin",
+      "token": "token_36c04f50543774e2dc29f5d63e4803d09c4c2c71095fea834c00f4a3e6dae9896037b03b88b5dbdf",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "isActive": true,
+      "createdAt": "2026-07-01T11:17:28.907Z",
+      "expiresAt": "2026-07-01T13:17:28.907Z"
+    },
+    {
+      "id": "s-84ae5c71-73c3-41aa-91f5-d122a56cd0a5",
+      "userId": "u-demo-client",
+      "token": "token_46ffe0774e8f52e933860ef055d13c0e330d34f68cdf5d88d56e9bd911cfdd83eea4204c8bad9be2",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T11:19:51.419Z",
+      "expiresAt": "2026-07-31T11:19:51.419Z"
+    },
+    {
+      "id": "s-17f93870-e129-4995-b9d9-bd305181693f",
+      "userId": "u-demo-client",
+      "token": "token_6692c1f88797644a7a8dc09b5b561f1093b2f27049149481206dfe67734f866e221c897af700e479",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T11:20:17.509Z",
+      "expiresAt": "2026-07-31T11:20:17.509Z"
+    },
+    {
+      "id": "s-bf24f2e7-7864-4334-9248-3279e6eaa742",
+      "userId": "u-demo-client",
+      "token": "token_cf1d5ce763f1abc26f784db8859b6f3638a8afd08a6c72618e037df2ed6e60fcc4eb5f321b7bcf40",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T11:20:38.216Z",
+      "expiresAt": "2026-07-31T11:20:38.216Z"
+    },
+    {
+      "id": "s-9ac2ac31-9522-4522-90a2-f378e0a36f9b",
+      "userId": "u-demo-client",
+      "token": "token_99a33718718746af2c0f7ea3ddbdd00d80bf08dd53a9c2eb6cf43f9d7fbf5488794cdd7dd6f9b81d",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T11:24:41.746Z",
+      "expiresAt": "2026-07-31T11:24:41.746Z"
+    },
+    {
+      "id": "s-d53eda74-9944-47c8-8d50-c0c46da37d38",
+      "userId": "u-demo-client",
+      "token": "token_b51a0c1f14fb81dd62312c5033f6e9e1f2241889ce7624d1b87eff4c2e029f11344d7acd3dc24003",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T11:25:15.863Z",
+      "expiresAt": "2026-07-31T11:25:15.863Z"
     }
   ],
   "password_resets": [],
@@ -693,6 +753,83 @@
     }
   ],
   "audit_logs": [
+    {
+      "id": "l-c70e8f9d-f317-4cca-87aa-5daa9e70420b",
+      "userId": "u-demo-client",
+      "username": "demo_client_partner",
+      "ipAddress": "127.0.0.1",
+      "action": "FILE_UPLOAD",
+      "module": "files",
+      "status": "success",
+      "details": "Uploaded workspace attachment: codex-upload-test.txt",
+      "timestamp": "2026-07-01T11:25:17.563Z"
+    },
+    {
+      "id": "l-5c97ca11-d073-4d5f-bacb-44d405b21d71",
+      "userId": "u-demo-client",
+      "username": "demo_client_partner",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T11:25:15.863Z"
+    },
+    {
+      "id": "l-83606650-86a6-4202-844e-7c3bcecc44cb",
+      "userId": "u-demo-client",
+      "username": "demo_client_partner",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T11:24:41.746Z"
+    },
+    {
+      "id": "l-d69ec289-60d9-46b1-97d9-75f8b2083255",
+      "userId": "u-demo-client",
+      "username": "demo_client_partner",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T11:20:38.216Z"
+    },
+    {
+      "id": "l-0827ed5b-8f6b-427d-9d3d-91a61c244254",
+      "userId": "u-demo-client",
+      "username": "demo_client_partner",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T11:20:17.509Z"
+    },
+    {
+      "id": "l-45cfbdab-a1b9-4e9e-a3af-3c6c3b495c1e",
+      "userId": "u-demo-client",
+      "username": "demo_client_partner",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T11:19:51.419Z"
+    },
+    {
+      "id": "l-3bdc65e9-1058-401f-9560-cac806f0c64b",
+      "userId": "u-demo-super-admin",
+      "username": "demo_super_admin",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T11:17:28.907Z"
+    },
     {
       "id": "l-6f699011-e797-415a-8817-7105a6efb428",
       "userId": "u-demo-client",
@@ -1345,6 +1482,23 @@
   ],
   "files": [
     {
+      "id": "file-bbf9df2d-0006-4622-8f0f-43bae1294de3",
+      "projectId": "proj-1",
+      "name": "codex-upload-test.txt",
+      "size": "11 B",
+      "uploadedBy": "u-demo-client",
+      "category": "Documents",
+      "tags": [
+        "Portal",
+        "Verification"
+      ],
+      "mimeType": "text/plain",
+      "content": "SGVsbG8gV29ybGQ=",
+      "dataUrl": "data:text/plain;base64,SGVsbG8gV29ybGQ=",
+      "version": 1,
+      "uploadedAt": "2026-07-01T11:25:17.563Z"
+    },
+    {
       "id": "file-1",
       "projectId": "proj-1",
       "name": "Requirements_Blueprint.pdf",
@@ -1515,6 +1669,36 @@
       "id": "cp-16",
       "conversationId": "conv-proj-support",
       "userId": "u-9"
+    },
+    {
+      "id": "cp-demo-client-conv-1",
+      "conversationId": "conv-1",
+      "userId": "u-demo-client"
+    },
+    {
+      "id": "cp-demo-client-conv-proj-general",
+      "conversationId": "conv-proj-general",
+      "userId": "u-demo-client"
+    },
+    {
+      "id": "cp-demo-client-conv-proj-files",
+      "conversationId": "conv-proj-files",
+      "userId": "u-demo-client"
+    },
+    {
+      "id": "cp-demo-client-conv-proj-payments",
+      "conversationId": "conv-proj-payments",
+      "userId": "u-demo-client"
+    },
+    {
+      "id": "cp-demo-client-conv-proj-feedback",
+      "conversationId": "conv-proj-feedback",
+      "userId": "u-demo-client"
+    },
+    {
+      "id": "cp-demo-client-conv-proj-support",
+      "conversationId": "conv-proj-support",
+      "userId": "u-demo-client"
     }
   ],
   "messages": [
@@ -1525,7 +1709,8 @@
       "body": "Hello AeroGlobal Logistics! Welcome to your secure AfriWaid Workspace. We have loaded your requirements draft files.",
       "timestamp": "2026-06-12T10:00:00.000Z",
       "readBy": [
-        "u-2"
+        "u-2",
+        "u-demo-client"
       ],
       "pinned": true,
       "reactions": []
@@ -1537,7 +1722,8 @@
       "body": "Thank you, Waid! The node tracking system looks extremely clear. I scanned the requirements and everything tracks perfectly.",
       "timestamp": "2026-06-12T10:05:00.000Z",
       "readBy": [
-        "u-1"
+        "u-1",
+        "u-demo-client"
       ],
       "reactions": [
         {
@@ -1553,7 +1739,8 @@
       "body": "Splendid! We completed the design phase and have started the core middleware integration. Feel free to monitor milestones directly.",
       "timestamp": "2026-06-12T10:10:00.000Z",
       "readBy": [
-        "u-2"
+        "u-2",
+        "u-demo-client"
       ],
       "reactions": []
     },
@@ -1563,12 +1750,66 @@
       "senderId": "u-2",
       "body": "Audit probe 1782878556",
       "timestamp": "2026-07-01T04:02:44.399Z",
-      "readBy": [],
+      "readBy": [
+        "u-demo-client"
+      ],
       "pinned": false,
       "reactions": []
+    },
+    {
+      "id": "msg-a542775a-2704-408b-b4e9-7e8e4295bff1",
+      "conversationId": "conv-1",
+      "senderId": "u-demo-client",
+      "body": "Verification chat message with attachment",
+      "timestamp": "2026-07-01T11:25:17.592Z",
+      "readBy": [],
+      "pinned": false,
+      "reactions": [],
+      "attachment": {
+        "name": "chat-proof.txt",
+        "size": "12 B",
+        "type": "text/plain",
+        "url": "data:text/plain;base64,Q2hhdCBwcm9vZg=="
+      }
     }
   ],
   "notifications": [
+    {
+      "id": "nt-e8e80f57-c389-485b-a757-c5a037dfd052",
+      "userId": "u-9",
+      "title": "New Workspace Chat Message",
+      "msg": "demo_client_partner: Verification chat message with attachmen...",
+      "category": "chat",
+      "read": false,
+      "createdAt": "2026-07-01T11:25:17.598Z",
+      "metadata": {
+        "conversationId": "conv-1"
+      }
+    },
+    {
+      "id": "nt-d595a180-8b50-40ea-9370-12e27d0de8ec",
+      "userId": "u-2",
+      "title": "New Workspace Chat Message",
+      "msg": "demo_client_partner: Verification chat message with attachmen...",
+      "category": "chat",
+      "read": false,
+      "createdAt": "2026-07-01T11:25:17.598Z",
+      "metadata": {
+        "conversationId": "conv-1"
+      }
+    },
+    {
+      "id": "nt-757c2eaf-611e-4469-b239-0dfd2aa6a470",
+      "userId": "u-1",
+      "title": "New Workspace Chat Message",
+      "msg": "demo_client_partner: Verification chat message with attachmen...",
+      "category": "chat",
+      "read": false,
+      "createdAt": "2026-07-01T11:25:17.598Z",
+      "metadata": {
+        "conversationId": "conv-1"
+      }
+    },
     {
       "id": "nt-6d2f18aa-c937-454f-b7bb-a78f7694ad3f",
       "userId": "u-9",
@@ -1661,6 +1902,14 @@
     }
   ],
   "project_activities": [
+    {
+      "id": "act-2067f946-591e-4963-892f-4ca9c3807744",
+      "projectId": "proj-1",
+      "title": "File Uploaded",
+      "details": "demo_client_partner uploaded file 'codex-upload-test.txt' (Version 1)",
+      "timestamp": "2026-07-01T11:25:17.563Z",
+      "userId": "u-demo-client"
+    },
     {
       "id": "act-1",
       "projectId": "proj-1",

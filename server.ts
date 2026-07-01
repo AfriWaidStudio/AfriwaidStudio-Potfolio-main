@@ -398,6 +398,19 @@ function ensureDemoAccounts(db: DatabaseSchema): boolean {
     }
   });
 
+  if (demoClient) {
+    ["conv-1", "conv-proj-general", "conv-proj-files", "conv-proj-payments", "conv-proj-feedback", "conv-proj-support"].forEach((conversationId) => {
+      if (!db.conversation_participants.some((participant) => participant.conversationId === conversationId && participant.userId === demoClient.id)) {
+        db.conversation_participants.push({
+          id: `cp-demo-client-${conversationId}`,
+          conversationId,
+          userId: demoClient.id
+        });
+        changed = true;
+      }
+    });
+  }
+
   return changed;
 }
 
@@ -1532,10 +1545,10 @@ async function startServer() {
       res.json({ projects: db.projects });
     } else if (req.user.role === "Client") {
       const clientProfile = db.clients.find(c => c.userId === req.user.id);
+      const allowedProjectIds = db.project_members.filter(m => m.userId === req.user.id).map(m => m.projectId);
       if (clientProfile) {
-        res.json({ projects: db.projects.filter(p => p.clientId === clientProfile.id) });
+        res.json({ projects: db.projects.filter(p => p.clientId === clientProfile.id || allowedProjectIds.includes(p.id)) });
       } else {
-        const allowedProjectIds = db.project_members.filter(m => m.userId === req.user.id).map(m => m.projectId);
         res.json({ projects: db.projects.filter(p => allowedProjectIds.includes(p.id)) });
       }
     } else {

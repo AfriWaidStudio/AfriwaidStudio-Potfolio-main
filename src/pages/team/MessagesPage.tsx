@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Image, MessageSquare, Paperclip, RefreshCw, Send } from "lucide-react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Download, Image, MessageSquare, Paperclip, RefreshCw, Send, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Button, Input } from "../../components/ui";
 import { PortalState } from "../user/PortalState";
-import { getPortalAuthHeaders } from "../user/auth";
+import { portalRequest } from "../user/portalApi";
 
 interface Conversation {
   id: string;
@@ -25,13 +25,22 @@ interface Message {
   body: string;
   timestamp?: string;
   createdAt?: string;
+  attachment?: {
+    name: string;
+    size?: string;
+    type?: string;
+    url?: string;
+  };
 }
 
 export default function TeamMessagesPage() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
   const searchQuery = (searchParams.get("q") || "").trim().toLowerCase();
   const [message, setMessage] = useState("");
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -63,11 +72,7 @@ export default function TeamMessagesPage() {
     setLoadingMessages(true);
     setError("");
     try {
-      const res = await fetch(`/api/messages/${conversationId}`, {
-        headers: getPortalAuthHeaders(),
-      });
-      if (!res.ok) throw new Error(`Messages could not be loaded (${res.status}).`);
-      const data = await res.json();
+      const data = await portalRequest<{ messages: Message[] }>(`/api/messages/${conversationId}`);
       setMessages(data.messages || []);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Messages could not be loaded.");
@@ -81,11 +86,7 @@ export default function TeamMessagesPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/conversations", {
-        headers: getPortalAuthHeaders(),
-      });
-      if (!res.ok) throw new Error(`Conversations could not be loaded (${res.status}).`);
-      const data = await res.json();
+      const data = await portalRequest<{ conversations: Conversation[] }>("/api/conversations");
       const list: Conversation[] = data.conversations || [];
       setConversations(list);
       const firstId = list[0]?.id || "";
@@ -132,18 +133,30 @@ export default function TeamMessagesPage() {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = message.trim();
-    if (!trimmed || !activeConversationId) return;
+    if ((!trimmed && !attachmentFile) || !activeConversationId) return;
 
     setSending(true);
     setError("");
     try {
-      const res = await fetch("/api/messages", {
+      let attachment;
+      if (attachmentFile) {
+        const dataUrl = await readFileAsDataUrl(attachmentFile);
+        attachment = {
+          name: attachmentFile.name,
+          size: formatFileSize(attachmentFile.size),
+          type: attachmentFile.type || "application/octet-stream",
+          url: dataUrl,
+        };
+      }
+
+      const data = await portalRequest<{ message?: Message }>("/api/messages", {
         method: "POST",
-        headers: { ...getPortalAuthHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId: activeConversationId, body: trimmed }),
+        body: JSON.stringify({
+          conversationId: activeConversationId,
+          body: trimmed || (attachment ? `Shared ${attachment.name}` : ""),
+          attachment,
+        }),
       });
-      if (!res.ok) throw new Error(`Message could not be sent (${res.status}).`);
-      const data = await res.json();
       if (data.message) {
         setMessages((prev) => [...prev, data.message]);
         setConversations((prev) => prev.map((conversation) => (
@@ -151,6 +164,9 @@ export default function TeamMessagesPage() {
         )));
       }
       setMessage("");
+      setAttachmentFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (imageInputRef.current) imageInputRef.current.value = "";
     } catch (e) {
       setError(e instanceof Error ? e.message : "Message could not be sent.");
     } finally {
@@ -214,7 +230,9 @@ export default function TeamMessagesPage() {
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] text-slate-400 truncate mt-1">{conversation.latestMessage?.body || conversation.type}</p>
+                <p className="text-[10px] text-slate-400 truncate mt-1">
+                  {conversation.latestMessage?.attachment?.name || conversation.latestMessage?.body || conversation.type}
+                </p>
               </button>
             ))
           )}
@@ -259,6 +277,22 @@ export default function TeamMessagesPage() {
                         : "bg-slate-100 dark:bg-zinc-900 text-slate-800 dark:text-white"
                     }`}>
                       {msg.body}
+                      {msg.attachment && (
+                        <button
+                          type="button"
+                          onClick={() => msg.attachment?.url && downloadDataUrl(msg.attachment.name, msg.attachment.url)}
+                          disabled={!msg.attachment.url}
+                          className={`mt-2 flex items-center gap-2 rounded-md border px-2 py-1 text-xs font-semibold ${
+                            mine
+                              ? "border-white/40 bg-white/10 text-white"
+                              : "border-slate-200 bg-white text-slate-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+                          } disabled:opacity-60`}
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span className="truncate max-w-48">{msg.attachment.name}</span>
+                          {msg.attachment.size && <span className="opacity-70">{msg.attachment.size}</span>}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -267,27 +301,105 @@ export default function TeamMessagesPage() {
           </div>
 
           <div className="border-t border-slate-200 dark:border-zinc-800 p-4">
-            <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-              <button type="button" className="p-2 text-slate-500 hover:text-slate-700 rounded" title="Attach file" aria-label="Attach file">
-                <Paperclip className="w-4 h-4" />
-              </button>
-              <button type="button" className="p-2 text-slate-500 hover:text-slate-700 rounded" title="Attach image" aria-label="Attach image">
-                <Image className="w-4 h-4" />
-              </button>
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder={activeConversationId ? "Type a message..." : "Select a conversation first"}
-                disabled={!activeConversationId || sending}
-                className="flex-1"
+            <form onSubmit={handleSendMessage} className="space-y-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                onChange={(event) => setAttachmentFile(event.target.files?.[0] || null)}
               />
-              <Button type="submit" variant="primary" size="sm" disabled={!activeConversationId || sending} title="Send message" aria-label="Send message">
-                <Send className="w-4 h-4" />
-              </Button>
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(event) => setAttachmentFile(event.target.files?.[0] || null)}
+              />
+              {attachmentFile && (
+                <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+                  <span className="truncate">Attached: {attachmentFile.name} ({formatFileSize(attachmentFile.size)})</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAttachmentFile(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                      if (imageInputRef.current) imageInputRef.current.value = "";
+                    }}
+                    className="rounded p-1 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    title="Remove attachment"
+                    aria-label="Remove attachment"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={!activeConversationId || sending}
+                  className="p-2 text-slate-500 hover:text-slate-700 rounded disabled:opacity-50"
+                  title="Attach file"
+                  aria-label="Attach file"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => imageInputRef.current?.click()}
+                  disabled={!activeConversationId || sending}
+                  className="p-2 text-slate-500 hover:text-slate-700 rounded disabled:opacity-50"
+                  title="Attach image"
+                  aria-label="Attach image"
+                >
+                  <Image className="w-4 h-4" />
+                </button>
+                <Input
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={activeConversationId ? "Type a message..." : "Select a conversation first"}
+                  disabled={!activeConversationId || sending}
+                  className="flex-1"
+                />
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  disabled={!activeConversationId || sending || (!message.trim() && !attachmentFile)}
+                  title="Send message"
+                  aria-label="Send message"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
             </form>
           </div>
         </section>
       </div>
     </div>
   );
+}
+
+function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("Attachment could not be read."));
+    reader.readAsDataURL(file);
+  });
+}
+
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function downloadDataUrl(filename: string, dataUrl: string) {
+  const link = document.createElement("a");
+  link.href = dataUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
