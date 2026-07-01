@@ -3,13 +3,14 @@ import { Image, MessageSquare, Paperclip, RefreshCw, Send } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { Button, Input } from "../../components/ui";
-import { PortalState } from "./PortalState";
-import { getPortalAuthHeaders } from "./auth";
+import { PortalState } from "../user/PortalState";
+import { getPortalAuthHeaders } from "../user/auth";
 
 interface Conversation {
   id: string;
   name: string;
   type: string;
+  projectId?: string;
   latestMessage?: Message | null;
   unreadCount?: number;
 }
@@ -26,7 +27,7 @@ interface Message {
   createdAt?: string;
 }
 
-export default function MessagesPage() {
+export default function TeamMessagesPage() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") || "").trim().toLowerCase();
@@ -43,6 +44,7 @@ export default function MessagesPage() {
     () => conversations.find((conversation) => conversation.id === activeConversationId),
     [activeConversationId, conversations]
   );
+
   const visibleConversations = useMemo(() => {
     if (!searchQuery) return conversations;
     return conversations.filter((conversation) => {
@@ -50,6 +52,7 @@ export default function MessagesPage() {
       return haystack.includes(searchQuery);
     });
   }, [conversations, searchQuery]);
+
   const visibleMessages = useMemo(() => {
     if (!searchQuery) return messages;
     return messages.filter((msg) => `${msg.senderUsername || ""} ${msg.senderName || ""} ${msg.body}`.toLowerCase().includes(searchQuery));
@@ -168,7 +171,7 @@ export default function MessagesPage() {
           {searchQuery ? "Message Search" : "Messages"}
         </h1>
         <p className="text-slate-500 dark:text-zinc-400 text-sm">
-          {searchQuery ? `Showing results for "${searchParams.get("q")}".` : "Communicate with your project team and support channels."}
+          {searchQuery ? `Showing results for "${searchParams.get("q")}".` : "Communicate with your project clients and support channels."}
         </p>
       </div>
 
@@ -200,13 +203,13 @@ export default function MessagesPage() {
                 type="button"
                 onClick={() => handleSelectConversation(conversation.id)}
                 className={`w-full p-3 text-left border-b border-slate-100 dark:border-zinc-900 transition ${
-                  conversation.id === activeConversationId ? "bg-blue-50 dark:bg-blue-950/20" : "hover:bg-slate-50 dark:hover:bg-zinc-950"
+                  conversation.id === activeConversationId ? "bg-emerald-50 dark:bg-emerald-950/20" : "hover:bg-slate-50 dark:hover:bg-zinc-950"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">{conversation.name}</span>
                   {(conversation.unreadCount || 0) > 0 && (
-                    <span className="min-w-5 h-5 px-1 rounded-full bg-blue-500 text-white text-[10px] flex items-center justify-center">
+                    <span className="min-w-5 h-5 px-1 rounded-full bg-emerald-500 text-white text-[10px] flex items-center justify-center">
                       {conversation.unreadCount}
                     </span>
                   )}
@@ -242,7 +245,7 @@ export default function MessagesPage() {
               const sender = mine ? "You" : (msg.senderUsername || msg.senderId || "Team");
               return (
                 <div key={msg.id} className={`flex items-start gap-3 max-w-[85%] ${mine ? "ml-auto flex-row-reverse" : ""}`}>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center font-bold text-xs shrink-0">
                     {sender[0]?.toUpperCase() || "?"}
                   </div>
                   <div className={`space-y-1 ${mine ? "text-right" : ""}`}>
@@ -252,7 +255,7 @@ export default function MessagesPage() {
                     </div>
                     <div className={`px-3 py-2 rounded-lg text-sm text-left ${
                       mine
-                        ? "bg-blue-500 text-white"
+                        ? "bg-emerald-500 text-white"
                         : "bg-slate-100 dark:bg-zinc-900 text-slate-800 dark:text-white"
                     }`}>
                       {msg.body}

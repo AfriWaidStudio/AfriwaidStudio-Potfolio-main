@@ -181,6 +181,16 @@ export interface HomepageStats {
   clientsServed: string | number;
 }
 
+export interface ConsultationCard {
+  id: string;
+  badge: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+  targetTab: "Services" | "Projects" | "Build Journal" | "AI Lab" | "Client Access" | "Contact" | "Media" | "Publishing";
+  systemGenerated?: boolean;
+}
+
 export interface CustomizationSettings {
   appName: string;
   appNickname: string;
@@ -233,6 +243,7 @@ export interface CustomizationSettings {
   founderPortraitUrl?: string;
   faviconUrl?: string;
   googleAnalyticsId?: string;
+  consultationCards?: ConsultationCard[];
 }
 
 export interface TechStackItem {
@@ -268,7 +279,19 @@ export interface TeamMember {
   twitter?: string;
 }
 
-export type UserRole = "Super Admin" | "Admin" | "Operator" | "Moderator" | "Auditor" | "Developer" | "Client" | "User" | "Guest";
+export const OFFICIAL_ROLES = [
+  "Super Admin",
+  "Admin",
+  "Moderator",
+  "Developer",
+  "Operator",
+  "Auditor",
+  "Team Member",
+  "Client",
+  "User"
+] as const;
+
+export type UserRole = typeof OFFICIAL_ROLES[number];
 
 export interface Permission {
   id: string;
@@ -319,6 +342,3 @@ export interface AuditLog {
   details: string;
   timestamp: string;
 }
-
-
-

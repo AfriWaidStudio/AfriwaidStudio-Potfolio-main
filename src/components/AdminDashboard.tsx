@@ -6,6 +6,7 @@ import UsersListManager from "./admin/UsersListManager";
 import RbacController from "./admin/RbacController";
 import AuditLogsPanel from "./admin/AuditLogsPanel";
 import ImageUploadDropzone from "./ImageUploadDropzone";
+import { INITIAL_CONSULTATION_CARDS } from "../data";
 
 interface AdminDashboardProps {
   projects: Project[];
@@ -252,6 +253,7 @@ export default function AdminDashboard({
   const [custJournalTagline, setCustJournalTagline] = useState(customization?.journalTagline || "Active Developer Logs & System Milestones");
   const [custJournalTitle, setCustJournalTitle] = useState(customization?.journalTitle || "The AfriWaid Build Journal");
   const [custJournalDescription, setCustJournalDescription] = useState(customization?.journalDescription || "Follow our transparent engineering roadmap. We push frequent hot-fixes, core architectural developments, spatial animations, and machine learning structures to the active sandbox stack.");
+  const [custConsultationCards, setCustConsultationCards] = useState(customization?.consultationCards || INITIAL_CONSULTATION_CARDS);
 
   const [custSuccess, setCustSuccess] = useState(false);
 
@@ -311,8 +313,39 @@ export default function AdminDashboard({
       setCustJournalTagline(customization.journalTagline || "Active Developer Logs & System Milestones");
       setCustJournalTitle(customization.journalTitle || "The AfriWaid Build Journal");
       setCustJournalDescription(customization.journalDescription || "Follow our transparent engineering roadmap. We push frequent hot-fixes, core architectural developments, spatial animations, and machine learning structures to the active sandbox stack.");
+      setCustConsultationCards(customization.consultationCards || INITIAL_CONSULTATION_CARDS);
     }
   }, [customization]);
+
+  const buildAutomaticConsultationCards = () => [
+    services?.[0] ? {
+      id: `system-service-${Date.now()}`,
+      badge: "AUTO SERVICE",
+      title: `Request ${services[0].name}`,
+      description: services[0].description || "Start from the current service catalogue and route your requirements into the correct delivery track.",
+      ctaLabel: "View Services",
+      targetTab: "Services" as const,
+      systemGenerated: true
+    } : { ...INITIAL_CONSULTATION_CARDS[0], id: `system-default-service-${Date.now()}`, systemGenerated: true },
+    projects?.[0] ? {
+      id: `system-project-${Date.now()}`,
+      badge: "AUTO SHOWCASE",
+      title: `Study ${projects[0].name}`,
+      description: projects[0].description || "Review a current build example before requesting a similar digital product or partnership.",
+      ctaLabel: "View Projects",
+      targetTab: "Projects" as const,
+      systemGenerated: true
+    } : { ...INITIAL_CONSULTATION_CARDS[1], id: `system-default-project-${Date.now()}`, systemGenerated: true },
+    journal?.[0] ? {
+      id: `system-journal-${Date.now()}`,
+      badge: "AUTO UPDATE",
+      title: journal[0].title,
+      description: journal[0].description || "Read the latest platform update and use it to guide your next technical request.",
+      ctaLabel: "Read Journal",
+      targetTab: "Build Journal" as const,
+      systemGenerated: true
+    } : { ...INITIAL_CONSULTATION_CARDS[2], id: `system-default-journal-${Date.now()}`, systemGenerated: true }
+  ];
 
   const handleSaveCustomization = (e: React.FormEvent) => {
     e.preventDefault();
@@ -368,7 +401,8 @@ export default function AdminDashboard({
         mediaSubtitle: custMediaSubtitle,
         journalTagline: custJournalTagline,
         journalTitle: custJournalTitle,
-        journalDescription: custJournalDescription
+        journalDescription: custJournalDescription,
+        consultationCards: custConsultationCards
       });
       setCustSuccess(true);
       setTimeout(() => setCustSuccess(false), 3000);
@@ -428,7 +462,8 @@ export default function AdminDashboard({
         mediaSubtitle: "CINEMATIC DIGITAL ENG ENGAGEMENTS",
         journalTagline: "Active Developer Logs & System Milestones",
         journalTitle: "The AfriWaid Build Journal",
-        journalDescription: "Follow our transparent engineering roadmap. We push frequent hot-fixes, core architectural developments, spatial animations, and machine learning structures to the active sandbox stack."
+        journalDescription: "Follow our transparent engineering roadmap. We push frequent hot-fixes, core architectural developments, spatial animations, and machine learning structures to the active sandbox stack.",
+        consultationCards: INITIAL_CONSULTATION_CARDS
       };
 
       setCustAppName(defaults.appName);
@@ -485,6 +520,7 @@ export default function AdminDashboard({
       setCustJournalTagline(defaults.journalTagline || "Active Developer Logs & System Milestones");
       setCustJournalTitle(defaults.journalTitle || "The AfriWaid Build Journal");
       setCustJournalDescription(defaults.journalDescription || "Follow our transparent engineering roadmap. We push frequent hot-fixes, core architectural developments, spatial animations, and machine learning structures to the active sandbox stack.");
+      setCustConsultationCards(defaults.consultationCards || INITIAL_CONSULTATION_CARDS);
 
       if (onUpdateCustomization) {
         onUpdateCustomization(defaults);
@@ -4316,7 +4352,7 @@ export default function AdminDashboard({
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">App Full Branding Name</label>
+                          <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Header Brand Name (Top Navigation)</label>
                           <input
                             type="text"
                             value={custAppName}
@@ -4327,7 +4363,7 @@ export default function AdminDashboard({
                         </div>
 
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">App Shorthand Code / Nickname</label>
+                          <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Header Logo Fallback Nickname</label>
                           <input
                             type="text"
                             value={custAppNickname}
@@ -4339,7 +4375,7 @@ export default function AdminDashboard({
                       </div>
 
                       <div className="space-y-1">
-                        <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Sub-Header Status Node / Tagline</label>
+                        <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Header Tagline (Below Brand Name)</label>
                         <input
                           type="text"
                           value={custTagline}
@@ -4409,25 +4445,25 @@ export default function AdminDashboard({
                     <div className="bg-zinc-950 p-6 rounded-2xl border border-neutral-800 space-y-4">
                       <div className="flex items-center gap-2 border-b border-neutral-850 pb-2">
                         <Sparkles className="w-4 h-4 text-cyan-400" />
-                        <h4 className="text-xs font-mono uppercase font-extrabold text-neutral-200">Logo & Favicon Customization</h4>
+                        <h4 className="text-xs font-mono uppercase font-extrabold text-neutral-200">Header Logo, Brand Mark & Favicon</h4>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Logo Type</label>
+                          <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Top-Left Header Logo Type</label>
                           <select
                             value={custLogoType}
                             onChange={(e) => setCustLogoType(e.target.value as "text" | "image")}
                             className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-sans"
                           >
-                            <option value="text">Text / Initials</option>
-                            <option value="image">Image URL</option>
+                            <option value="text">Text / Initials Logo</option>
+                            <option value="image">Uploaded Image Logo</option>
                           </select>
                         </div>
 
                         {custLogoType === "text" ? (
                           <div className="space-y-1">
-                            <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Logo Initials (Text)</label>
+                            <label className="block text-[11px] font-mono font-bold text-neutral-400 uppercase">Header Logo Initials</label>
                             <input
                               type="text"
                               value={custLogoText}
@@ -4443,11 +4479,32 @@ export default function AdminDashboard({
                               value={custLogoUrl}
                               onChange={(newValue) => setCustLogoUrl(newValue)}
                               multiple={false}
-                              label="Upload Logo Image"
-                              placeholderText="Drag & drop or browse"
+                              label="Header Logo Upload"
+                              placeholderText="Upload the logo shown beside the AfriWaid Studio name"
                             />
                           </div>
                         )}
+                      </div>
+
+                      <div className="rounded-xl border border-neutral-800 bg-black/40 p-4">
+                        <span className="block text-[10px] text-neutral-500 font-mono font-bold uppercase tracking-widest mb-3">Top Navigation Preview</span>
+                        <div className="inline-flex items-center gap-3 rounded-xl border border-neutral-850 bg-zinc-950 px-4 py-3">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center font-bold text-xl overflow-hidden border border-cyan-500/20">
+                            {custLogoType === "image" && custLogoUrl ? (
+                              <img src={custLogoUrl} alt="Header logo preview" className="w-full h-full object-cover" />
+                            ) : (
+                              <span>{custLogoText || (custAppNickname || "A").charAt(0)}</span>
+                            )}
+                          </div>
+                          <div>
+                            <span className="block text-base font-display font-black tracking-widest text-white uppercase leading-none">
+                              {custAppName || "AFRIWAID STUDIO"}
+                            </span>
+                            <span className="block text-[11px] text-neutral-400 font-mono font-bold uppercase leading-none mt-1">
+                              {custTagline || "DIGITAL CREATIVE ENGINE"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="pt-4 border-t border-neutral-800">
@@ -4537,6 +4594,124 @@ export default function AdminDashboard({
                             onChange={(e) => setCustTechDescription(e.target.value)}
                             className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500 leading-relaxed font-sans"
                           />
+                        </div>
+                      </div>
+
+                      {/* Consultation Teaser Cards */}
+                      <div className="space-y-3 pt-3 border-t border-neutral-900">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                          <div>
+                            <span className="text-[10px] font-mono text-pink-400 uppercase tracking-widest block font-bold">3. Prepared Consultation Cards</span>
+                            <p className="text-[10px] text-neutral-500 mt-1">Controls the right-side homepage panel beside Recent Journal Commits.</p>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setCustConsultationCards(buildAutomaticConsultationCards())}
+                              className="px-3 py-1.5 rounded-lg border border-cyan-500/25 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 text-[10px] font-mono font-bold uppercase tracking-wider transition flex items-center gap-1.5"
+                            >
+                              <RefreshCw className="w-3.5 h-3.5" /> Auto Add
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setCustConsultationCards(prev => [
+                                ...prev,
+                                {
+                                  id: `consult-${Date.now()}`,
+                                  badge: "CUSTOM",
+                                  title: "New Consultation Route",
+                                  description: "Describe what this consultation option is for and who should click it.",
+                                  ctaLabel: "Open Route",
+                                  targetTab: "Services"
+                                }
+                              ])}
+                              className="px-3 py-1.5 rounded-lg border border-purple-500/25 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 text-[10px] font-mono font-bold uppercase tracking-wider transition flex items-center gap-1.5"
+                            >
+                              <Plus className="w-3.5 h-3.5" /> Add Card
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          {custConsultationCards.map((card, index) => (
+                            <div key={card.id} className="p-3 rounded-xl border border-neutral-850 bg-neutral-900/50 space-y-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest font-bold">Card {index + 1}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => setCustConsultationCards(prev => prev.filter(item => item.id !== card.id))}
+                                  className="p-1.5 rounded-lg border border-red-500/20 bg-red-500/10 text-red-300 hover:bg-red-500/20 transition"
+                                  title="Delete consultation card"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div className="space-y-1">
+                                  <label className="block text-[10px] font-mono font-bold text-neutral-500 uppercase">Badge</label>
+                                  <input
+                                    type="text"
+                                    value={card.badge}
+                                    onChange={(e) => setCustConsultationCards(prev => prev.map(item => item.id === card.id ? { ...item, badge: e.target.value } : item))}
+                                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                                  />
+                                </div>
+                                <div className="space-y-1 md:col-span-2">
+                                  <label className="block text-[10px] font-mono font-bold text-neutral-500 uppercase">Title</label>
+                                  <input
+                                    type="text"
+                                    value={card.title}
+                                    onChange={(e) => setCustConsultationCards(prev => prev.map(item => item.id === card.id ? { ...item, title: e.target.value } : item))}
+                                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-1">
+                                <label className="block text-[10px] font-mono font-bold text-neutral-500 uppercase">Description</label>
+                                <textarea
+                                  rows={2}
+                                  value={card.description}
+                                  onChange={(e) => setCustConsultationCards(prev => prev.map(item => item.id === card.id ? { ...item, description: e.target.value } : item))}
+                                  className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-cyan-500 leading-relaxed font-sans"
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="space-y-1">
+                                  <label className="block text-[10px] font-mono font-bold text-neutral-500 uppercase">Button Label</label>
+                                  <input
+                                    type="text"
+                                    value={card.ctaLabel}
+                                    onChange={(e) => setCustConsultationCards(prev => prev.map(item => item.id === card.id ? { ...item, ctaLabel: e.target.value } : item))}
+                                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="block text-[10px] font-mono font-bold text-neutral-500 uppercase">Target Page</label>
+                                  <select
+                                    value={card.targetTab}
+                                    onChange={(e) => setCustConsultationCards(prev => prev.map(item => item.id === card.id ? { ...item, targetTab: e.target.value as any } : item))}
+                                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                                  >
+                                    <option value="Services">Services</option>
+                                    <option value="Projects">Projects</option>
+                                    <option value="Build Journal">Build Journal</option>
+                                    <option value="AI Lab">AI Lab</option>
+                                    <option value="Client Access">Client Access</option>
+                                    <option value="Contact">Contact</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+
+                          {custConsultationCards.length === 0 && (
+                            <div className="p-4 rounded-xl border border-dashed border-neutral-800 text-neutral-500 text-xs font-mono">
+                              No manual cards saved. The homepage will automatically generate cards from services, projects, and journal content.
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

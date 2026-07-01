@@ -3,6 +3,8 @@ import path from "path";
 import fs from "fs";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
@@ -12,6 +14,41 @@ dotenv.config();
 
 const DATA_FILE = path.join(process.cwd(), "data-store.json");
 const SALT_ROUNDS = 12;
+const IS_PRODUCTION_RUNTIME = process.env.NODE_ENV === "production" || process.argv.includes("--production");
+const OFFICIAL_ROLES = [
+  "Super Admin",
+  "Admin",
+  "Moderator",
+  "Developer",
+  "Operator",
+  "Auditor",
+  "Team Member",
+  "Client",
+  "User"
+] as const;
+
+type OfficialRole = typeof OFFICIAL_ROLES[number];
+
+function isOfficialRole(role: string): role is OfficialRole {
+  return (OFFICIAL_ROLES as readonly string[]).includes(role);
+}
+
+function mergeOfficialRoles(existing: any[] | undefined): any[] {
+  const roles = Array.isArray(existing) ? [...existing] : [];
+  DEFAULT_ROLES.forEach((defaultRole) => {
+    const current = roles.find((role) => role.name === defaultRole.name);
+    if (!current) {
+      roles.push(defaultRole);
+    } else {
+      current.slug = current.slug || defaultRole.slug;
+      current.description = current.description || defaultRole.description;
+      current.permissions = Array.isArray(current.permissions) && current.permissions.length > 0
+        ? current.permissions
+        : defaultRole.permissions;
+    }
+  });
+  return roles.filter((role) => isOfficialRole(role.name));
+}
 
 function hashPassword(password: string): string {
   return bcrypt.hashSync(password, SALT_ROUNDS);
@@ -44,14 +81,14 @@ const DEFAULT_PERMISSIONS = [
 
 const DEFAULT_ROLES = [
   { id: "r-1", name: "Super Admin", slug: "super-admin", description: "Absolute control over entire system.", permissions: ["p-1", "p-2", "p-3", "p-4", "p-5", "p-6", "p-7", "p-8", "p-9", "p-10", "p-11", "p-12", "p-13"] },
-  { id: "r-2", name: "Admin", slug: "admin", description: "Access user operations and content controls.", permissions: ["p-1", "p-2", "p-4", "p-5", "p-6", "p-8", "p-9", "p-10", "p-11"] },
-  { id: "r-3", name: "Operator", slug: "operator", description: "Deploy project milestones and deliverables.", permissions: ["p-5", "p-6", "p-8", "p-10"] },
-  { id: "r-4", name: "Moderator", slug: "moderator", description: "Moderate portal logs and chats.", permissions: ["p-8", "p-9"] },
-  { id: "r-5", name: "Auditor", slug: "auditor", description: "Compliance auditing read-only mode.", permissions: ["p-4", "p-10"] },
-  { id: "r-6", name: "Developer", slug: "developer", description: "Integrations configurations and diagnostics.", permissions: ["p-12", "p-13", "p-4"] },
-  { id: "r-7", name: "Client", slug: "client", description: "Client project monitoring, billing, and communication.", permissions: ["p-8", "p-10"] },
-  { id: "r-8", name: "User", slug: "user", description: "Unprivileged authenticated user profile.", permissions: ["p-8"] },
-  { id: "r-9", name: "Guest", slug: "guest", description: "Unauthenticated context views.", permissions: [] }
+  { id: "r-2", name: "Admin", slug: "admin", description: "Administrative platform operations without owner override.", permissions: ["p-1", "p-2", "p-4", "p-5", "p-6", "p-8", "p-9", "p-10", "p-11", "p-12"] },
+  { id: "r-3", name: "Moderator", slug: "moderator", description: "Moderates workspace communication and user support.", permissions: ["p-4", "p-8", "p-9", "p-10"] },
+  { id: "r-4", name: "Developer", slug: "developer", description: "Developer access to assigned projects and diagnostics.", permissions: ["p-5", "p-6", "p-8", "p-10", "p-12"] },
+  { id: "r-5", name: "Operator", slug: "operator", description: "Project operations and deliverable management.", permissions: ["p-5", "p-6", "p-8", "p-10"] },
+  { id: "r-6", name: "Auditor", slug: "auditor", description: "Read-only compliance and audit visibility.", permissions: ["p-4", "p-10", "p-12"] },
+  { id: "r-7", name: "Team Member", slug: "team-member", description: "Team member for client communication and project support.", permissions: ["p-5", "p-6", "p-8", "p-9", "p-10"] },
+  { id: "r-8", name: "Client", slug: "client", description: "Client partner with access to assigned workspaces.", permissions: ["p-8", "p-10"] },
+  { id: "r-9", name: "User", slug: "user", description: "Standard portal user.", permissions: ["p-8", "p-10"] }
 ];
 
 const DEFAULT_USERS = [
@@ -81,72 +118,36 @@ const DEFAULT_USERS = [
   },
   {
     id: "u-3",
-    firstName: "Amara",
-    lastName: "Okonkwo",
-    username: "amara_vanguard",
-    email: "user@afriwaid.com",
-    passwordHash: hashPassword("userpass"),
+    firstName: "Demo",
+    lastName: "Client",
+    username: "demo_client",
+    email: "demo@afriwaid.com",
+    passwordHash: hashPassword("demo123"),
     role: "User",
-    isEmailVerified: false,
+    isEmailVerified: true,
     status: "active",
     createdAt: new Date().toISOString()
   },
   {
     id: "u-4",
-    firstName: "Admin",
-    lastName: "User",
-    username: "admin_user",
-    email: "admin@afriwaid.com",
-    passwordHash: hashPassword("admin123"),
-    role: "Admin",
+    firstName: "Team",
+    lastName: "Member",
+    username: "team_member",
+    email: "team@afriwaid.com",
+    passwordHash: hashPassword("team123"),
+    role: "Team Member",
     isEmailVerified: true,
     status: "active",
     createdAt: new Date().toISOString()
   },
   {
     id: "u-5",
-    firstName: "Moderator",
-    lastName: "User",
-    username: "moderator_user",
-    email: "moderator@afriwaid.com",
-    passwordHash: hashPassword("mod123"),
-    role: "Moderator",
-    isEmailVerified: true,
-    status: "active",
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: "u-6",
-    firstName: "Auditor",
-    lastName: "User",
-    username: "auditor_user",
-    email: "auditor@afriwaid.com",
-    passwordHash: hashPassword("audit123"),
-    role: "Auditor",
-    isEmailVerified: true,
-    status: "active",
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: "u-7",
-    firstName: "Dev",
-    lastName: "User",
-    username: "dev_user",
-    email: "dev@afriwaid.com",
-    passwordHash: hashPassword("dev123"),
-    role: "Developer",
-    isEmailVerified: true,
-    status: "active",
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: "u-8",
-    firstName: "Operator",
-    lastName: "User",
-    username: "operator_user",
-    email: "operator@afriwaid.com",
-    passwordHash: hashPassword("op123"),
-    role: "Operator",
+    firstName: "User",
+    lastName: "Demo",
+    username: "user_demo",
+    email: "user@afriwaid.com",
+    passwordHash: hashPassword("user123"),
+    role: "User",
     isEmailVerified: true,
     status: "active",
     createdAt: new Date().toISOString()
@@ -215,7 +216,9 @@ const INITIAL_PROJECTS = [
 
 const INITIAL_PROJECT_MEMBERS = [
   { id: "pm-1", projectId: "proj-1", userId: "u-2", role: "Client" },
-  { id: "pm-2", projectId: "proj-1", userId: "u-1", role: "Super Admin" }
+  { id: "pm-2", projectId: "proj-1", userId: "u-1", role: "Super Admin" },
+  { id: "pm-3", projectId: "proj-1", userId: "u-9", role: "Team Member" },
+  { id: "pm-4", projectId: "proj-1", userId: "u-7", role: "Developer" }
 ];
 
 const INITIAL_MILESTONES = [
@@ -261,7 +264,10 @@ const INITIAL_CONVERSATION_PARTICIPANTS = [
   { id: "cp-10", conversationId: "conv-proj-feedback", userId: "u-2" },
   { id: "cp-11", conversationId: "conv-proj-support", userId: "u-1" },
   { id: "cp-12", conversationId: "conv-proj-support", userId: "u-2" },
-  { id: "cp-13", conversationId: "conv-team-internal", userId: "u-1" }
+  { id: "cp-13", conversationId: "conv-team-internal", userId: "u-1" },
+  { id: "cp-14", conversationId: "conv-1", userId: "u-9" },
+  { id: "cp-15", conversationId: "conv-proj-general", userId: "u-9" },
+  { id: "cp-16", conversationId: "conv-proj-support", userId: "u-9" }
 ];
 
 const INITIAL_MESSAGES = [
@@ -298,8 +304,15 @@ const INITIAL_INVOICES = [
 ];
 
 const INITIAL_TEAM_MEMBERS = [
-  { id: "tm-1", projectId: "proj-1", userId: "u-3", role: "Developer", status: "active" },
-  { id: "tm-2", projectId: "proj-1", userId: "u-4", role: "Designer", status: "active" }
+  {
+    "id": "tm-1", "projectId": "proj-1", "userId": "u-3", "role": "Developer", "status": "active"
+  },
+  {
+    "id": "tm-2", "projectId": "proj-1", "userId": "u-4", "role": "Designer", "status": "active"
+  },
+  {
+    "id": "tm-3", "projectId": "proj-1", "userId": "u-9", "role": "Team Member", "status": "active"
+  }
 ];
 
 function loadDatabase(): DatabaseSchema {
@@ -337,7 +350,7 @@ function loadDatabase(): DatabaseSchema {
     const parsed = JSON.parse(raw);
     return {
       users: parsed.users || DEFAULT_USERS,
-      roles: parsed.roles || DEFAULT_ROLES,
+      roles: mergeOfficialRoles(parsed.roles),
       permissions: parsed.permissions || DEFAULT_PERMISSIONS,
       sessions: parsed.sessions || [],
       password_resets: parsed.password_resets || [],
@@ -419,6 +432,38 @@ async function startServer() {
   const PORT = 3000;
   const wss = new WebSocketServer({ noServer: true });
 
+  app.set("trust proxy", 1);
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+  }));
+  app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 300,
+    standardHeaders: "draft-8",
+    legacyHeaders: false
+  }));
+  app.use("/api/auth/login", rateLimit({
+    windowMs: 2 * 60 * 1000,
+    limit: 20,
+    standardHeaders: "draft-8",
+    legacyHeaders: false
+  }));
+  app.use((req, res, next) => {
+    if (IS_PRODUCTION_RUNTIME && process.env.FORCE_HTTPS === "true" && req.headers["x-forwarded-proto"] === "http") {
+      return res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
+    }
+    next();
+  });
+  app.use((req, res, next) => {
+    const unsafe = !["GET", "HEAD", "OPTIONS"].includes(req.method);
+    const hasBearerToken = typeof req.headers.authorization === "string" && req.headers.authorization.startsWith("Bearer ");
+    const authBootstrapPath = req.path.startsWith("/api/auth/");
+    if (unsafe && !hasBearerToken && !authBootstrapPath && req.headers["x-csrf-token"] !== "afriwaid-csrf-v1") {
+      return res.status(403).json({ error: "CSRF validation failed." });
+    }
+    next();
+  });
   app.use(express.json());
 
   // Middleware to resolve Client details via Authorization Header token
@@ -1151,6 +1196,9 @@ async function startServer() {
     if (!firstName || !lastName || !username || !email || !password || !role) {
       return res.status(400).json({ error: "All properties are strictly required for creation." });
     }
+    if (!isOfficialRole(role)) {
+      return res.status(400).json({ error: "Role is not in the official RBAC registry." });
+    }
 
     const emailTaken = db.users.some(u => u.email.toLowerCase() === email.toLowerCase());
     const userTaken = db.users.some(u => u.username.toLowerCase() === username.toLowerCase());
@@ -1193,7 +1241,12 @@ async function startServer() {
 
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
-    if (role) user.role = role;
+    if (role) {
+      if (!isOfficialRole(role)) {
+        return res.status(400).json({ error: "Role is not in the official RBAC registry." });
+      }
+      user.role = role;
+    }
     if (status) user.status = status;
     if (isEmailVerified !== undefined) user.isEmailVerified = isEmailVerified;
 
@@ -1518,6 +1571,26 @@ async function startServer() {
   // ----------------------------------------------------
   // MILESTONES & TASKS API MODULE
   // ----------------------------------------------------
+  app.get("/api/milestones", (req: any, res) => {
+    const db = loadDatabase();
+    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+
+    if (req.user.role === "Super Admin" || req.user.role === "Admin" || req.user.role === "Operator") {
+      return res.json({ milestones: db.milestones });
+    }
+
+    const clientProfile = db.clients.find(c => c.userId === req.user.id);
+    const memberProjectIds = db.project_members
+      .filter(pm => pm.userId === req.user.id)
+      .map(pm => pm.projectId);
+    const ownedProjectIds = clientProfile
+      ? db.projects.filter(p => p.clientId === clientProfile.id).map(p => p.id)
+      : [];
+    const allowedProjectIds = Array.from(new Set([...memberProjectIds, ...ownedProjectIds]));
+
+    res.json({ milestones: db.milestones.filter(m => allowedProjectIds.includes(m.projectId)) });
+  });
+
   app.post("/api/projects/:id/milestones", (req: any, res) => {
     const db = loadDatabase();
     if (!req.user || (req.user.role !== "Super Admin" && req.user.role !== "Admin")) {
@@ -2596,7 +2669,7 @@ Return the response in a beautiful, structured Markdown format with bold highlig
   });
 
   // Vite integration middleware
-  if (process.env.NODE_ENV !== "production") {
+  if (!IS_PRODUCTION_RUNTIME) {
     const viteInstance = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",

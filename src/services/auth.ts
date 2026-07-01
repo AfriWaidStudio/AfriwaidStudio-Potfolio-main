@@ -1,10 +1,11 @@
 import { apiService } from "./api";
+import { UserRole } from "../types";
 
 export interface User {
   id: string;
   username: string;
   email: string;
-  role: "Super Admin" | "Admin" | "Client" | "Moderator" | "Auditor" | "Developer" | "Operator";
+  role: UserRole;
 }
 
 export interface AuthResponse {

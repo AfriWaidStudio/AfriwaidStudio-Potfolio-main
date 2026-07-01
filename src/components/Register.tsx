@@ -115,8 +115,8 @@ export default function Register({ onNavigateToLogin, onRegisterSuccess }: Regis
         <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 mx-auto">
           <UserCheck className="w-6 h-6 animate-pulse" />
         </div>
-        <h3 className="text-xl font-display text-slate-900 font-extrabold">Register Operator Account</h3>
-        <p className="text-xs text-slate-500 font-sans leading-relaxed">Enroll inside AfriWaid’s Dynamic RBAC system. Fill required parameter slots below.</p>
+        <h3 className="text-xl font-display text-slate-900 font-extrabold">Register Account</h3>
+        <p className="text-sm text-slate-500 font-sans leading-relaxed">Choose the account type that matches your access. Admins can assign staff roles after approval.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 relative z-10 font-sans">
@@ -185,22 +185,19 @@ export default function Register({ onNavigateToLogin, onRegisterSuccess }: Regis
           </div>
         </div>
 
-        {/* Desired/Requested Role */}
-        <div className="space-y-1.5 text-xs text-slate-500">
-          <label className="font-mono uppercase tracking-wider font-semibold">Requested System Role (Dynamic RBAC slot)</label>
+        {/* Account Type */}
+        <div className="space-y-1.5 text-sm text-slate-500">
+          <label className="font-mono uppercase tracking-wider font-semibold">Account Type</label>
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-[#2563eb] focus:ring-1 focus:ring-blue-500 text-xs cursor-pointer text-left"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-[#2563eb] focus:ring-1 focus:ring-blue-500 text-sm cursor-pointer text-left"
             id="auth-register-role"
           >
-            <option value="User">User (Standard account access)</option>
-            <option value="Client">Client Partner (Track specific project contracts)</option>
-            <option value="Operator">Operator (Upload project deliverables and milestones)</option>
-            <option value="Developer">Developer (Examine server monitoring states)</option>
-            <option value="Moderator">Moderator (Manage user chats)</option>
-            <option value="Auditor">Compliance Auditor (Read logs in compliance audits)</option>
+            <option value="User">User - Standard account access</option>
+            <option value="Client">Client - Project portal access</option>
           </select>
+          <p className="text-xs text-slate-500 font-sans">Staff roles such as Admin, Moderator, Developer, Operator, Auditor, and Team Member are assigned inside Admin Central.</p>
         </div>
 
         {/* Passwords Input row */}

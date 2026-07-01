@@ -6,11 +6,11 @@
       "lastName": "Soko",
       "username": "alasiri_waid",
       "email": "waidsoko@gmail.com",
-      "passwordHash": "$2b$12$6yG5VsC1pxjxrsTCZ3bqFOoKctlUxThDk2xnzje.10vI2xE8J8bA2",
+      "passwordHash": "$2b$12$1t76AVO/yLRs6nED26GSPuQYDfx3T6gUfGPHtuPiWJcaAD7KDfexu",
       "role": "Super Admin",
       "isEmailVerified": true,
       "status": "active",
-      "createdAt": "2026-06-29T12:07:25.908Z"
+      "createdAt": "2026-06-30T07:48:38.455Z"
     },
     {
       "id": "u-2",
@@ -18,95 +18,83 @@
       "lastName": "Logistics",
       "username": "aeroglobal",
       "email": "logistics@aeroglobal.com",
-      "passwordHash": "$2b$12$BW1hc1.1Cn9vKwMAYNWHyeeu1TEl8pMEPPK.ahX0qldtZ/h52KAlC",
+      "passwordHash": "$2b$12$LzFNKy2AFzBcxgvYtubQ2uDLBfUomh/aQH.JkqHa8/q2yaFqjPWhq",
       "role": "Client",
       "isEmailVerified": true,
       "status": "active",
-      "createdAt": "2026-06-29T12:07:26.580Z"
+      "createdAt": "2026-06-30T07:48:38.804Z"
     },
     {
       "id": "u-3",
-      "firstName": "Amara",
-      "lastName": "Okonkwo",
-      "username": "amara_vanguard",
-      "email": "user@afriwaid.com",
-      "passwordHash": "$2b$12$fPdlv8RPPEXhL/VNMTDVJu5mLbe9hQr8k/o1tt1zjg2N0Vr/m6cu.",
+      "firstName": "Demo",
+      "lastName": "Client",
+      "username": "demo_client",
+      "email": "demo@afriwaid.com",
+      "passwordHash": "$2b$12$oGHwLCBASTnPhJcmkkbJ9OtpG3EgkFrjteHrUEC3vuLlXLHymsVDe",
       "role": "User",
-      "isEmailVerified": false,
+      "isEmailVerified": true,
       "status": "active",
-      "createdAt": "2026-06-29T12:07:27.290Z"
+      "createdAt": "2026-06-30T07:48:39.109Z"
     },
     {
       "id": "u-4",
-      "firstName": "Admin",
-      "lastName": "User",
-      "username": "admin_user",
-      "email": "admin@afriwaid.com",
-      "passwordHash": "$2b$12$jurXzko5FB.rIMmZLg4m1e0scyKVj/.uXUhm9f73.z1E5Y96W4yPK",
-      "role": "Admin",
+      "firstName": "Team",
+      "lastName": "Member",
+      "username": "team_member",
+      "email": "team@afriwaid.com",
+      "passwordHash": "$2b$12$meO874.6AvYixjhSN6Ai0e/1pZOvRiJPZZtj.brIf3aMlUMqAdFT6",
+      "role": "Team Member",
       "isEmailVerified": true,
       "status": "active",
-      "createdAt": "2026-06-29T12:07:27.900Z"
+      "createdAt": "2026-06-30T07:48:39.413Z"
     },
     {
       "id": "u-5",
-      "firstName": "Moderator",
-      "lastName": "User",
-      "username": "moderator_user",
-      "email": "moderator@afriwaid.com",
-      "passwordHash": "$2b$12$WwnrXykZCW2teIieaximc.itkLUuj8tpXKc.E8JSh01ML8Cfdbd/S",
-      "role": "Moderator",
+      "firstName": "User",
+      "lastName": "Demo",
+      "username": "user_demo",
+      "email": "user@afriwaid.com",
+      "passwordHash": "$2b$12$JWY3NIZ1g9FYVnUJy8PVru7oz69CxkgZj6HiFdu2bjU3UXtqppW2a",
+      "role": "User",
       "isEmailVerified": true,
       "status": "active",
-      "createdAt": "2026-06-29T12:07:28.492Z"
+      "createdAt": "2026-06-30T07:48:39.782Z"
     },
     {
-      "id": "u-6",
-      "firstName": "Auditor",
+      "id": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "firstName": "Audit",
       "lastName": "User",
-      "username": "auditor_user",
-      "email": "auditor@afriwaid.com",
-      "passwordHash": "$2b$12$EzSKchJpP5lTTHsJTqwhtOWcJmgB/nwcO5Hpwft79T9jG3EshjTrO",
-      "role": "Auditor",
-      "isEmailVerified": true,
-      "status": "active",
-      "createdAt": "2026-06-29T12:07:29.025Z"
-    },
-    {
-      "id": "u-7",
-      "firstName": "Dev",
-      "lastName": "User",
-      "username": "dev_user",
-      "email": "dev@afriwaid.com",
-      "passwordHash": "$2b$12$BunByukweE8G13jLpnDviuHOMy2DcLcleUQBuhtsTWm0p3At.cHvu",
-      "role": "Developer",
-      "isEmailVerified": true,
-      "status": "active",
-      "createdAt": "2026-06-29T12:07:29.706Z"
-    },
-    {
-      "id": "u-8",
-      "firstName": "Operator",
-      "lastName": "User",
-      "username": "operator_user",
-      "email": "operator@afriwaid.com",
-      "passwordHash": "$2b$12$RNOySN1muyhgGgFfKzzXeOSS/0.s3lhAy3og1W5rIlctfiWBL9Ia2",
-      "role": "Operator",
-      "isEmailVerified": true,
-      "status": "active",
-      "createdAt": "2026-06-29T12:07:30.254Z"
-    },
-    {
-      "id": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "firstName": "Chinnikstah",
-      "lastName": "Smai",
-      "username": "chinnikstah",
-      "email": "smaichinnikstah@gmail.com",
-      "passwordHash": "$2b$12$V7eVTnS9kcfrDhgDMxHuge/o3/fzFmkYxRgLO2rV43fJtGVPPUKli",
+      "username": "audit_1782878556",
+      "email": "audit+1782878556@afriwaid.test",
+      "passwordHash": "$2b$12$cB0lQz.NYErv2DKOWPIizeqSvP02eKFbWDzjkQ7r71zGqgIrKQEkK",
       "role": "User",
       "isEmailVerified": false,
       "status": "active",
-      "createdAt": "2026-06-30T05:01:41.201Z"
+      "createdAt": "2026-07-01T04:02:40.080Z"
+    },
+    {
+      "id": "u-4507245b-7ba2-4f2c-b2fb-2270bad8aa46",
+      "firstName": "Verify",
+      "lastName": "User",
+      "username": "verify_1782878556",
+      "email": "verify+1782878556@afriwaid.test",
+      "passwordHash": "$2b$12$drxJ5DW.ZyfOpFEIhUSBSe.u1ku60/1kNic.2xoPLRX/oIGMnSC8C",
+      "role": "User",
+      "isEmailVerified": true,
+      "status": "active",
+      "createdAt": "2026-07-01T04:02:43.488Z"
+    },
+    {
+      "id": "u-2dc1a147-6535-46e3-a39f-ba2566dbd6a9",
+      "firstName": "Clean",
+      "lastName": "Audit",
+      "username": "clean_1782878825",
+      "email": "clean+1782878825@afriwaid.test",
+      "passwordHash": "$2b$12$27JnOjXsyUHxFGKA/XlrPea5qV5C9l8AHWrS5OWI36R4i2szxt8GW",
+      "role": "User",
+      "isEmailVerified": false,
+      "status": "active",
+      "createdAt": "2026-07-01T04:07:06.639Z"
     }
   ],
   "roles": [
@@ -133,9 +121,32 @@
     },
     {
       "id": "r-2",
+      "name": "Team Member",
+      "slug": "team-member",
+      "description": "Team member for client communication and project support.",
+      "permissions": [
+        "p-5",
+        "p-6",
+        "p-8",
+        "p-9",
+        "p-10"
+      ]
+    },
+    {
+      "id": "r-3",
+      "name": "User",
+      "slug": "user",
+      "description": "Client user who creates projects and communicates with team.",
+      "permissions": [
+        "p-8",
+        "p-10"
+      ]
+    },
+    {
+      "id": "r-2",
       "name": "Admin",
       "slug": "admin",
-      "description": "Access user operations and content controls.",
+      "description": "Administrative platform operations without owner override.",
       "permissions": [
         "p-1",
         "p-2",
@@ -145,14 +156,40 @@
         "p-8",
         "p-9",
         "p-10",
-        "p-11"
+        "p-11",
+        "p-12"
       ]
     },
     {
       "id": "r-3",
+      "name": "Moderator",
+      "slug": "moderator",
+      "description": "Moderates workspace communication and user support.",
+      "permissions": [
+        "p-4",
+        "p-8",
+        "p-9",
+        "p-10"
+      ]
+    },
+    {
+      "id": "r-4",
+      "name": "Developer",
+      "slug": "developer",
+      "description": "Developer access to assigned projects and diagnostics.",
+      "permissions": [
+        "p-5",
+        "p-6",
+        "p-8",
+        "p-10",
+        "p-12"
+      ]
+    },
+    {
+      "id": "r-5",
       "name": "Operator",
       "slug": "operator",
-      "description": "Deploy project milestones and deliverables.",
+      "description": "Project operations and deliverable management.",
       "permissions": [
         "p-5",
         "p-6",
@@ -161,61 +198,25 @@
       ]
     },
     {
-      "id": "r-4",
-      "name": "Moderator",
-      "slug": "moderator",
-      "description": "Moderate portal logs and chats.",
-      "permissions": [
-        "p-8",
-        "p-9"
-      ]
-    },
-    {
-      "id": "r-5",
+      "id": "r-6",
       "name": "Auditor",
       "slug": "auditor",
-      "description": "Compliance auditing read-only mode.",
+      "description": "Read-only compliance and audit visibility.",
       "permissions": [
         "p-4",
-        "p-10"
-      ]
-    },
-    {
-      "id": "r-6",
-      "name": "Developer",
-      "slug": "developer",
-      "description": "Integrations configurations and diagnostics.",
-      "permissions": [
-        "p-12",
-        "p-13",
-        "p-4"
-      ]
-    },
-    {
-      "id": "r-7",
-      "name": "Client",
-      "slug": "client",
-      "description": "Client project monitoring, billing, and communication.",
-      "permissions": [
-        "p-8",
-        "p-10"
+        "p-10",
+        "p-12"
       ]
     },
     {
       "id": "r-8",
-      "name": "User",
-      "slug": "user",
-      "description": "Unprivileged authenticated user profile.",
+      "name": "Client",
+      "slug": "client",
+      "description": "Client partner with access to assigned workspaces.",
       "permissions": [
-        "p-8"
+        "p-8",
+        "p-10"
       ]
-    },
-    {
-      "id": "r-9",
-      "name": "Guest",
-      "slug": "guest",
-      "description": "Unauthenticated context views.",
-      "permissions": []
     }
   ],
   "permissions": [
@@ -300,155 +301,177 @@
   ],
   "sessions": [
     {
-      "id": "s-974a01a7-dbe9-4c49-b2cc-e80eec3f8828",
-      "userId": "u-2",
-      "token": "token_2d96bc02456f9350de202f6d47b4e4b5d69cf43d9a1050426b9a767e8828a35a1396f8ea36dc2c67",
+      "id": "s-1742deb9-8534-49a4-987a-25e49fc67f1a",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "token": "token_04cfc0738ee3b70e965ded9941023349d10bae830b00d8acff123dd0aa4ff1e8c9143217a047a7f7",
       "ipAddress": "127.0.0.1",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
       "isActive": false,
-      "createdAt": "2026-06-29T16:37:01.542Z",
-      "expiresAt": "2026-06-29T18:37:01.542Z"
+      "createdAt": "2026-07-01T04:02:40.895Z",
+      "expiresAt": "2026-07-31T04:02:40.895Z"
     },
     {
-      "id": "s-931716d0-01f3-4685-9dc8-ce0b2525f01f",
-      "userId": "u-2",
-      "token": "token_b84438ed0b9e97484a844ab5fb03cf8cf496f43882ec6cc841e3472a2edd77be93866ad8b5f3b14f",
-      "ipAddress": "127.0.0.1",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
-      "isActive": false,
-      "createdAt": "2026-06-30T02:40:03.515Z",
-      "expiresAt": "2026-06-30T04:40:03.514Z"
-    },
-    {
-      "id": "s-abfd8f6e-1172-4cc3-b3d0-11f02979f7b3",
-      "userId": "u-2",
-      "token": "token_d941499c14185939ecaf3a5c664fc7de00459c079192f7ca950c960e7dbc788ddbbcbdebb5340a23",
+      "id": "s-a726fc87-3e5b-4c03-a9c6-9dfc5cb24d4a",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "token": "token_c3ab0df4003a29e522565cb4bd14152794c4808b6ac975b9ecfc50b21fa0edbba759e7a0eba1de5d",
       "ipAddress": "127.0.0.1",
       "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
       "isActive": true,
-      "createdAt": "2026-06-30T04:07:23.007Z",
-      "expiresAt": "2026-07-30T04:07:23.004Z"
+      "createdAt": "2026-07-01T04:02:42.884Z",
+      "expiresAt": "2026-07-01T06:02:42.884Z"
     },
     {
-      "id": "s-9582bc8e-e79a-4354-90ce-fc6257a4f2ba",
+      "id": "s-a51d1c28-b137-494b-a101-b98c3dcbd3be",
       "userId": "u-2",
-      "token": "token_ebd7e60417484b00dab2e3f3a879bb878568f9d6ac75df483927be1cf0fcbde340572e6e2b0dbb9c",
+      "token": "token_8f5c3e0f19a5c928ca6a2318e1e8bec4d0629d556e9eecb4936a2566f098b1e209e72388770610ed",
       "ipAddress": "127.0.0.1",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
       "isActive": true,
-      "createdAt": "2026-06-30T04:31:31.868Z",
-      "expiresAt": "2026-06-30T06:31:31.867Z"
+      "createdAt": "2026-07-01T04:02:44.190Z",
+      "expiresAt": "2026-07-01T06:02:44.190Z"
     },
     {
-      "id": "s-0a8bd4ee-741c-42c5-91e9-3dbe89313b44",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "token": "token_38b06e9858839f9e12f2fe709f71b48c75bfc22854d92f10614d77691179629178d0026c5a437b13",
+      "id": "s-9c5f9c3a-1eea-463a-a7a3-d37e48ba3931",
+      "userId": "u-2",
+      "token": "token_f2155aeab3d684b3787b69de188555a0af9eb5412b0267fc0f7bac963e10e7282e9b7de6f1f85143",
       "ipAddress": "127.0.0.1",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
-      "isActive": false,
-      "createdAt": "2026-06-30T05:02:00.051Z",
-      "expiresAt": "2026-06-30T07:02:00.051Z"
-    },
-    {
-      "id": "s-54f15b2c-c4c1-449a-99d7-7270cde3a178",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "token": "token_3e4d460b04271f505ce1bf96c106a68e1a812cc46f195711a5b45e7948701deb7e93fa72d9defd62",
-      "ipAddress": "127.0.0.1",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
-      "isActive": false,
-      "createdAt": "2026-06-30T05:23:06.640Z",
-      "expiresAt": "2026-06-30T07:23:06.640Z"
-    },
-    {
-      "id": "s-5f93b995-813b-48fb-856b-771d4dd4c1cf",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "token": "token_b8ad8e825723a012d0fe42adfa0b61986874203dd5b7f025f9067b0858395d394dba740ec61530a6",
-      "ipAddress": "127.0.0.1",
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
       "isActive": true,
-      "createdAt": "2026-06-30T05:31:36.267Z",
-      "expiresAt": "2026-06-30T07:31:36.267Z"
+      "createdAt": "2026-07-01T04:06:25.419Z",
+      "expiresAt": "2026-07-01T06:06:25.419Z"
+    },
+    {
+      "id": "s-3cf1e4c5-7d73-42e0-839a-7b24698f9798",
+      "userId": "u-2",
+      "token": "token_5d41817ad8866e66350b4a2618f141951346ae86c3898033457d516d869fc88e75fd00b11cbdc59d",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T04:06:26.087Z",
+      "expiresAt": "2026-07-01T06:06:26.087Z"
+    },
+    {
+      "id": "s-24b06b3b-9a64-4858-83ae-550b8dee5b02",
+      "userId": "u-2dc1a147-6535-46e3-a39f-ba2566dbd6a9",
+      "token": "token_2a93c93b56912baafe75ce5658554a376e586fefffa9090684023d16548e7a8f00477ca0699bacd8",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T04:07:07.294Z",
+      "expiresAt": "2026-07-01T06:07:07.294Z"
+    },
+    {
+      "id": "s-533c7aa5-2a79-445e-ac53-a37a3a0acbe9",
+      "userId": "u-2",
+      "token": "token_f855f2b368e5a3b257ddfd7f3264fdcb4d2290c78a3656a8e46bd27ce5e4869802f267dbc782c7cb",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T04:30:27.571Z",
+      "expiresAt": "2026-07-01T06:30:27.570Z"
+    },
+    {
+      "id": "s-9e3d5951-d1de-4b4d-a994-705fccc0dc84",
+      "userId": "u-2",
+      "token": "token_1399d3d0067cce571856f3bc6be1a96939fc3ca620ae8c318c189d49faa3c2b3a2c54bfedb784745",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8655",
+      "isActive": true,
+      "createdAt": "2026-07-01T04:34:45.570Z",
+      "expiresAt": "2026-07-01T06:34:45.569Z"
     }
   ],
   "password_resets": [],
   "email_verifications": [
     {
-      "id": "ev-3a6339b2-9f72-4925-9f95-f7dd00625710",
-      "email": "smaichinnikstah@gmail.com",
-      "token": "02607d63cf48928642c43c21e7c1559c2bdb8024e45f46ea459a26bc0cf5ceab",
-      "expiresAt": "2026-07-01T05:01:41.201Z"
+      "id": "ev-e3955c8f-63c5-4d37-8fa6-e84038f6a5ce",
+      "email": "audit+1782878556@afriwaid.test",
+      "token": "7ee5d3cbb6febb63f678119ed253bd43e2e5a214e6838325f8bd0f02b6955a92",
+      "expiresAt": "2026-07-02T04:02:40.080Z"
+    },
+    {
+      "id": "ev-a5b4c97b-7523-4c12-93d6-e5f65a6f3844",
+      "email": "clean+1782878825@afriwaid.test",
+      "token": "172ad949f8177eb9777a15f82d0c1fd99e15123c138fa63f7bbefd5673d5d456",
+      "expiresAt": "2026-07-02T04:07:06.639Z"
     }
   ],
-  "login_attempts": [],
+  "login_attempts": [
+    {
+      "id": "la-0c7f0544-0424-43b0-abda-32fe3d0ec696",
+      "ip": "127.0.0.1",
+      "email": "audit+1782878556@afriwaid.test",
+      "count": 0,
+      "lockedUntil": null
+    }
+  ],
   "audit_logs": [
     {
-      "id": "l-ace71212-bc50-4c26-9dfc-d8da27935cce",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
+      "id": "l-59507bc2-27d9-4816-a3f9-b3af449aecdd",
       "username": "chinnikstah",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "failure",
+      "details": "Invalid security passcode audit check failed",
+      "timestamp": "2026-07-01T04:38:53.821Z"
+    },
+    {
+      "id": "l-52a716d9-93ab-4ef5-b023-d470bb99ff56",
+      "userId": "u-2",
+      "username": "aeroglobal",
       "ipAddress": "127.0.0.1",
       "action": "LOGIN",
       "module": "auth",
       "status": "success",
       "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-30T05:31:36.267Z"
+      "timestamp": "2026-07-01T04:34:45.570Z"
     },
     {
-      "id": "l-5e8fc53a-3e62-4f93-aa60-f4734f2a5418",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "username": "chinnikstah",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGOUT",
-      "module": "auth",
-      "status": "success",
-      "details": "Terminated login session client request",
-      "timestamp": "2026-06-30T05:27:35.987Z"
-    },
-    {
-      "id": "l-4134c745-5ae1-4cc7-abf6-a58aa034b798",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "username": "chinnikstah",
+      "id": "l-6d368be7-8e70-44c2-b7bb-f64bdae43010",
+      "userId": "u-2",
+      "username": "aeroglobal",
       "ipAddress": "127.0.0.1",
       "action": "LOGIN",
       "module": "auth",
       "status": "success",
       "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-30T05:23:06.640Z"
+      "timestamp": "2026-07-01T04:30:27.571Z"
     },
     {
-      "id": "l-9853b744-f3e4-44cf-9709-92e4471d07fb",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "username": "chinnikstah",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGOUT",
-      "module": "auth",
-      "status": "success",
-      "details": "Terminated login session client request",
-      "timestamp": "2026-06-30T05:18:51.916Z"
-    },
-    {
-      "id": "l-8cf64330-5ad2-4deb-a41c-2b4985ad40a6",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "username": "chinnikstah",
+      "id": "l-f9a92081-f069-4068-b2c8-6ef91b75e5bc",
+      "userId": "u-2dc1a147-6535-46e3-a39f-ba2566dbd6a9",
+      "username": "clean_1782878825",
       "ipAddress": "127.0.0.1",
       "action": "LOGIN",
       "module": "auth",
       "status": "success",
       "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-30T05:02:00.051Z"
+      "timestamp": "2026-07-01T04:07:07.294Z"
     },
     {
-      "id": "l-f73208b5-b623-4824-923b-69edcdb58a9b",
-      "userId": "u-334e17e6-d41e-4c0a-80bd-7603fcd08cb7",
-      "username": "chinnikstah",
+      "id": "l-4e5319c4-ae6e-4277-9266-e6e38a5c8286",
+      "username": "clean_1782878825",
+      "ipAddress": "127.0.0.1",
+      "action": "REGISTER",
+      "module": "auth",
+      "status": "failure",
+      "details": "Username or email registry collision on sign up",
+      "timestamp": "2026-07-01T04:07:06.735Z"
+    },
+    {
+      "id": "l-c6bc0de7-c253-44a5-8275-d20d78f12beb",
+      "userId": "u-2dc1a147-6535-46e3-a39f-ba2566dbd6a9",
+      "username": "clean_1782878825",
       "ipAddress": "127.0.0.1",
       "action": "REGISTER",
       "module": "auth",
       "status": "success",
       "details": "Successfully registered user account with assigned role: User",
-      "timestamp": "2026-06-30T05:01:41.201Z"
+      "timestamp": "2026-07-01T04:07:06.640Z"
     },
     {
-      "id": "l-38248a81-c6ee-4e21-99e5-4c0d061705be",
+      "id": "l-78eafa50-8f70-47ee-b1ee-207aaa6872ad",
       "userId": "u-2",
       "username": "aeroglobal",
       "ipAddress": "127.0.0.1",
@@ -456,51 +479,147 @@
       "module": "auth",
       "status": "success",
       "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-30T04:31:31.868Z"
+      "timestamp": "2026-07-01T04:06:26.087Z"
     },
     {
-      "id": "l-c16695cb-7050-413b-98b0-88b57137c733",
+      "id": "l-6d886cc3-0cfc-4034-8b6e-38d250e782f4",
       "userId": "u-2",
       "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T04:06:25.419Z"
+    },
+    {
+      "id": "l-9674468d-a463-4165-bde4-f6466cdeed8e",
+      "userId": "u-2",
+      "username": "aeroglobal",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T04:02:44.190Z"
+    },
+    {
+      "id": "l-7e312313-ef3a-4779-8482-a89539bb02c8",
+      "userId": "u-4507245b-7ba2-4f2c-b2fb-2270bad8aa46",
+      "username": "verify_1782878556",
+      "ipAddress": "127.0.0.1",
+      "action": "VERIFY_EMAIL",
+      "module": "auth",
+      "status": "success",
+      "details": "Successfully completed email address certification",
+      "timestamp": "2026-07-01T04:02:43.592Z"
+    },
+    {
+      "id": "l-993d0676-d204-44c5-a51c-ea9e7f7fafc2",
+      "userId": "u-4507245b-7ba2-4f2c-b2fb-2270bad8aa46",
+      "username": "verify_1782878556",
+      "ipAddress": "127.0.0.1",
+      "action": "REGISTER",
+      "module": "auth",
+      "status": "success",
+      "details": "Successfully registered user account with assigned role: User",
+      "timestamp": "2026-07-01T04:02:43.489Z"
+    },
+    {
+      "id": "l-f1acc893-07f7-4377-a1e2-e9233397af01",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "username": "audit_1782878556",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "success",
+      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
+      "timestamp": "2026-07-01T04:02:42.884Z"
+    },
+    {
+      "id": "l-a73112e0-14d8-4d68-9f3f-e4c25266f98f",
+      "username": "audit+1782878556@afriwaid.test",
+      "ipAddress": "127.0.0.1",
+      "action": "LOGIN",
+      "module": "auth",
+      "status": "failure",
+      "details": "Invalid security passcode audit check failed",
+      "timestamp": "2026-07-01T04:02:42.339Z"
+    },
+    {
+      "id": "l-405e0832-6c9b-478b-81c7-492645a14933",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "username": "audit_1782878556",
+      "ipAddress": "127.0.0.1",
+      "action": "RESET_PASSWORD",
+      "module": "auth",
+      "status": "success",
+      "details": "Successfully finalized reset passcode procedure",
+      "timestamp": "2026-07-01T04:02:41.766Z"
+    },
+    {
+      "id": "l-48a193e7-16e2-49cd-82dc-7548f3f9462c",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "username": "audit_1782878556",
+      "ipAddress": "127.0.0.1",
+      "action": "FORGOT_PASSWORD",
+      "module": "auth",
+      "status": "success",
+      "details": "Generated password reset token for: audit_1782878556",
+      "timestamp": "2026-07-01T04:02:41.137Z"
+    },
+    {
+      "id": "l-319a4bac-26a1-46b0-9264-9bc53d3e07eb",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "username": "audit_1782878556",
       "ipAddress": "127.0.0.1",
       "action": "LOGOUT",
       "module": "auth",
       "status": "success",
       "details": "Terminated login session client request",
-      "timestamp": "2026-06-30T04:26:17.855Z"
+      "timestamp": "2026-07-01T04:02:41.071Z"
     },
     {
-      "id": "l-52c5ba56-16ea-476a-bd68-4d4437bdea4c",
-      "userId": "u-2",
-      "username": "aeroglobal",
+      "id": "l-8b93cbd6-c387-46b5-913d-77aee18f4375",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "username": "audit_1782878556",
       "ipAddress": "127.0.0.1",
       "action": "LOGIN",
       "module": "auth",
       "status": "success",
       "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-30T04:07:23.007Z"
+      "timestamp": "2026-07-01T04:02:40.895Z"
     },
     {
-      "id": "l-fcb8e804-753a-4b70-8751-3f91aefd55e0",
-      "userId": "u-2",
-      "username": "aeroglobal",
+      "id": "l-d6c8a338-61d1-4b25-aaa4-b830e00a55fe",
+      "username": "weak_1782878556",
+      "ipAddress": "127.0.0.1",
+      "action": "REGISTER",
+      "module": "auth",
+      "status": "failure",
+      "details": "Password did not satisfy security complexity matrix rules",
+      "timestamp": "2026-07-01T04:02:40.319Z"
+    },
+    {
+      "id": "l-08e7351c-771d-49c2-a199-809a39b2d8e1",
+      "userId": "u-14ef2f6b-04d8-4371-9690-2317abb65d30",
+      "username": "audit_1782878556",
+      "ipAddress": "127.0.0.1",
+      "action": "REGISTER",
+      "module": "auth",
+      "status": "success",
+      "details": "Successfully registered user account with assigned role: User",
+      "timestamp": "2026-07-01T04:02:40.080Z"
+    },
+    {
+      "id": "l-129a7ba8-75bc-4532-9d80-148aaafa1bb1",
+      "username": "chinnikstah",
       "ipAddress": "127.0.0.1",
       "action": "LOGIN",
       "module": "auth",
-      "status": "success",
-      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-30T02:40:03.515Z"
-    },
-    {
-      "id": "l-bee822ee-7ee1-46f3-be60-b0c03c445b63",
-      "userId": "u-2",
-      "username": "aeroglobal",
-      "ipAddress": "127.0.0.1",
-      "action": "LOGIN",
-      "module": "auth",
-      "status": "success",
-      "details": "Authorized secure logins session token. Current IP: 127.0.0.1",
-      "timestamp": "2026-06-29T16:37:01.542Z"
+      "status": "failure",
+      "details": "Invalid security passcode audit check failed",
+      "timestamp": "2026-06-30T08:35:17.647Z"
     }
   ],
   "clients": [
@@ -560,6 +679,18 @@
       "projectId": "proj-1",
       "userId": "u-1",
       "role": "Super Admin"
+    },
+    {
+      "id": "pm-3",
+      "projectId": "proj-1",
+      "userId": "u-9",
+      "role": "Team Member"
+    },
+    {
+      "id": "pm-4",
+      "projectId": "proj-1",
+      "userId": "u-7",
+      "role": "Developer"
     }
   ],
   "milestones": [
@@ -790,6 +921,21 @@
       "id": "cp-13",
       "conversationId": "conv-team-internal",
       "userId": "u-1"
+    },
+    {
+      "id": "cp-14",
+      "conversationId": "conv-1",
+      "userId": "u-9"
+    },
+    {
+      "id": "cp-15",
+      "conversationId": "conv-proj-general",
+      "userId": "u-9"
+    },
+    {
+      "id": "cp-16",
+      "conversationId": "conv-proj-support",
+      "userId": "u-9"
     }
   ],
   "messages": [
@@ -831,9 +977,43 @@
         "u-2"
       ],
       "reactions": []
+    },
+    {
+      "id": "msg-261d39f9-39ce-4968-8ea7-1066d85c23d2",
+      "conversationId": "conv-1",
+      "senderId": "u-2",
+      "body": "Audit probe 1782878556",
+      "timestamp": "2026-07-01T04:02:44.399Z",
+      "readBy": [],
+      "pinned": false,
+      "reactions": []
     }
   ],
   "notifications": [
+    {
+      "id": "nt-6d2f18aa-c937-454f-b7bb-a78f7694ad3f",
+      "userId": "u-9",
+      "title": "New Workspace Chat Message",
+      "msg": "aeroglobal: Audit probe 1782878556",
+      "category": "chat",
+      "read": false,
+      "createdAt": "2026-07-01T04:02:44.402Z",
+      "metadata": {
+        "conversationId": "conv-1"
+      }
+    },
+    {
+      "id": "nt-effe0a57-cefb-4ab2-99bc-3f6f3a35e310",
+      "userId": "u-1",
+      "title": "New Workspace Chat Message",
+      "msg": "aeroglobal: Audit probe 1782878556",
+      "category": "chat",
+      "read": false,
+      "createdAt": "2026-07-01T04:02:44.402Z",
+      "metadata": {
+        "conversationId": "conv-1"
+      }
+    },
     {
       "id": "nt-1",
       "userId": "u-2",
@@ -966,6 +1146,13 @@
       "projectId": "proj-1",
       "userId": "u-4",
       "role": "Designer",
+      "status": "active"
+    },
+    {
+      "id": "tm-3",
+      "projectId": "proj-1",
+      "userId": "u-9",
+      "role": "Team Member",
       "status": "active"
     }
   ]

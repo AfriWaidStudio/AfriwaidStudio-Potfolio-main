@@ -5,8 +5,8 @@ import {
   Calendar, Clock, Award, Sun, Moon, ChevronDown, ChevronUp, FileText, User, Maximize2, Link, Eye
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { loadInitialData, saveInitialData, INITIAL_CUSTOMIZATION } from "./data";
-import { Project, Article, JournalEntry, CV, ClientProfile, Inquiry, TrackedAnalytics, ServiceOffer, MediaItem, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings } from "./types";
+import { loadInitialData, saveInitialData, INITIAL_CUSTOMIZATION, INITIAL_CONSULTATION_CARDS } from "./data";
+import { Project, Article, JournalEntry, CV, ClientProfile, Inquiry, TrackedAnalytics, ServiceOffer, MediaItem, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings, ConsultationCard } from "./types";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const formatStat = (val: string | number | undefined, defaultVal: string | number, suffix: string) => {
@@ -33,20 +33,18 @@ import { AuthProvider, useAuth } from "./components/AuthContext";
 import UnifiedAuthGate from "./components/UnifiedAuthGate";
 import SecuritySettings from "./components/SecuritySettings";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
-import DashboardPage from "./pages/client/DashboardPage";
-import ModeratorWorkspacePage from "./pages/workspace/ModeratorWorkspacePage";
-import AuditorWorkspacePage from "./pages/workspace/AuditorWorkspacePage";
-import TimelinePage from "./pages/client/TimelinePage";
-import ClientProjectsPage from "./pages/client/ProjectsPage";
-import DeliverablesPage from "./pages/client/DeliverablesPage";
-import ApprovalsPage from "./pages/client/ApprovalsPage";
-import InvoicesPage from "./pages/client/InvoicesPage";
-import MeetingsPage from "./pages/client/MeetingsPage";
-import MessagesPage from "./pages/client/MessagesPage";
-import FilesPage from "./pages/client/FilesPage";
-import TeamPage from "./pages/client/TeamPage";
-import ReportsPage from "./pages/client/ReportsPage";
-import SettingsPage from "./pages/client/SettingsPage";
+import DashboardPage from "./pages/user/DashboardPage";
+import TimelinePage from "./pages/user/TimelinePage";
+import ClientProjectsPage from "./pages/user/ProjectsPage";
+import DeliverablesPage from "./pages/user/DeliverablesPage";
+import ApprovalsPage from "./pages/user/ApprovalsPage";
+import InvoicesPage from "./pages/user/InvoicesPage";
+import MeetingsPage from "./pages/user/MeetingsPage";
+import MessagesPage from "./pages/user/MessagesPage";
+import FilesPage from "./pages/user/FilesPage";
+import TeamPage from "./pages/user/TeamPage";
+import ReportsPage from "./pages/user/ReportsPage";
+import SettingsPage from "./pages/user/SettingsPage";
 
 export default function App() {
   return (
@@ -60,6 +58,9 @@ function AppContent() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const adminRoles = ["Super Admin", "Admin", "Auditor"];
+  const teamRoles = ["Team Member", "Moderator", "Developer", "Operator"];
+  const portalRoles = ["Client", "User"];
   
   const getInitialTabFromPath = (path: string): "Home" | "Projects" | "Services" | "Build Journal" | "AI Lab" | "Publishing" | "Media" | "Resumé CV" | "Founder Profile" | "Company Profile" | "Client Access" | "Admin Central" | "Moderator" | "Auditor" | "Security Settings" | "Contact" => {
     if (path.startsWith("/workspace/admin") || path.startsWith("/admin")) {
@@ -123,33 +124,21 @@ function AppContent() {
 
   useEffect(() => {
       if (user) {
-        const role = user.role;
-        if (role === "Super Admin" || role === "Admin") {
-          if (!location.pathname.startsWith("/workspace/admin")) {
-            navigate("/workspace/admin", { replace: true });
-          }
-        } else if (role === "Client") {
-          if (!location.pathname.startsWith("/portal") && !location.pathname.startsWith("/client")) {
-            navigate("/portal", { replace: true });
-          }
-        } else if (role === "Moderator") {
-          if (!location.pathname.startsWith("/workspace/moderator")) {
-            navigate("/workspace/moderator", { replace: true });
-          }
-        } else if (role === "Auditor") {
-          if (!location.pathname.startsWith("/workspace/auditor")) {
-            navigate("/workspace/auditor", { replace: true });
-          }
-        } else if (role === "Developer") {
-          if (!location.pathname.startsWith("/workspace/developer")) {
-            navigate("/workspace/developer", { replace: true });
-          }
-        } else if (role === "Operator") {
-          if (!location.pathname.startsWith("/workspace/operator")) {
-            navigate("/workspace/operator", { replace: true });
-          }
+      const role = user.role;
+      if (adminRoles.includes(role)) {
+        if (!location.pathname.startsWith("/workspace/admin") && !location.pathname.startsWith("/admin")) {
+          navigate("/admin", { replace: true });
+        }
+      } else if (teamRoles.includes(role)) {
+        if (!location.pathname.startsWith("/team")) {
+          navigate("/team", { replace: true });
+        }
+      } else if (portalRoles.includes(role)) {
+        if (!location.pathname.startsWith("/portal")) {
+          navigate("/portal", { replace: true });
         }
       }
+    }
     }, [user, location.pathname, navigate]);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -714,6 +703,36 @@ function AppContent() {
   };
 
   const accent = ACCENT_MAP[customization?.accentColor || "cyan"] || ACCENT_MAP.cyan;
+  const systemConsultationCards: ConsultationCard[] = [
+    services?.[0] ? {
+      id: `system-service-${services[0].id}`,
+      badge: "AUTO SERVICE",
+      title: `Request ${services[0].name}`,
+      description: services[0].description || "Start from the current service catalogue and route your requirements into the correct delivery track.",
+      ctaLabel: "View Services",
+      targetTab: "Services",
+      systemGenerated: true
+    } : INITIAL_CONSULTATION_CARDS[0],
+    projects?.[0] ? {
+      id: `system-project-${projects[0].id}`,
+      badge: "AUTO SHOWCASE",
+      title: `Study ${projects[0].name}`,
+      description: projects[0].description || "Review a current build example before requesting a similar digital product or partnership.",
+      ctaLabel: "View Projects",
+      targetTab: "Projects",
+      systemGenerated: true
+    } : INITIAL_CONSULTATION_CARDS[1],
+    journal?.[0] ? {
+      id: `system-journal-${journal[0].id}`,
+      badge: "AUTO UPDATE",
+      title: journal[0].title,
+      description: journal[0].description || "Read the latest platform update and use it to guide your next technical request.",
+      ctaLabel: "Read Journal",
+      targetTab: "Build Journal",
+      systemGenerated: true
+    } : INITIAL_CONSULTATION_CARDS[2]
+  ];
+  const consultationCards = customization?.consultationCards?.length ? customization.consultationCards : systemConsultationCards;
 
   if (!dataLoaded) {
     return (
@@ -724,8 +743,8 @@ function AppContent() {
     );
   }
 
-  // Full-portal takeover if user is logged in as a Client role
-  if (user && user.role === "Client") {
+  // Full-portal takeover if user is logged in as a portal role
+  if (user && portalRoles.includes(user.role)) {
     const isKnownPortalRoute =
       location.pathname === "/portal" ||
       location.pathname.startsWith("/portal/dashboard") ||
@@ -781,7 +800,7 @@ function AppContent() {
             className="flex items-center gap-2 group text-left cursor-pointer hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 ease-out origin-left"
             id="nav-logo-btn"
           >
-            <div className={`w-8 h-8 rounded bg-gradient-to-br ${accent.bgGradient} text-white flex items-center justify-center font-bold text-lg shadow-sm border border-cyan-500/10 group-hover:scale-105 transition-transform duration-150 overflow-hidden`}>
+            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${accent.bgGradient} text-white flex items-center justify-center font-bold text-xl shadow-sm border border-cyan-500/10 group-hover:scale-105 transition-transform duration-150 overflow-hidden`}>
               {customization?.logoType === "image" && customization?.logoUrl ? (
                 <img 
                   src={customization.logoUrl} 
@@ -796,13 +815,13 @@ function AppContent() {
               )}
             </div>
             <div>
-              <span className="text-sm font-display font-black tracking-widest text-slate-950 dark:text-white block uppercase">{customization?.appName || "AFRIWAID STUDIO"}</span>
-              <span className="text-[9px] text-slate-400 dark:text-neutral-450 font-mono block -mt-1 leading-none font-bold uppercase">{customization?.tagline || "DIGITAL CREATIVE ENGINE"}</span>
+              <span className="text-base xl:text-lg font-display font-black tracking-widest text-slate-950 dark:text-white block uppercase">{customization?.appName || "AFRIWAID STUDIO"}</span>
+              <span className="text-[11px] text-slate-400 dark:text-neutral-450 font-mono block -mt-0.5 leading-none font-bold uppercase">{customization?.tagline || "DIGITAL CREATIVE ENGINE"}</span>
             </div>
           </button>
 
           {/* Desktop Navigation Links (Responsive density) */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 font-mono text-[10px] tracking-wider uppercase relative">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-3 font-mono text-xs tracking-wider uppercase relative">
             {(["Home", "Projects", "Services", "Build Journal"] as const)
               .filter((tab) => tab !== "Build Journal" || (customization?.showJournal !== false))
               .map((tab) => (
@@ -813,7 +832,7 @@ function AppContent() {
                     setMobileMenuOpen(false);
                     setHubDropdownOpen(false);
                   }}
-                  className={`px-3 py-1.5 transition-all duration-155 whitespace-nowrap font-bold ${
+                  className={`px-3.5 py-2 transition-all duration-155 whitespace-nowrap font-bold ${
                     activeTab === tab
                       ? `${accent.text} border-b-2 ${accent.borderColor} rounded-none pb-1 font-extrabold`
                       : "text-slate-600 dark:text-neutral-400 hover:text-slate-950 dark:hover:text-white pb-1 border-b-2 border-transparent hover:border-slate-200 dark:hover:border-neutral-850"
@@ -828,7 +847,7 @@ function AppContent() {
             <div className="relative">
               <button
                 onClick={() => setHubDropdownOpen(!hubDropdownOpen)}
-                className={`px-3 py-1.5 transition-all duration-155 whitespace-nowrap font-bold flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3.5 py-2 transition-all duration-155 whitespace-nowrap font-bold flex items-center gap-1.5 cursor-pointer ${
                   !(["Home", "Projects", "Services", "Build Journal"] as any).includes(activeTab) && activeTab !== "Security Settings"
                     ? `${accent.text} border-b-2 ${accent.borderColor} rounded-none pb-1 font-extrabold`
                     : "text-slate-600 dark:text-neutral-400 hover:text-slate-950 dark:hover:text-white pb-1 border-b-2 border-transparent hover:border-slate-200 dark:hover:border-neutral-850"
@@ -836,7 +855,7 @@ function AppContent() {
                 id="nav-hub-trigger"
               >
                 <span>WORKSPACE HUB</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${hubDropdownOpen ? "rotate-180" : ""}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${hubDropdownOpen ? "rotate-180" : ""}`} />
                 {!(["Home", "Projects", "Services", "Build Journal"] as any).includes(activeTab) && activeTab !== "Security Settings" && (
                   <span className={`w-1.5 h-1.5 ${accent.textBg} rounded-full shrink-0 animate-pulse block`} />
                 )}
@@ -851,8 +870,8 @@ function AppContent() {
                   />
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 bg-white dark:bg-zinc-950 rounded-2xl border border-slate-200/80 dark:border-neutral-800 shadow-xl py-2 z-50 animate-fadeIn">
                     <div className="px-3.5 py-1.5 border-b border-slate-100 dark:border-neutral-900 mb-1 flex items-center justify-between">
-                      <span className="text-[9px] text-slate-400 dark:text-neutral-500 font-mono font-bold uppercase tracking-widest">Capabilities Index</span>
-                      <span className="inline-flex items-center px-1.5 py-0.5 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-500 dark:text-cyan-400 font-mono text-[8px] font-bold rounded">8 SLOTS</span>
+                      <span className="text-[10px] text-slate-400 dark:text-neutral-500 font-mono font-bold uppercase tracking-widest">Capabilities Index</span>
+                      <span className="inline-flex items-center px-1.5 py-0.5 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-500 dark:text-cyan-400 font-mono text-[9px] font-bold rounded">8 SLOTS</span>
                     </div>
                     {[
                       { name: "AI Lab", tab: "AI Lab" as const, desc: "AI models, engines & smart sandboxes", icon: BrainCircuit, color: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40", show: customization?.showAILab !== false },
@@ -862,10 +881,8 @@ function AppContent() {
                       { name: "Founder Profile", tab: "Founder Profile" as const, desc: "Nwogha Chigozie's 5 expressions", icon: User, color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40", show: true },
                       { name: "Company Profile", tab: "Company Profile" as const, desc: "Core identity, team slots & values", icon: Globe, color: "text-sky-600 dark:text-sky-450 bg-sky-50 dark:bg-sky-950/40", show: true },
                       { name: "Client Portal", tab: "Client Access" as const, desc: "Interactive secure partner workstation", icon: Command, color: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40", show: true },
-                      { name: "Admin Central", tab: "Admin Central" as const, desc: "Operator credentials & security logs", icon: ShieldCheck, color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40", show: user && (user.role === "Admin" || user.role === "Super Admin") },
-                      { name: "Moderator", tab: "Moderator" as const, desc: "Content moderation & support review", icon: ShieldCheck, color: "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40", show: user && user.role === "Moderator" },
-                      { name: "Auditor", tab: "Auditor" as const, desc: "System audit logs & security monitoring", icon: Eye, color: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40", show: user && user.role === "Auditor" }
-                    ].filter(item => item.show).map((item) => {
+{ name: "Admin Central", tab: "Admin Central" as const, desc: "Operator credentials & security logs", icon: ShieldCheck, color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/40", show: user && adminRoles.includes(user.role) }
+                      ].filter(item => item.show).map((item) => {
                       const Icon = item.icon;
                       const isActive = activeTab === item.tab;
                       return (
@@ -881,15 +898,15 @@ function AppContent() {
                           }`}
                         >
                           <div className={`p-1.5 rounded-lg shrink-0 mt-0.5 ${item.color} ${isActive ? "scale-105" : ""}`}>
-                            <Icon className="w-3.5 h-3.5" />
+                            <Icon className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <span className={`text-[11px] font-sans font-bold block transition-colors ${
+                            <span className={`text-xs font-sans font-bold block transition-colors ${
                               isActive ? `${accent.text} font-extrabold` : `text-slate-850 dark:text-slate-200 group-hover:${accent.text}`
                             }`}>
                               {item.name}
                             </span>
-                            <span className="text-[9px] text-slate-400 dark:text-neutral-500 leading-normal block font-sans truncate font-medium">
+                            <span className="text-[10px] text-slate-400 dark:text-neutral-500 leading-normal block font-sans truncate font-medium">
                               {item.desc}
                             </span>
                           </div>
@@ -968,7 +985,7 @@ function AppContent() {
                     setActiveTab("Security Settings");
                     setHubDropdownOpen(false);
                   }}
-                  className={`p-1 px-2.5 rounded-md border text-[10px] font-mono font-bold transition duration-150 flex items-center gap-1 cursor-pointer ${
+                  className={`p-1.5 px-3 rounded-md border text-xs font-mono font-bold transition duration-150 flex items-center gap-1 cursor-pointer ${
                     activeTab === "Security Settings"
                       ? "bg-cyan-500 border-cyan-500 text-white"
                       : "bg-slate-50 dark:bg-zinc-90 w-auto hover:bg-slate-100 dark:bg-zinc-900 dark:border-neutral-800 dark:text-neutral-300 hover:text-slate-900 text-slate-700"
@@ -984,7 +1001,7 @@ function AppContent() {
                     setActiveTab("Home");
                     setHubDropdownOpen(false);
                   }}
-                  className="p-1 px-2.5 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-650 dark:text-red-400 rounded-lg border border-red-200/50 dark:border-red-900/30 cursor-pointer font-mono font-bold text-[9px] uppercase tracking-wider"
+                  className="p-1.5 px-3 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-650 dark:text-red-400 rounded-lg border border-red-200/50 dark:border-red-900/30 cursor-pointer font-mono font-bold text-[10px] uppercase tracking-wider"
                   id="nav-logout-action-btn"
                 >
                   Logout
@@ -996,7 +1013,7 @@ function AppContent() {
                   setActiveTab("Client Access");
                   setHubDropdownOpen(false);
                 }}
-                className={`p-1 px-3 rounded-lg font-mono text-[10px] font-bold transition duration-150 flex items-center gap-1 cursor-pointer border ${
+                className={`p-1.5 px-3.5 rounded-lg font-mono text-xs font-bold transition duration-150 flex items-center gap-1 cursor-pointer border ${
                   activeTab === "Client Access"
                     ? "bg-cyan-500 border-cyan-500 text-white"
                     : "bg-slate-900 dark:bg-zinc-900 hover:bg-slate-800 text-white dark:text-zinc-200 border-neutral-850 dark:border-neutral-800"
@@ -1075,7 +1092,7 @@ function AppContent() {
                   {tab}
                 </button>
               ))}
-            {user && user.role === "Admin" && (
+            {user && adminRoles.includes(user.role) && (
               <button
                 key="Admin Central"
                 onClick={() => { setActiveTab("Admin Central"); setMobileMenuOpen(false); }}
@@ -1089,32 +1106,18 @@ function AppContent() {
                 Admin Central
               </button>
             )}
-            {user && user.role === "Moderator" && (
+            {user && teamRoles.includes(user.role) && (
               <button
-                key="Moderator"
-                onClick={() => { setActiveTab("Moderator"); setMobileMenuOpen(false); }}
+                key="Team Workspace"
+                onClick={() => { navigate("/team"); setMobileMenuOpen(false); }}
                 className={`w-full text-left px-4 py-2.5 rounded-lg block font-bold transition duration-155 ${
-                  activeTab === "Moderator" 
+                  location.pathname.startsWith("/team") 
                     ? `bg-slate-100 dark:bg-zinc-900 ${accent.text} font-extrabold border-l-2 ${accent.borderColor}` 
                     : "text-slate-600 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-zinc-900"
                 }`}
-                id="mobile-nav-moderator"
+                id="mobile-nav-team"
               >
-                Moderator
-              </button>
-            )}
-            {user && user.role === "Auditor" && (
-              <button
-                key="Auditor"
-                onClick={() => { setActiveTab("Auditor"); setMobileMenuOpen(false); }}
-                className={`w-full text-left px-4 py-2.5 rounded-lg block font-bold transition duration-155 ${
-                  activeTab === "Auditor" 
-                    ? `bg-slate-100 dark:bg-zinc-900 ${accent.text} font-extrabold border-l-2 ${accent.borderColor}` 
-                    : "text-slate-600 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-zinc-900"
-                }`}
-                id="mobile-nav-auditor"
-              >
-                Auditor
+                Team Workspace
               </button>
             )}
           </div>
@@ -1334,12 +1337,46 @@ function AppContent() {
 
               {/* Client inquiries teaser link (Right) */}
               <div className="p-6 rounded-xl bg-white dark:bg-black border border-slate-200 dark:border-zinc-800 space-y-6 flex flex-col justify-between shadow-xs">
-                <div className="space-y-2">
-                  <span className="text-purple-500 text-xs font-mono font-bold uppercase tracking-wider">PREPARED CONSULTATIONS</span>
-                  <h3 className="text-xl font-display text-slate-900 dark:text-white font-bold">Have an enterprise project or partnership idea?</h3>
-                  <p className="text-xs text-slate-500 dark:text-zinc-450 leading-relaxed max-w-md font-sans">
-                    Initiate contact with standard requirements profiles. We pre-route ticketing categories. Let's launch your next system.
-                  </p>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <span className="text-purple-500 text-xs font-mono font-bold uppercase tracking-wider">PREPARED CONSULTATIONS</span>
+                    <h3 className="text-xl font-display text-slate-900 dark:text-white font-bold">Have an enterprise project or partnership idea?</h3>
+                    <p className="text-xs text-slate-500 dark:text-zinc-450 leading-relaxed max-w-md font-sans">
+                      Initiate contact with standard requirements profiles. We pre-route ticketing categories. Let's launch your next system.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {consultationCards.slice(0, 4).map((card, index) => (
+                      <div
+                        key={card.id}
+                        className="p-3 rounded-lg border border-slate-200 dark:border-zinc-850 bg-slate-50/70 dark:bg-zinc-950/50 hover:border-purple-400/70 dark:hover:border-purple-500/70 hover:bg-white dark:hover:bg-zinc-900 transition duration-150"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="space-y-1.5 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-purple-500 bg-purple-500/10 border border-purple-500/20 rounded px-2 py-0.5">
+                                Consultation Route {String(index + 1).padStart(2, "0")}
+                              </span>
+                              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
+                                {card.targetTab}
+                              </span>
+                            </div>
+                            <h4 className="text-sm font-bold text-slate-950 dark:text-white leading-snug">{card.title}</h4>
+                            <p className="text-[11px] text-slate-500 dark:text-zinc-450 leading-relaxed font-sans">{card.description}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab(card.targetTab as any)}
+                            className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 dark:border-zinc-800 text-purple-500 hover:text-white hover:bg-purple-500 transition cursor-pointer"
+                            title={card.ctaLabel}
+                          >
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <button
@@ -1493,30 +1530,6 @@ function AppContent() {
             <UnifiedAuthGate
               onAuthSuccess={() => setActiveTab("Admin Central")}
               subTitle="Authorize secure administrator token credentials to enter the system registers management and audit logging consoles."
-            />
-          )
-        )}
-
-        {/* Render: 11.5. Moderator Workspace */}
-        {activeTab === "Moderator" && (
-          user && user.role === "Moderator" ? (
-            <ModeratorWorkspacePage />
-          ) : (
-            <UnifiedAuthGate
-              onAuthSuccess={() => setActiveTab("Moderator")}
-              subTitle="Authenticate as a Moderator to access content review and support management."
-            />
-          )
-        )}
-
-        {/* Render: 11.6. Auditor Workspace */}
-        {activeTab === "Auditor" && (
-          user && user.role === "Auditor" ? (
-            <AuditorWorkspacePage />
-          ) : (
-            <UnifiedAuthGate
-              onAuthSuccess={() => setActiveTab("Auditor")}
-              subTitle="Authenticate as an Auditor to access system audit logs and security monitoring."
             />
           )
         )}

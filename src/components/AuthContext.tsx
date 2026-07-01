@@ -267,14 +267,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Hardcoded fallback safety map if server is bootstrapping
       const staticRolePermissions: Record<UserRole, string[]> = {
         "Super Admin": ["*"],
-        "Admin": ["users.create", "users.edit", "users.view", "projects.create", "projects.edit", "chat.send", "chat.manage", "invoice.view", "invoice.manage"],
+        "Admin": ["users.create", "users.edit", "users.view", "projects.create", "projects.edit", "chat.send", "chat.manage", "invoice.view", "invoice.manage", "system.monitoring"],
+        "Moderator": ["users.view", "chat.send", "chat.manage", "invoice.view"],
+        "Developer": ["projects.create", "projects.edit", "chat.send", "invoice.view", "system.monitoring"],
         "Operator": ["projects.create", "projects.edit", "chat.send", "invoice.view"],
-        "Moderator": ["chat.send", "chat.manage"],
-        "Auditor": ["users.view", "invoice.view"],
-        "Developer": ["users.view"],
+        "Auditor": ["users.view", "invoice.view", "system.monitoring"],
+        "Team Member": ["projects.create", "projects.edit", "chat.send", "chat.manage", "invoice.view"],
         "Client": ["chat.send", "invoice.view"],
-        "User": ["chat.send"],
-        "Guest": []
+        "User": ["chat.send", "invoice.view"],
       };
       const allowed = staticRolePermissions[user.role] || [];
       return allowed.includes("*") || allowed.includes(action);

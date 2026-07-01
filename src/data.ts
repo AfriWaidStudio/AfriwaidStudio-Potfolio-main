@@ -1,4 +1,63 @@
-import { Project, JournalEntry, Article, MediaItem, ServiceOffer, CV, ClientProfile, Inquiry, TrackedAnalytics, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings } from "./types";
+import { Project, JournalEntry, Article, MediaItem, ServiceOffer, CV, ClientProfile, Inquiry, TrackedAnalytics, HomepageStats, TechStackItem, Testimonial, TeamMember, CustomizationSettings, ConsultationCard } from "./types";
+
+export const INITIAL_CONSULTATION_CARDS: ConsultationCard[] = [
+  {
+    id: "consult-1",
+    badge: "TECHNICAL BUILD",
+    title: "Software, SaaS & Dashboard Builds",
+    description: "Plan custom web applications, admin systems, client portals, API backends, analytics dashboards, and production-ready digital platforms.",
+    ctaLabel: "Start Software Request",
+    targetTab: "Services"
+  },
+  {
+    id: "consult-2",
+    badge: "VIDEO EDITING",
+    title: "Video Editing, Reels & Motion Graphics",
+    description: "Request cinematic editing, short-form reels, product explainers, subtitles, color grading, motion graphics, and launch visuals.",
+    ctaLabel: "View Media Work",
+    targetTab: "Media"
+  },
+  {
+    id: "consult-3",
+    badge: "COPYWRITING",
+    title: "Copywriting, Landing Pages & Sales Copy",
+    description: "Shape persuasive website copy, service pages, product messaging, email sequences, ad copy, and conversion-focused brand language.",
+    ctaLabel: "Open Writing Hub",
+    targetTab: "Publishing"
+  },
+  {
+    id: "consult-4",
+    badge: "BLOG WRITING",
+    title: "Blog Writing, SEO Articles & Technical Guides",
+    description: "Commission SEO blog posts, thought-leadership articles, technical documentation, news writing, research summaries, and content calendars.",
+    ctaLabel: "Plan Content",
+    targetTab: "Publishing"
+  },
+  {
+    id: "consult-5",
+    badge: "BRAND DESIGN",
+    title: "Logo Design, Brand Identity & UI Systems",
+    description: "Build logo marks, visual identity systems, typography, color palettes, brand guidelines, Figma prototypes, and high-fidelity UI layouts.",
+    ctaLabel: "View Design Services",
+    targetTab: "Services"
+  },
+  {
+    id: "consult-6",
+    badge: "AI AUTOMATION",
+    title: "AI Assistants, Automation & KI Decision Systems",
+    description: "Map AI assistants, RAG knowledge bases, automation pipelines, multi-agent workflows, MCDA dashboards, and verification controls.",
+    ctaLabel: "Consult AI Lab",
+    targetTab: "AI Lab"
+  },
+  {
+    id: "consult-7",
+    badge: "RESEARCH",
+    title: "Research, Strategy & Feasibility Reports",
+    description: "Prepare product research, system architecture blueprints, competitor audits, launch strategy, technical feasibility, and innovation planning.",
+    ctaLabel: "Request Strategy",
+    targetTab: "Services"
+  }
+];
 
 export const INITIAL_CUSTOMIZATION: CustomizationSettings = {
   appName: "AFRIWAID STUDIO",
@@ -49,7 +108,8 @@ export const INITIAL_CUSTOMIZATION: CustomizationSettings = {
   journalTagline: "Active Developer Logs & System Milestones",
   journalTitle: "The AfriWaid Build Journal",
   journalDescription: "Follow our transparent engineering roadmap. We push frequent hot-fixes, core architectural developments, spatial animations, and machine learning structures to the active sandbox stack.",
-  founderPortraitUrl: ""
+  founderPortraitUrl: "",
+  consultationCards: INITIAL_CONSULTATION_CARDS
 };
 
 export const INITIAL_PROJECTS: Project[] = [

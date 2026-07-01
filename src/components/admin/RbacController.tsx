@@ -36,7 +36,7 @@ export default function RbacController() {
 
         // Select first role automatically
         if (rolesList.length > 0) {
-          const defaultRole = rolesList.find((r: Role) => r.name === "Admin") || rolesList[0];
+          const defaultRole = rolesList.find((r: Role) => r.name === "Team Member") || rolesList.find((r: Role) => r.name === "Super Admin") || rolesList[0];
           setSelectedRoleName(defaultRole.name);
           setActivePermissions(defaultRole.permissions || []);
         }
@@ -46,20 +46,18 @@ export default function RbacController() {
       // Hardcoded fallback permissions list corresponding to backend data-store seed config
       setRoles([
         { id: "r-1", name: "Super Admin", permissions: ["*"] },
-        { id: "r-2", name: "Admin", permissions: ["p-users-create", "p-users-edit", "p-users-view", "p-proj-create", "p-proj-edit", "p-invoice-view"] },
-        { id: "r-3", name: "Client", permissions: ["p-chat-send", "p-invoice-view"] }
+        { id: "r-2", name: "Team Member", permissions: ["p-projects-create", "p-projects-edit", "p-chat-send", "p-chat-manage", "p-invoice-view"] },
+        { id: "r-3", name: "User", permissions: ["p-chat-send", "p-invoice-view"] }
       ]);
       setPermissions([
-        { id: "p-users-view", name: "View Operators", action: "view", module: "users", description: "View list of registered operators" },
-        { id: "p-users-create", name: "Create Operators", action: "create", module: "users", description: "Register new platform operator accounts" },
-        { id: "p-users-edit", name: "Edit Operators", action: "edit", module: "users", description: "Alter role assignments and clearance tags" },
-        { id: "p-proj-create", name: "Create Projects", action: "create", module: "projects", description: "Add a new creative venture to AfriWaid portfolio" },
-        { id: "p-proj-edit", name: "Edit Projects", action: "edit", module: "projects", description: "Apply progress logs and tags" },
+        { id: "p-projects-create", name: "Create Projects", action: "create", module: "projects", description: "Initiate new project workspaces" },
+        { id: "p-projects-edit", name: "Edit Projects", action: "edit", module: "projects", description: "Update project artifacts and statuses" },
         { id: "p-chat-send", name: "Send Chat Messages", action: "send", module: "chat", description: "Interact on real-time channels" },
+        { id: "p-chat-manage", name: "Manage Chat", action: "manage", module: "chat", description: "Configure chat channels and groups" },
         { id: "p-invoice-view", name: "View Invoices", action: "view", module: "invoice", description: "Read payment statements and receipts" }
       ]);
-      setSelectedRoleName("Admin");
-      setActivePermissions(["p-users-create", "p-users-edit", "p-users-view", "p-proj-create", "p-proj-edit", "p-invoice-view"]);
+      setSelectedRoleName("Team Member");
+      setActivePermissions(["p-projects-create", "p-projects-edit", "p-chat-send", "p-chat-manage", "p-invoice-view"]);
     } finally {
       setLoading(false);
     }
